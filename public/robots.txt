@@ -2,5 +2,5 @@ User-agent: *
 Allow: /
 
 # Host & Sitemaps
-Host: https://baroquranacademy.com
-Sitemap: https://baroquranacademy.com/sitemap.xml
+Host: https://baroquranacademy.vercel.app
+Sitemap: https://baroquranacademy.vercel.app/sitemap.xml

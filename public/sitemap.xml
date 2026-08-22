@@ -2,62 +2,14 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
-  <!-- Home Page (Baro Qur'aanka Online) -->
+  <!-- Home Page (Canonical Root) -->
   <url>
-    <loc>https://baroquranacademy.com/</loc>
-    <lastmod>2026-08-21</lastmod>
+    <loc>https://baroquranacademy.vercel.app/</loc>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
-    <xhtml:link rel="alternate" hreflang="so" href="https://baroquranacademy.com/?lang=so" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://baroquranacademy.com/?lang=en" />
-  </url>
-
-  <!-- Courses Section (Barashada Higaada, Tajwiidka, Xifdiga & Culuumta) -->
-  <url>
-    <loc>https://baroquranacademy.com/#courses</loc>
-    <lastmod>2026-08-21</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-  <!-- Why Us (Macallimiin Soomaali Qur'aan Online leh Ijaazo) -->
-  <url>
-    <loc>https://baroquranacademy.com/#why-us</loc>
-    <lastmod>2026-08-21</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <!-- Pricing Plans (Xirmooyinka & Qiimaha Madarso Online) -->
-  <url>
-    <loc>https://baroquranacademy.com/#pricing</loc>
-    <lastmod>2026-08-21</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <!-- Reviews (Aragtida Waalidiinta Qurbaha / Diaspora) -->
-  <url>
-    <loc>https://baroquranacademy.com/#reviews</loc>
-    <lastmod>2026-08-21</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <!-- FAQ (Su'aalaha Badanaa La Isweydiiyo) -->
-  <url>
-    <loc>https://baroquranacademy.com/#faq</loc>
-    <lastmod>2026-08-21</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <!-- Contact (Nala Soo Xiriir WhatsApp & Email) -->
-  <url>
-    <loc>https://baroquranacademy.com/#contact</loc>
-    <lastmod>2026-08-21</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="so" href="https://baroquranacademy.vercel.app/?lang=so" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://baroquranacademy.vercel.app/?lang=en" />
   </url>
 
 </urlset>
