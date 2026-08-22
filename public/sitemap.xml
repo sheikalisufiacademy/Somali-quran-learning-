@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   
-  <!-- Home Page (Canonical Root) -->
+  <!-- Primary Canonical Homepage -->
   <url>
     <loc>https://baroquranacademy.vercel.app/</loc>
     <lastmod>2026-08-22</lastmod>
@@ -10,6 +11,72 @@
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="so" href="https://baroquranacademy.vercel.app/?lang=so" />
     <xhtml:link rel="alternate" hreflang="en" href="https://baroquranacademy.vercel.app/?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://baroquranacademy.vercel.app/" />
+    <image:image>
+      <image:loc>https://baroquranacademy.vercel.app/logo.png</image:loc>
+      <image:title>Baro Quran Academy Official Logo</image:title>
+      <image:caption>Akadeemiyada Barashada Quraanka Online</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Courses & Curriculum Sitelink -->
+  <url>
+    <loc>https://baroquranacademy.vercel.app/#courses</loc>
+    <lastmod>2026-08-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="so" href="https://baroquranacademy.vercel.app/#courses" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://baroquranacademy.vercel.app/#courses" />
+  </url>
+
+  <!-- Pricing & Packages Sitelink -->
+  <url>
+    <loc>https://baroquranacademy.vercel.app/#pricing</loc>
+    <lastmod>2026-08-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="so" href="https://baroquranacademy.vercel.app/#pricing" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://baroquranacademy.vercel.app/#pricing" />
+  </url>
+
+  <!-- Why Choose Us & Features Sitelink -->
+  <url>
+    <loc>https://baroquranacademy.vercel.app/#why-us</loc>
+    <lastmod>2026-08-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="so" href="https://baroquranacademy.vercel.app/#why-us" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://baroquranacademy.vercel.app/#why-us" />
+  </url>
+
+  <!-- Parent Reviews Sitelink -->
+  <url>
+    <loc>https://baroquranacademy.vercel.app/#reviews</loc>
+    <lastmod>2026-08-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="so" href="https://baroquranacademy.vercel.app/#reviews" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://baroquranacademy.vercel.app/#reviews" />
+  </url>
+
+  <!-- FAQ Sitelink -->
+  <url>
+    <loc>https://baroquranacademy.vercel.app/#faq</loc>
+    <lastmod>2026-08-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="so" href="https://baroquranacademy.vercel.app/#faq" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://baroquranacademy.vercel.app/#faq" />
+  </url>
+
+  <!-- Contact & Registration Sitelink -->
+  <url>
+    <loc>https://baroquranacademy.vercel.app/#contact</loc>
+    <lastmod>2026-08-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="so" href="https://baroquranacademy.vercel.app/#contact" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://baroquranacademy.vercel.app/#contact" />
   </url>
 
 </urlset>

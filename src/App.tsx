@@ -23,6 +23,43 @@ export default function App() {
   const [preselectedCourse, setPreselectedCourse] = useState<string | undefined>();
   const [preselectedPlan, setPreselectedPlan] = useState<string | undefined>();
 
+  // Sync hash routing and language params on mount and hashchange
+  useEffect(() => {
+    const handleUrlSync = () => {
+      // Check query param for lang
+      const params = new URLSearchParams(window.location.search);
+      const urlLang = params.get('lang');
+      if (urlLang === 'en' || urlLang === 'so') {
+        setLang(urlLang as Language);
+      }
+
+      // Check hash for page routing
+      const hash = window.location.hash.replace('#', '').toLowerCase();
+      const validPages: AppPage[] = ['home', 'courses', 'why-us', 'pricing', 'reviews', 'faq', 'contact', 'privacy', 'terms'];
+      if (validPages.includes(hash as AppPage)) {
+        setCurrentPage(hash as AppPage);
+      }
+    };
+
+    handleUrlSync();
+    window.addEventListener('hashchange', handleUrlSync);
+    return () => window.removeEventListener('hashchange', handleUrlSync);
+  }, []);
+
+  // Update document title and lang attribute based on current state
+  useEffect(() => {
+    document.documentElement.lang = lang;
+    if (lang === 'so') {
+      document.title = currentPage === 'home'
+        ? "Baro Qur'aanka Online | Baro Quran Academy - Akadeemiyada Tajwiidka, Higaada & Xifdiga"
+        : `Baro Quran Academy | ${currentPage.toUpperCase()}`;
+    } else {
+      document.title = currentPage === 'home'
+        ? "Learn Quran Online | Baro Quran Academy - Tajweed, Qaida & Hifz"
+        : `Baro Quran Academy | ${currentPage.toUpperCase()}`;
+    }
+  }, [lang, currentPage]);
+
   const handleOpenRegister = (courseId?: string, planId?: string) => {
     setPreselectedCourse(courseId);
     setPreselectedPlan(planId);
@@ -35,6 +72,7 @@ export default function App() {
 
   const handleNavigate = (page: AppPage) => {
     setCurrentPage(page);
+    window.location.hash = page === 'home' ? '' : page;
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 

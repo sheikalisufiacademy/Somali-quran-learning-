@@ -53,10 +53,15 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div className="flex items-center justify-between h-20">
             
             {/* Logo - Navigates to Home */}
-            <button 
-              onClick={() => handleNavClick('home')}
+            <a 
+              href="#home"
+              onClick={(e) => {
+                e.preventDefault();
+                handleNavClick('home');
+              }}
               id="brand-logo" 
               className="flex items-center gap-3 group text-left cursor-pointer"
+              aria-label="Baro Quran Academy Home"
             >
               <LogoBadge size="md" />
               <div className="flex flex-col">
@@ -72,26 +77,34 @@ export const Navbar: React.FC<NavbarProps> = ({
                   {lang === 'so' ? 'Akadeemiyada Barashada Qur’aanka' : 'Online Quran & Islamic Academy'}
                 </span>
               </div>
-            </button>
+            </a>
 
             {/* Desktop Navigation Links */}
-            <nav id="desktop-nav" className="hidden lg:flex items-center space-x-1 xl:space-x-2">
-              {navLinks.map((link) => {
-                const isActive = currentPage === link.page;
-                return (
-                  <button
-                    key={link.page}
-                    onClick={() => handleNavClick(link.page)}
-                    className={`px-3 py-2 rounded-xl text-sm font-extrabold transition-all cursor-pointer ${
-                      isActive
-                        ? 'bg-orange-500 text-white shadow-xs'
-                        : 'text-slate-700 hover:text-orange-600 hover:bg-orange-50'
-                    }`}
-                  >
-                    {lang === 'so' ? link.labelSo : link.labelEn}
-                  </button>
-                );
-              })}
+            <nav id="desktop-nav" aria-label="Main Desktop Navigation" className="hidden lg:block">
+              <ul className="flex items-center space-x-1 xl:space-x-2" role="menubar">
+                {navLinks.map((link) => {
+                  const isActive = currentPage === link.page;
+                  return (
+                    <li key={link.page} role="none">
+                      <a
+                        href={`#${link.page}`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleNavClick(link.page);
+                        }}
+                        role="menuitem"
+                        className={`inline-block px-3 py-2 rounded-xl text-sm font-extrabold transition-all cursor-pointer ${
+                          isActive
+                            ? 'bg-orange-500 text-white shadow-xs'
+                            : 'text-slate-700 hover:text-orange-600 hover:bg-orange-50'
+                        }`}
+                      >
+                        {lang === 'so' ? link.labelSo : link.labelEn}
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
             </nav>
 
             {/* Action Buttons & Single Language Toggle */}
@@ -102,21 +115,26 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onClick={() => setLang(lang === 'so' ? 'en' : 'so')}
                 className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#0B192C] border border-slate-300 text-xs font-black transition-all shadow-xs cursor-pointer"
                 title={lang === 'so' ? 'Guji si aad ugu beddesho English' : 'Click to switch to Somali'}
+                aria-label="Switch Language"
               >
                 <Globe className="w-3.5 h-3.5 text-orange-500" />
                 <span>{lang === 'so' ? '🇸🇴 Soomaali' : '🇬🇧 English'}</span>
               </button>
 
-              <button
-                onClick={() => handleNavClick('pricing')}
-                className={`px-4 py-2 text-sm font-bold rounded-xl transition-colors cursor-pointer ${
+              <a
+                href="#pricing"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavClick('pricing');
+                }}
+                className={`px-4 py-2 text-sm font-bold rounded-xl transition-colors cursor-pointer inline-block ${
                   currentPage === 'pricing'
                     ? 'bg-orange-500 text-white'
                     : 'text-[#0B192C] bg-slate-50 hover:bg-slate-100 border border-slate-200'
                 }`}
               >
                 {lang === 'so' ? 'Xirmooyinka' : 'Pricing'}
-              </button>
+              </a>
 
               <button
                 id="btn-nav-register"
@@ -164,24 +182,31 @@ export const Navbar: React.FC<NavbarProps> = ({
               </button>
             </div>
 
-            <div className="space-y-1">
-              {navLinks.map((link) => {
-                const isActive = currentPage === link.page;
-                return (
-                  <button
-                    key={link.page}
-                    onClick={() => handleNavClick(link.page)}
-                    className={`w-full text-left px-3.5 py-2.5 rounded-xl text-sm font-extrabold transition-colors cursor-pointer ${
-                      isActive
-                        ? 'bg-orange-500 text-white'
-                        : 'text-slate-800 hover:bg-orange-50 hover:text-orange-600'
-                    }`}
-                  >
-                    {lang === 'so' ? link.labelSo : link.labelEn}
-                  </button>
-                );
-              })}
-            </div>
+            <nav aria-label="Mobile Navigation" className="space-y-1">
+              <ul className="space-y-1">
+                {navLinks.map((link) => {
+                  const isActive = currentPage === link.page;
+                  return (
+                    <li key={link.page}>
+                      <a
+                        href={`#${link.page}`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleNavClick(link.page);
+                        }}
+                        className={`block w-full text-left px-3.5 py-2.5 rounded-xl text-sm font-extrabold transition-colors cursor-pointer ${
+                          isActive
+                            ? 'bg-orange-500 text-white'
+                            : 'text-slate-800 hover:bg-orange-50 hover:text-orange-600'
+                        }`}
+                      >
+                        {lang === 'so' ? link.labelSo : link.labelEn}
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </nav>
 
             <div className="pt-3 flex flex-col gap-2">
               <button

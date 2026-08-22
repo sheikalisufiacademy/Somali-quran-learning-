@@ -1,6 +1,10 @@
+# Robots.txt for Baro Quran Academy
+# Allows full indexing for Google, Bing, Yahoo and other web crawlers
+
 User-agent: *
 Allow: /
+Disallow: /api/
 
-# Host & Sitemaps
-Host: https://baroquranacademy.vercel.app
+# Specify XML Sitemap
 Sitemap: https://baroquranacademy.vercel.app/sitemap.xml
+Host: https://baroquranacademy.vercel.app

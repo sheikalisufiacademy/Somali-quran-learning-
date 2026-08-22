@@ -109,53 +109,55 @@ export const Footer: React.FC<FooterProps> = ({ lang, onOpenRegister, onNavigate
             <h4 className="text-xs font-black text-white uppercase tracking-wider">
               {lang === 'so' ? 'Bogagga Muhiimka ah' : 'Quick Navigation'}
             </h4>
-            <ul className="space-y-2 text-xs text-slate-300 font-medium">
-              <li>
-                <button onClick={() => handleNav('home')} className="hover:text-orange-400 transition-colors text-left cursor-pointer">
-                  {lang === 'so' ? 'Bogga Hore (Home)' : 'Home'}
-                </button>
-              </li>
-              <li>
-                <button onClick={() => handleNav('courses')} className="hover:text-orange-400 transition-colors text-left cursor-pointer">
-                  {lang === 'so' ? 'Koorsooyinka' : 'Courses & Syllabus'}
-                </button>
-              </li>
-              <li>
-                <button onClick={() => handleNav('why-us')} className="hover:text-orange-400 transition-colors text-left cursor-pointer">
-                  {lang === 'so' ? 'Maxaad Noo Dooranaysaa?' : 'Why Choose Us'}
-                </button>
-              </li>
-              <li>
-                <button onClick={() => handleNav('pricing')} className="hover:text-orange-400 transition-colors text-left cursor-pointer">
-                  {lang === 'so' ? 'Qiimaha & Xirmooyinka' : 'Pricing Plans'}
-                </button>
-              </li>
-              <li>
-                <button onClick={() => handleNav('reviews')} className="hover:text-orange-400 transition-colors text-left cursor-pointer">
-                  {lang === 'so' ? 'Aragtida Waalidiinta' : 'Parent Reviews'}
-                </button>
-              </li>
-              <li>
-                <button onClick={() => handleNav('faq')} className="hover:text-orange-400 transition-colors text-left cursor-pointer">
-                  {lang === 'so' ? 'Su’aalaha (FAQ)' : 'FAQs'}
-                </button>
-              </li>
-              <li>
-                <button onClick={() => handleNav('privacy')} className="hover:text-orange-400 transition-colors text-left cursor-pointer">
-                  {lang === 'so' ? 'Qarsoodiga (Privacy Policy)' : 'Privacy Policy'}
-                </button>
-              </li>
-              <li>
-                <button onClick={() => handleNav('terms')} className="hover:text-orange-400 transition-colors text-left cursor-pointer">
-                  {lang === 'so' ? 'Shuruudaha (Terms of Service)' : 'Terms of Service'}
-                </button>
-              </li>
-              <li>
-                <button onClick={() => handleNav('contact')} className="hover:text-orange-400 transition-colors text-left cursor-pointer">
-                  {lang === 'so' ? 'Nala Xiriir' : 'Contact Us'}
-                </button>
-              </li>
-            </ul>
+            <nav aria-label="Footer Quick Links">
+              <ul className="space-y-2 text-xs text-slate-300 font-medium">
+                <li>
+                  <a href="#home" onClick={(e) => { e.preventDefault(); handleNav('home'); }} className="hover:text-orange-400 transition-colors block cursor-pointer">
+                    {lang === 'so' ? 'Bogga Hore (Home)' : 'Home'}
+                  </a>
+                </li>
+                <li>
+                  <a href="#courses" onClick={(e) => { e.preventDefault(); handleNav('courses'); }} className="hover:text-orange-400 transition-colors block cursor-pointer">
+                    {lang === 'so' ? 'Koorsooyinka' : 'Courses & Syllabus'}
+                  </a>
+                </li>
+                <li>
+                  <a href="#why-us" onClick={(e) => { e.preventDefault(); handleNav('why-us'); }} className="hover:text-orange-400 transition-colors block cursor-pointer">
+                    {lang === 'so' ? 'Maxaad Noo Dooranaysaa?' : 'Why Choose Us'}
+                  </a>
+                </li>
+                <li>
+                  <a href="#pricing" onClick={(e) => { e.preventDefault(); handleNav('pricing'); }} className="hover:text-orange-400 transition-colors block cursor-pointer">
+                    {lang === 'so' ? 'Qiimaha & Xirmooyinka' : 'Pricing Plans'}
+                  </a>
+                </li>
+                <li>
+                  <a href="#reviews" onClick={(e) => { e.preventDefault(); handleNav('reviews'); }} className="hover:text-orange-400 transition-colors block cursor-pointer">
+                    {lang === 'so' ? 'Aragtida Waalidiinta' : 'Parent Reviews'}
+                  </a>
+                </li>
+                <li>
+                  <a href="#faq" onClick={(e) => { e.preventDefault(); handleNav('faq'); }} className="hover:text-orange-400 transition-colors block cursor-pointer">
+                    {lang === 'so' ? 'Su’aalaha (FAQ)' : 'FAQs'}
+                  </a>
+                </li>
+                <li>
+                  <a href="#privacy" onClick={(e) => { e.preventDefault(); handleNav('privacy'); }} className="hover:text-orange-400 transition-colors block cursor-pointer">
+                    {lang === 'so' ? 'Qarsoodiga (Privacy Policy)' : 'Privacy Policy'}
+                  </a>
+                </li>
+                <li>
+                  <a href="#terms" onClick={(e) => { e.preventDefault(); handleNav('terms'); }} className="hover:text-orange-400 transition-colors block cursor-pointer">
+                    {lang === 'so' ? 'Shuruudaha (Terms of Service)' : 'Terms of Service'}
+                  </a>
+                </li>
+                <li>
+                  <a href="#contact" onClick={(e) => { e.preventDefault(); handleNav('contact'); }} className="hover:text-orange-400 transition-colors block cursor-pointer">
+                    {lang === 'so' ? 'Nala Xiriir' : 'Contact Us'}
+                  </a>
+                </li>
+              </ul>
+            </nav>
           </div>
 
           {/* Col 3: Courses List (3 cols) */}
@@ -163,33 +165,35 @@ export const Footer: React.FC<FooterProps> = ({ lang, onOpenRegister, onNavigate
             <h4 className="text-xs font-black text-white uppercase tracking-wider">
               {lang === 'so' ? 'Koorsooyinka Aan Bixinno' : 'Our Programs'}
             </h4>
-            <ul className="space-y-2 text-xs text-slate-300 font-medium">
-              <li>
-                <button onClick={() => { handleNav('courses'); onOpenRegister('qaacida-nuuraaniya'); }} className="hover:text-orange-400 transition-colors text-left cursor-pointer">
-                  {lang === 'so' ? '• Qaacidada Nuuraaniyada' : '• Noorani Qaida for Beginners'}
-                </button>
-              </li>
-              <li>
-                <button onClick={() => { handleNav('courses'); onOpenRegister('tajweed-recitation'); }} className="hover:text-orange-400 transition-colors text-left cursor-pointer">
-                  {lang === 'so' ? '• Tajwiidka Saxda ah & Akhriska' : '• Tajweed Mastery & Recitation'}
-                </button>
-              </li>
-              <li>
-                <button onClick={() => { handleNav('courses'); onOpenRegister('quran-memorization-hifz'); }} className="hover:text-orange-400 transition-colors text-left cursor-pointer">
-                  {lang === 'so' ? '• Xifdinta Qur’aanka Kariimka' : '• Full Quran Memorization (Hifz)'}
-                </button>
-              </li>
-              <li>
-                <button onClick={() => { handleNav('courses'); onOpenRegister('islamic-studies-tarbiyah'); }} className="hover:text-orange-400 transition-colors text-left cursor-pointer">
-                  {lang === 'so' ? '• Culuumta Diinta & Tarbiyada' : '• Islamic Studies & Tarbiyah'}
-                </button>
-              </li>
-              <li>
-                <button onClick={() => { handleNav('courses'); onOpenRegister('arabic-language'); }} className="hover:text-orange-400 transition-colors text-left cursor-pointer">
-                  {lang === 'so' ? '• Luuqadda Carabiga' : '• Arabic Language for Kids/Adults'}
-                </button>
-              </li>
-            </ul>
+            <nav aria-label="Footer Programs Navigation">
+              <ul className="space-y-2 text-xs text-slate-300 font-medium">
+                <li>
+                  <a href="#courses" onClick={(e) => { e.preventDefault(); handleNav('courses'); onOpenRegister('qaacida-nuuraaniya'); }} className="hover:text-orange-400 transition-colors block cursor-pointer">
+                    {lang === 'so' ? '• Qaacidada Nuuraaniyada' : '• Noorani Qaida for Beginners'}
+                  </a>
+                </li>
+                <li>
+                  <a href="#courses" onClick={(e) => { e.preventDefault(); handleNav('courses'); onOpenRegister('tajweed-recitation'); }} className="hover:text-orange-400 transition-colors block cursor-pointer">
+                    {lang === 'so' ? '• Tajwiidka Saxda ah & Akhriska' : '• Tajweed Mastery & Recitation'}
+                  </a>
+                </li>
+                <li>
+                  <a href="#courses" onClick={(e) => { e.preventDefault(); handleNav('courses'); onOpenRegister('quran-memorization-hifz'); }} className="hover:text-orange-400 transition-colors block cursor-pointer">
+                    {lang === 'so' ? '• Xifdinta Qur’aanka Kariimka' : '• Full Quran Memorization (Hifz)'}
+                  </a>
+                </li>
+                <li>
+                  <a href="#courses" onClick={(e) => { e.preventDefault(); handleNav('courses'); onOpenRegister('islamic-studies-tarbiyah'); }} className="hover:text-orange-400 transition-colors block cursor-pointer">
+                    {lang === 'so' ? '• Culuumta Diinta & Tarbiyada' : '• Islamic Studies & Tarbiyah'}
+                  </a>
+                </li>
+                <li>
+                  <a href="#courses" onClick={(e) => { e.preventDefault(); handleNav('courses'); onOpenRegister('arabic-language'); }} className="hover:text-orange-400 transition-colors block cursor-pointer">
+                    {lang === 'so' ? '• Luuqadda Carabiga' : '• Arabic Language for Kids/Adults'}
+                  </a>
+                </li>
+              </ul>
+            </nav>
           </div>
 
           {/* Col 4: Official Contact & Schedule (3 cols) */}
