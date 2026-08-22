@@ -21,6 +21,7 @@ import {
 import confetti from 'canvas-confetti';
 import { Language } from '../types';
 import { COURSES_DATA, PRICING_PLANS } from '../data/academyData';
+import { saveRegistrationToFirestore } from '../firebase';
 
 interface StudentInfo {
   id: string;
@@ -153,11 +154,37 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    setTimeout(() => {
+    const selCourse = COURSES_DATA.find(c => c.id === selectedCourseId) || COURSES_DATA[0];
+    const selPlan = PRICING_PLANS.find(p => p.id === selectedPlanId) || PRICING_PLANS[2];
+
+    try {
+      await saveRegistrationToFirestore({
+        students: students.map(s => ({
+          fullName: s.fullName.trim(),
+          age: s.age.trim(),
+          gender: s.gender
+        })),
+        phone: phone.trim(),
+        email: email.trim(),
+        country: country.trim(),
+        city: city.trim(),
+        courseId: selectedCourseId,
+        courseTitle: lang === 'so' ? selCourse.titleSo : selCourse.titleEn,
+        planId: selectedPlanId,
+        planName: lang === 'so' ? selPlan.nameSo : selPlan.nameEn,
+        planPriceUSD: selPlan.priceUSD,
+        teacherPreference,
+        preferredDays,
+        preferredTimeSlot,
+        language: lang
+      });
+    } catch (err) {
+      console.error('Failed to save registration to Firestore:', err);
+    } finally {
       setIsSubmitting(false);
       setIsSubmitted(true);
       try {
@@ -169,7 +196,7 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
       } catch (err) {
         console.warn('Confetti error:', err);
       }
-    }, 600);
+    }
   };
 
   const selectedCourse = COURSES_DATA.find(c => c.id === selectedCourseId) || COURSES_DATA[0];
