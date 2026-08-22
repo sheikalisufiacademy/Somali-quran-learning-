@@ -68,6 +68,7 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
   // Submission
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [enrollmentId, setEnrollmentId] = useState<string>('');
 
   useEffect(() => {
     if (preselectedCourseId) {
@@ -158,44 +159,73 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
     e.preventDefault();
     setIsSubmitting(true);
 
+    const generatedId = `BQA-${Math.floor(100000 + Math.random() * 900000)}`;
+    setEnrollmentId(generatedId);
+
     const selCourse = COURSES_DATA.find(c => c.id === selectedCourseId) || COURSES_DATA[0];
     const selPlan = PRICING_PLANS.find(p => p.id === selectedPlanId) || PRICING_PLANS[2];
+    const courseTitle = lang === 'so' ? selCourse.titleSo : selCourse.titleEn;
+    const planName = lang === 'so' ? selPlan.nameSo : selPlan.nameEn;
 
+    const registrationPayload = {
+      enrollmentId: generatedId,
+      studentName: students[0]?.fullName?.trim() || 'Student',
+      students: students.map(s => ({
+        fullName: s.fullName.trim(),
+        age: s.age.trim(),
+        gender: s.gender
+      })),
+      phone: phone.trim(),
+      email: email.trim(),
+      country: country.trim(),
+      city: city.trim(),
+      courseId: selectedCourseId,
+      courseTitle,
+      planId: selectedPlanId,
+      planName,
+      planPriceUSD: selPlan.priceUSD,
+      teacherPreference,
+      preferredDays,
+      preferredTimeSlot,
+      language: lang
+    };
+
+    // 1. Save to Cloud Firestore
     try {
-      await saveRegistrationToFirestore({
-        students: students.map(s => ({
-          fullName: s.fullName.trim(),
-          age: s.age.trim(),
-          gender: s.gender
-        })),
-        phone: phone.trim(),
-        email: email.trim(),
-        country: country.trim(),
-        city: city.trim(),
-        courseId: selectedCourseId,
-        courseTitle: lang === 'so' ? selCourse.titleSo : selCourse.titleEn,
-        planId: selectedPlanId,
-        planName: lang === 'so' ? selPlan.nameSo : selPlan.nameEn,
-        planPriceUSD: selPlan.priceUSD,
-        teacherPreference,
-        preferredDays,
-        preferredTimeSlot,
-        language: lang
-      });
+      await saveRegistrationToFirestore(registrationPayload);
     } catch (err) {
       console.error('Failed to save registration to Firestore:', err);
-    } finally {
-      setIsSubmitting(false);
-      setIsSubmitted(true);
-      try {
-        confetti({
-          particleCount: 90,
-          spread: 70,
-          origin: { y: 0.6 }
-        });
-      } catch (err) {
-        console.warn('Confetti error:', err);
+    }
+
+    // 2. Trigger automatic Resend Email Confirmation & Admin notification via API
+    try {
+      const response = await fetch('/api/enroll', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(registrationPayload)
+      });
+      if (!response.ok) {
+        console.warn('Email API returned non-200 status:', response.status);
+      } else {
+        const result = await response.json();
+        console.log('Enrollment email API success:', result);
       }
+    } catch (emailErr) {
+      console.error('Failed to call email enrollment API route:', emailErr);
+    }
+
+    setIsSubmitting(false);
+    setIsSubmitted(true);
+    try {
+      confetti({
+        particleCount: 90,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
+    } catch (err) {
+      console.warn('Confetti error:', err);
     }
   };
 
@@ -308,10 +338,18 @@ Fadlan nala soo xiriira si aan u bilowno fasalka tijaabada ah ee bilaashka ah. M
                 <h4 className="text-2xl font-black text-[#0B192C]">
                   {lang === 'so' ? 'Hambalyo! Diiwaangelintu Way Guuleysatay' : 'Alhamdulillah! Registration Successful'}
                 </h4>
+                
+                {enrollmentId && (
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-blue-50 border border-blue-200 text-blue-800 text-xs font-bold font-mono my-1">
+                    <span>Enrollment ID:</span>
+                    <span className="font-black text-blue-900">{enrollmentId}</span>
+                  </div>
+                )}
+
                 <p className="text-sm text-slate-600 max-w-md mx-auto leading-relaxed font-medium">
                   {lang === 'so'
-                    ? `Waad ku mahadsan tahay. Kooxdayada maamulka ayaa 15 daqiiqo gudahood kula soo xiriiraysa WhatsApp (${phone}) si laguugu xiro macallinka fasalka tijaabada ah.`
-                    : `Thank you. Our academic coordinator will contact you shortly on WhatsApp (${phone}) to schedule your free trial session.`}
+                    ? `Waad ku mahadsan tahay. Farriin xaqiijin ah ayaa loo diray iimaylkaaga (${email || 'iimaylka la geliyay'}). Kooxdayada maamulka ayaa 15 daqiiqo gudahood kula soo xiriiraysa WhatsApp (${phone}) si laguugu xiro macallinka fasalka tijaabada ah.`
+                    : `Thank you. A confirmation email has been dispatched to ${email || 'your email'}. Our academic coordinator will contact you shortly on WhatsApp (${phone}) to schedule your free trial session.`}
                 </p>
               </div>
 
