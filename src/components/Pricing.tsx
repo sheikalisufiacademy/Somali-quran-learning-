@@ -61,8 +61,8 @@ export const Pricing: React.FC<PricingProps> = ({ lang, onSelectPlan }) => {
 
           <p className="text-base text-slate-700 font-medium">
             {lang === 'so'
-              ? 'Qiimo jaban oo ku habboon qoysaska qurbaha ($30, $40, $45/bishii). Fasalka tijaabada ah waa bilaash.'
-              : 'Affordable monthly plans with certified scholars, no admission fees, and full schedule flexibility.'}
+              ? 'Qiimo jaban oo ku habboon qoysaska qurbaha ($30, $35, $40, $50/bishii). Fasalka tijaabada ah waa bilaash.'
+              : 'Affordable monthly plans with certified scholars, no admission fees, and full schedule flexibility ($30, $35, $40, $50/month).'}
           </p>
 
           {/* Currency Switcher */}
@@ -87,7 +87,7 @@ export const Pricing: React.FC<PricingProps> = ({ lang, onSelectPlan }) => {
         </div>
 
         {/* Pricing Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
           {PRICING_PLANS.map((plan, idx) => {
             const { symbol, amount } = getPrice(plan);
             const isPopular = plan.popular;

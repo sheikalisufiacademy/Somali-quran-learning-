@@ -10,6 +10,7 @@ import {
   Home
 } from 'lucide-react';
 import { Language, AppPage } from '../types';
+import { LogoBadge } from './LogoBadge';
 
 interface NavbarProps {
   lang: Language;
@@ -57,24 +58,17 @@ export const Navbar: React.FC<NavbarProps> = ({
               id="brand-logo" 
               className="flex items-center gap-3 group text-left cursor-pointer"
             >
-              <div className="w-13 h-13 rounded-2xl bg-white p-0.5 flex items-center justify-center shadow-md border-2 border-orange-500 overflow-hidden group-hover:scale-105 transition-transform duration-200 shrink-0">
-                <img 
-                  src="/logo.jpg" 
-                  alt="Baro Quran Academy Logo" 
-                  className="w-full h-full object-contain rounded-xl"
-                  referrerPolicy="no-referrer"
-                />
-              </div>
+              <LogoBadge size="md" />
               <div className="flex flex-col">
                 <div className="flex items-center gap-1.5">
                   <span className="font-extrabold text-xl tracking-tight text-[#0B192C]">
                     BARO QURAN
                   </span>
-                  <span className="px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider bg-orange-500 text-white rounded-md">
+                  <span className="px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider bg-emerald-600 text-white rounded-md">
                     ACADEMY
                   </span>
                 </div>
-                <span className="text-xs font-semibold text-orange-600 font-arabic">
+                <span className="text-xs font-semibold text-emerald-700 font-arabic">
                   {lang === 'so' ? 'Akadeemiyada Barashada Qur’aanka' : 'Online Quran & Islamic Academy'}
                 </span>
               </div>

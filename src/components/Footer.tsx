@@ -12,6 +12,7 @@ import {
   Globe2
 } from 'lucide-react';
 import { Language, AppPage } from '../types';
+import { LogoBadge } from './LogoBadge';
 
 interface FooterProps {
   lang: Language;
@@ -75,24 +76,17 @@ export const Footer: React.FC<FooterProps> = ({ lang, onOpenRegister, onNavigate
           {/* Col 1: Brand & Bio (4 cols) */}
           <div className="lg:col-span-4 space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-14 h-14 rounded-2xl bg-white p-0.5 flex items-center justify-center shadow-md border-2 border-orange-500 overflow-hidden shrink-0">
-                <img 
-                  src="/logo.jpg" 
-                  alt="Baro Quran Academy Logo" 
-                  className="w-full h-full object-contain rounded-xl"
-                  referrerPolicy="no-referrer"
-                />
-              </div>
+              <LogoBadge size="md" />
               <div className="flex flex-col">
                 <div className="flex items-center gap-1.5">
                   <span className="font-extrabold text-xl tracking-tight text-white">
                     BARO QURAN
                   </span>
-                  <span className="px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider bg-orange-500 text-white rounded-md">
+                  <span className="px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider bg-emerald-600 text-white rounded-md">
                     ACADEMY
                   </span>
                 </div>
-                <span className="text-xs text-orange-400 font-arabic">
+                <span className="text-xs text-emerald-400 font-arabic">
                   {lang === 'so' ? 'Akadeemiyada Barashada Qur’aanka' : 'Online Quran & Islamic Academy'}
                 </span>
               </div>

@@ -84,10 +84,12 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
 
   // Student list helpers
   const handleAddStudent = () => {
-    setStudents(prev => [
-      ...prev,
-      { id: String(Date.now()), fullName: '', age: '8', gender: 'male' }
-    ]);
+    if (students.length < 5) {
+      setStudents(prev => [
+        ...prev,
+        { id: String(Date.now()), fullName: '', age: '8', gender: 'male' }
+      ]);
+    }
   };
 
   const handleRemoveStudent = (id: string) => {
@@ -100,14 +102,31 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
     setStudents(prev => prev.map(s => s.id === id ? { ...s, [field]: value } : s));
   };
 
+  // Dynamic Multi-Student Pricing with 20% Family Discount for 2+ Students
+  const selectedPlan = PRICING_PLANS.find(p => p.id === selectedPlanId) || PRICING_PLANS[2];
+  const studentCount = students.length;
+  const basePricePerStudent = selectedPlan.priceUSD;
+  const subtotalPrice = basePricePerStudent * studentCount;
+  const hasFamilyDiscount = studentCount >= 2;
+  const discountPercent = hasFamilyDiscount ? 20 : 0;
+  const discountAmount = hasFamilyDiscount ? Math.round(subtotalPrice * 0.2) : 0;
+  const finalTotalPrice = subtotalPrice - discountAmount;
+
   // Day toggle helper
+  const maxAllowedDays = PRICING_PLANS.find(p => p.id === selectedPlanId)?.daysPerWeek || 5;
+
   const handleDayToggle = (day: string) => {
     if (preferredDays.includes(day)) {
       if (preferredDays.length > 1) {
         setPreferredDays(preferredDays.filter(d => d !== day));
       }
     } else {
-      setPreferredDays([...preferredDays, day]);
+      if (preferredDays.length < maxAllowedDays) {
+        setPreferredDays([...preferredDays, day]);
+      } else {
+        // Shift first selected day and append new one to keep exactly maxAllowedDays
+        setPreferredDays([...preferredDays.slice(1), day]);
+      }
     }
   };
 
@@ -168,9 +187,14 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
     const courseTitle = lang === 'so' ? selCourse.titleSo : selCourse.titleEn;
     const planName = lang === 'so' ? selPlan.nameSo : selPlan.nameEn;
 
+    const formattedFee = hasFamilyDiscount
+      ? `$${finalTotalPrice}/month (${studentCount} arday - 20% Family Discount, hore: $${subtotalPrice})`
+      : `$${finalTotalPrice}/month`;
+
     const registrationPayload = {
       enrollmentId: generatedId,
       studentName: students[0]?.fullName?.trim() || 'Student',
+      studentsCount: studentCount,
       students: students.map(s => ({
         fullName: s.fullName.trim(),
         age: s.age.trim(),
@@ -184,7 +208,12 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
       courseTitle,
       planId: selectedPlanId,
       planName,
-      planPriceUSD: selPlan.priceUSD,
+      basePriceUSD: basePricePerStudent,
+      subtotalPriceUSD: subtotalPrice,
+      discountPercent,
+      discountAmountUSD: discountAmount,
+      finalTotalPriceUSD: finalTotalPrice,
+      planPriceUSD: finalTotalPrice,
       teacherPreference,
       preferredDays,
       preferredTimeSlot,
@@ -199,30 +228,37 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
     }
 
     // 2. Direct EmailJS integration (no Vercel environment variables required)
+    const rawStudentEmail = (registrationPayload.email || '').trim();
+    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(rawStudentEmail);
+    const targetEmail = isValidEmail ? rawStudentEmail : 'gaanisaxardiid1@gmail.com';
+
     try {
       const emailParams: Record<string, unknown> = {
-        to_name: registrationPayload.studentName,
-        name: registrationPayload.studentName,
-        student_name: registrationPayload.studentName,
-        to_email: registrationPayload.email,
-        email: registrationPayload.email,
-        reply_to: registrationPayload.email,
+        to_name: registrationPayload.studentName || 'Student',
+        name: registrationPayload.studentName || 'Student',
+        student_name: registrationPayload.studentName || 'Student',
+        to_email: targetEmail,
+        email: targetEmail,
+        reply_to: targetEmail,
         enrollment_id: generatedId,
-        monthly_fee: `$${selPlan.priceUSD}/month`,
+        monthly_fee: formattedFee,
+        total_price: `$${finalTotalPrice}/month`,
+        family_discount: hasFamilyDiscount ? '20% OFF' : 'None',
         course_name: courseTitle,
         course_title: courseTitle,
         schedule_days: planName,
         plan_name: planName,
-        preferred_time: preferredTimeSlot,
-        preferred_days: preferredDays.join(', '),
-        phone: registrationPayload.phone,
-        country: registrationPayload.country,
-        city: registrationPayload.city,
+        preferred_time: preferredTimeSlot || 'Flexible',
+        preferred_days: preferredDays.length > 0 ? preferredDays.join(', ') : 'Flexible',
+        phone: registrationPayload.phone || 'N/A',
+        country: registrationPayload.country || '',
+        city: registrationPayload.city || '',
         teacher_preference: teacherPreference,
-        students_count: students.length
+        students_count: studentCount,
+        all_students_names: students.map((s, i) => `${i + 1}. ${s.fullName} (${s.age} jir)`).join(', ')
       };
 
-      console.log('Sending EmailJS with params:', emailParams);
+      console.log('Sending EmailJS to:', targetEmail);
       const res = await emailjs.send(
         'service_zn1yk0i',
         'template_8tx4gz6',
@@ -259,7 +295,6 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
   };
 
   const selectedCourse = COURSES_DATA.find(c => c.id === selectedCourseId) || COURSES_DATA[0];
-  const selectedPlan = PRICING_PLANS.find(p => p.id === selectedPlanId) || PRICING_PLANS[2];
 
   const getWhatsAppMessage = () => {
     const studentsSummary = students.map((s, idx) => 
@@ -268,7 +303,7 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
 
     const text = `Asc Baro Quran Academy! Waxaan soo buuxiyay foomka isqorista:
 
-📋 XOGTA ARDAYDA (${students.length} Arday):
+📋 XOGTA ARDAYDA (${studentCount} Arday):
 ${studentsSummary}
 
 📱 WhatsApp: ${phone}
@@ -276,7 +311,8 @@ ${studentsSummary}
 🌍 Waddanka & Magaalada: ${country}, ${city}
 
 📚 Koorsada la doortay: ${selectedCourse.titleSo}
-⭐ Xirmada la doortay: ${selectedPlan.nameSo} ($${selectedPlan.priceUSD}/Bishii)
+⭐ Xirmada la doortay: ${selectedPlan.nameSo}
+💰 Qiimaha: $${finalTotalPrice}/Bishii ${hasFamilyDiscount ? `(${studentCount} Arday - 20% Family Discount, Hore: $${subtotalPrice})` : ''}
 👨‍🏫 Macallinka: ${teacherPreference === 'male' ? 'Rag' : teacherPreference === 'female' ? 'Dheddig' : 'Midkoodna'}
 🗓️ Maalmaha: ${preferredDays.join(', ')}
 ⏰ Waqtiga: ${preferredTimeSlot}
@@ -424,6 +460,25 @@ Fadlan nala soo xiriira si aan u bilowno fasalka tijaabada ah ee bilaashka ah. M
                         <span>{lang === 'so' ? 'Kudar Arday Kale (+)' : 'Add More Students (+)'}</span>
                       </button>
                     </div>
+
+                    {/* Family Discount Notice if 2+ students */}
+                    {hasFamilyDiscount && (
+                      <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-between text-xs text-emerald-900 animate-fadeIn">
+                        <div className="flex items-center gap-2">
+                          <span className="px-2 py-0.5 rounded-full bg-emerald-600 text-white font-black text-[10px] uppercase">
+                            -20% OFF
+                          </span>
+                          <span className="font-bold">
+                            {lang === 'so'
+                              ? `Qiimo dhimis qoys: Waxaad heshay 20% dhimis maadaama aad ${studentCount} arday diiwaangelisay!`
+                              : `Family Discount: You unlocked 20% OFF for enrolling ${studentCount} students!`}
+                          </span>
+                        </div>
+                        <span className="font-extrabold text-emerald-700 hidden sm:inline">
+                          {lang === 'so' ? 'Toos loo jaray' : 'Auto applied'}
+                        </span>
+                      </div>
+                    )}
 
                     {students.map((student, idx) => (
                       <div 
@@ -637,28 +692,56 @@ Fadlan nala soo xiriira si aan u bilowno fasalka tijaabada ah ee bilaashka ah. M
                     <label className="block text-xs font-black text-slate-800 uppercase tracking-wider mb-2">
                       {lang === 'so' ? '2. Dooro Xirmada Todobaadlaha ah (Pricing Plan) *' : '2. Select Weekly Schedule Plan *'}
                     </label>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    {/* Live Multi-Student Price Calculator in Step 2 */}
+                    {hasFamilyDiscount && (
+                      <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-100 border-2 border-emerald-300 shadow-xs">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs font-black text-emerald-950 uppercase">
+                                {lang === 'so' ? `Xisaabinta Qiimaha (${studentCount} Arday):` : `Family Price Calculation (${studentCount} Students):`}
+                              </span>
+                              <span className="px-2 py-0.5 rounded-full bg-emerald-600 text-white font-black text-[10px]">
+                                20% OFF
+                              </span>
+                            </div>
+                            <p className="text-[11px] text-emerald-800 mt-0.5">
+                              {lang === 'so'
+                                ? `$${basePricePerStudent} × ${studentCount} arday = $${subtotalPrice} - $${discountAmount} (20% Dhimis)`
+                                : `$${basePricePerStudent} × ${studentCount} students = $${subtotalPrice} - $${discountAmount} (20% Off)`}
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            <span className="text-xs text-slate-400 line-through mr-1.5 font-bold">${subtotalPrice}</span>
+                            <span className="text-2xl font-black text-emerald-700">${finalTotalPrice}</span>
+                            <span className="text-xs text-emerald-800 font-bold block">/bishii</span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                       {PRICING_PLANS.map((plan) => {
                         const isSelected = selectedPlanId === plan.id;
                         return (
                           <div
                             key={plan.id}
                             onClick={() => setSelectedPlanId(plan.id)}
-                            className={`p-3.5 rounded-2xl border-2 cursor-pointer transition-all text-center relative ${
+                            className={`p-3 rounded-2xl border-2 cursor-pointer transition-all text-center relative ${
                               isSelected
                                 ? 'border-orange-500 bg-orange-50/50 shadow-sm'
                                 : 'border-slate-200 bg-white hover:border-slate-300'
                             }`}
                           >
                             {plan.popular && (
-                              <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-orange-500 text-white text-[9px] font-black uppercase">
-                                {lang === 'so' ? 'Caansan' : 'Popular'}
+                              <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-orange-500 text-white text-[8px] font-black uppercase whitespace-nowrap">
+                                {lang === 'so' ? 'Ugu Caansan' : 'Popular'}
                               </div>
                             )}
-                            <div className="text-xs font-black text-[#0B192C]">
+                            <div className="text-[11px] font-black text-[#0B192C] leading-tight">
                               {lang === 'so' ? plan.nameSo : plan.nameEn}
                             </div>
-                            <div className="text-lg font-black text-orange-600 mt-1">
+                            <div className="text-base font-black text-orange-600 mt-1">
                               ${plan.priceUSD} <span className="text-[10px] text-slate-500 font-normal">/mo</span>
                             </div>
                             <div className="text-[10px] text-slate-500 font-semibold mt-0.5">
@@ -695,9 +778,21 @@ Fadlan nala soo xiriira si aan u bilowno fasalka tijaabada ah ee bilaashka ah. M
                   
                   {/* Preferred Days */}
                   <div>
-                    <label className="block text-xs font-black text-slate-800 uppercase tracking-wider mb-2">
-                      {lang === 'so' ? '1. Dooro Maalmaha aad Jeceshahay (Choice Days) *' : '1. Select Preferred Days of Week *'}
-                    </label>
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="block text-xs font-black text-slate-800 uppercase tracking-wider">
+                        {lang === 'so' ? '1. Dooro Maalmaha aad Jeceshahay (Choice Days) *' : '1. Select Preferred Days of Week *'}
+                      </label>
+                      <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-orange-100 text-orange-800 border border-orange-200">
+                        {lang === 'so'
+                          ? `La doortay: ${preferredDays.length} / ${maxAllowedDays} cisho`
+                          : `Selected: ${preferredDays.length} / ${maxAllowedDays} days`}
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-slate-500 font-medium mb-2">
+                      {lang === 'so'
+                        ? `Waxaad 7-da maalmood ee todobaadka ka dooran kartaa ilaa ${maxAllowedDays} cisho.`
+                        : `You can select up to ${maxAllowedDays} days out of the 7 days of the week.`}
+                    </p>
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                       {daysList.map((day) => {
                         const isSelected = preferredDays.includes(day.key);
@@ -706,7 +801,7 @@ Fadlan nala soo xiriira si aan u bilowno fasalka tijaabada ah ee bilaashka ah. M
                             type="button"
                             key={day.key}
                             onClick={() => handleDayToggle(day.key)}
-                            className={`p-3 rounded-xl text-xs font-bold border-2 transition-all flex items-center justify-between ${
+                            className={`p-3 rounded-xl text-xs font-bold border-2 transition-all flex items-center justify-between cursor-pointer ${
                               isSelected
                                 ? 'bg-orange-500 text-white border-orange-500 shadow-xs'
                                 : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'
@@ -812,7 +907,25 @@ Fadlan nala soo xiriira si aan u bilowno fasalka tijaabada ah ee bilaashka ah. M
                       </div>
                       <div>
                         <span className="font-bold">{lang === 'so' ? 'Xirmada:' : 'Plan:'}</span>{' '}
-                        {lang === 'so' ? selectedPlan.nameSo : selectedPlan.nameEn} (${selectedPlan.priceUSD}/Bishii)
+                        {lang === 'so' ? selectedPlan.nameSo : selectedPlan.nameEn}
+                      </div>
+                      <div>
+                        <span className="font-bold">{lang === 'so' ? 'Tirada Ardayda:' : 'Enrolled Students:'}</span>{' '}
+                        {studentCount} {lang === 'so' ? 'arday' : 'student(s)'}
+                      </div>
+                      <div className="pt-1 border-t border-slate-200 mt-1 flex items-center justify-between">
+                        <span className="font-bold">{lang === 'so' ? 'Wadarta Qiimaha Bishii:' : 'Total Monthly Tuition:'}</span>
+                        <div className="text-right">
+                          {hasFamilyDiscount && (
+                            <span className="text-[11px] text-slate-400 line-through mr-1 font-bold">${subtotalPrice}</span>
+                          )}
+                          <span className="font-black text-orange-600 text-sm">${finalTotalPrice}/mo</span>
+                          {hasFamilyDiscount && (
+                            <span className="ml-1.5 px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-bold">
+                              20% OFF
+                            </span>
+                          )}
+                        </div>
                       </div>
                       <div>
                         <span className="font-bold">{lang === 'so' ? 'Macallinka:' : 'Teacher:'}</span>{' '}
