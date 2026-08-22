@@ -19,6 +19,7 @@ import {
   Edit2
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import emailjs from '@emailjs/browser';
 import { Language } from '../types';
 import { COURSES_DATA, PRICING_PLANS } from '../data/academyData';
 import { saveRegistrationToFirestore } from '../firebase';
@@ -197,23 +198,51 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
       console.error('Failed to save registration to Firestore:', err);
     }
 
-    // 2. Trigger automatic Resend Email Confirmation & Admin notification via API
+    // 2. Direct EmailJS integration (no Vercel environment variables required)
     try {
-      const response = await fetch('/api/enroll', {
+      const emailParams: Record<string, unknown> = {
+        to_name: registrationPayload.studentName,
+        name: registrationPayload.studentName,
+        student_name: registrationPayload.studentName,
+        to_email: registrationPayload.email,
+        email: registrationPayload.email,
+        reply_to: registrationPayload.email,
+        enrollment_id: generatedId,
+        monthly_fee: `$${selPlan.priceUSD}/month`,
+        course_name: courseTitle,
+        course_title: courseTitle,
+        schedule_days: planName,
+        plan_name: planName,
+        preferred_time: preferredTimeSlot,
+        preferred_days: preferredDays.join(', '),
+        phone: registrationPayload.phone,
+        country: registrationPayload.country,
+        city: registrationPayload.city,
+        teacher_preference: teacherPreference,
+        students_count: students.length
+      };
+
+      console.log('Sending EmailJS with params:', emailParams);
+      const res = await emailjs.send(
+        'service_zn1yk0i',
+        'template_8tx4gz6',
+        emailParams,
+        'dqlTY31s8OKcyf-gi'
+      );
+      console.log('✅ EmailJS success response:', res);
+    } catch (emailjsErr: any) {
+      console.error('❌ EmailJS error during send:', emailjsErr);
+    }
+
+    // 3. Optional fallback API call
+    try {
+      fetch('/api/enroll', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(registrationPayload)
-      });
-      if (!response.ok) {
-        console.warn('Email API returned non-200 status:', response.status);
-      } else {
-        const result = await response.json();
-        console.log('Enrollment email API success:', result);
-      }
-    } catch (emailErr) {
-      console.error('Failed to call email enrollment API route:', emailErr);
+      }).catch(() => {});
+    } catch {
+      // ignore
     }
 
     setIsSubmitting(false);
