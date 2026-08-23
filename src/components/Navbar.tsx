@@ -7,7 +7,9 @@ import {
   Calendar,
   Sparkles,
   MessageCircle,
-  Home
+  Home,
+  User,
+  GraduationCap
 } from 'lucide-react';
 import { Language, AppPage } from '../types';
 import { LogoBadge } from './LogoBadge';
@@ -18,6 +20,7 @@ interface NavbarProps {
   currentPage: AppPage;
   onNavigate: (page: AppPage) => void;
   onOpenRegister: (courseId?: string, planId?: string) => void;
+  onOpenLogin: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ 
@@ -25,7 +28,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   setLang, 
   currentPage, 
   onNavigate, 
-  onOpenRegister 
+  onOpenRegister,
+  onOpenLogin
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -108,12 +112,12 @@ export const Navbar: React.FC<NavbarProps> = ({
             </nav>
 
             {/* Action Buttons & Single Language Toggle */}
-            <div className="hidden sm:flex items-center gap-3">
+            <div className="hidden sm:flex items-center gap-2.5">
               {/* Single Interactive Language Toggle Button */}
               <button
                 id="lang-toggle-btn"
                 onClick={() => setLang(lang === 'so' ? 'en' : 'so')}
-                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#0B192C] border border-slate-300 text-xs font-black transition-all shadow-xs cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#0B192C] border border-slate-300 text-xs font-black transition-all shadow-xs cursor-pointer"
                 title={lang === 'so' ? 'Guji si aad ugu beddesho English' : 'Click to switch to Somali'}
                 aria-label="Switch Language"
               >
@@ -121,28 +125,24 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <span>{lang === 'so' ? '🇸🇴 Soomaali' : '🇬🇧 English'}</span>
               </button>
 
-              <a
-                href="#pricing"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleNavClick('pricing');
-                }}
-                className={`px-4 py-2 text-sm font-bold rounded-xl transition-colors cursor-pointer inline-block ${
-                  currentPage === 'pricing'
-                    ? 'bg-orange-500 text-white'
-                    : 'text-[#0B192C] bg-slate-50 hover:bg-slate-100 border border-slate-200'
-                }`}
+              {/* Student Login Button */}
+              <button
+                id="btn-nav-student-login"
+                onClick={onOpenLogin}
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#0B192C] hover:bg-slate-800 text-white text-xs font-black transition-all shadow-xs border border-slate-700 cursor-pointer"
+                title={lang === 'so' ? 'Gal Dashboard-ka Ardayda' : 'Access Student Dashboard'}
               >
-                {lang === 'so' ? 'Xirmooyinka' : 'Pricing'}
-              </a>
+                <GraduationCap className="w-4 h-4 text-orange-400" />
+                <span>{lang === 'so' ? 'Soo Gal (Login)' : 'Student Portal'}</span>
+              </button>
 
               <button
                 id="btn-nav-register"
                 onClick={() => onOpenRegister()}
-                className="px-5 py-2.5 text-sm font-extrabold text-white bg-orange-500 hover:bg-orange-600 active:bg-orange-700 rounded-xl shadow-md shadow-orange-500/30 hover:shadow-lg transition-all flex items-center gap-2 cursor-pointer"
+                className="px-4 py-2 text-xs sm:text-sm font-extrabold text-white bg-orange-500 hover:bg-orange-600 active:bg-orange-700 rounded-xl shadow-md shadow-orange-500/30 hover:shadow-lg transition-all flex items-center gap-1.5 cursor-pointer"
               >
                 <Calendar className="w-4 h-4" />
-                <span>{lang === 'so' ? 'Fasalka Tijaabada' : 'Book Free Trial'}</span>
+                <span>{lang === 'so' ? 'Fasalka Tijaabada' : 'Free Trial'}</span>
               </button>
             </div>
 
@@ -209,6 +209,17 @@ export const Navbar: React.FC<NavbarProps> = ({
             </nav>
 
             <div className="pt-3 flex flex-col gap-2">
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onOpenLogin();
+                }}
+                className="w-full py-3 px-4 text-center text-sm font-extrabold text-white bg-[#0B192C] hover:bg-slate-800 rounded-xl shadow-md flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <GraduationCap className="w-4 h-4 text-orange-400" />
+                <span>{lang === 'so' ? 'Soo Gal Dashboard-ka Ardayga' : 'Login to Student Dashboard'}</span>
+              </button>
+
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);

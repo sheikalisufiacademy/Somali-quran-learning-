@@ -1,5 +1,39 @@
 export type Language = 'so' | 'en';
-export type AppPage = 'home' | 'why-us' | 'courses' | 'pricing' | 'reviews' | 'faq' | 'contact' | 'privacy' | 'terms';
+export type AppPage = 'home' | 'why-us' | 'courses' | 'pricing' | 'reviews' | 'faq' | 'contact' | 'privacy' | 'terms' | 'student-dashboard';
+
+export interface LessonLog {
+  id: string;
+  date: string;
+  topic: string; // e.g. "Suuratul Mulk (Aayadaha 1-15)"
+  pageOrSurah: string; // e.g. "Juz 29, Bogga 562"
+  grade: string; // "Mumtaaz (10/10)", "Aad u Fiican", "Fiican"
+  status: 'completed' | 'revision' | 'in-progress';
+  teacherNotes: string;
+  studentNotes?: string;
+}
+
+export interface StudentProfile {
+  studentId: string;
+  fullName: string;
+  age: string;
+  gender: 'male' | 'female';
+  email: string;
+  phone: string;
+  enrolledCourseId: string;
+  enrolledCourseTitleSo: string;
+  enrolledCourseTitleEn: string;
+  assignedTeacherNameSo: string;
+  assignedTeacherNameEn: string;
+  assignedTeacherPhoto: string;
+  classTime: string;
+  scheduleDays: string[];
+  meetingLink: string;
+  tomorrowsLesson: string;
+  tomorrowPrepNotes: string;
+  attendanceRate: number;
+  totalCompletedLessons: number;
+  juzMemorized: number;
+}
 
 export interface Course {
   id: string;

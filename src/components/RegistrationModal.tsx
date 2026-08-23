@@ -20,8 +20,20 @@ import {
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import emailjs from '@emailjs/browser';
+
+// Initialize EmailJS public key
+try {
+  emailjs.init({
+    publicKey: 'f93_o11R0Vq_7c8d7',
+  });
+} catch (e) {
+  console.warn('EmailJS init warning:', e);
+}
+
 import { Language } from '../types';
 import { COURSES_DATA, PRICING_PLANS } from '../data/academyData';
+import { CountrySelector } from './CountrySelector';
+import { COUNTRIES, CountryInfo } from '../data/countries';
 import { saveRegistrationToFirestore } from '../firebase';
 
 interface StudentInfo {
@@ -52,10 +64,11 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
   const [students, setStudents] = useState<StudentInfo[]>([
     { id: '1', fullName: '', age: '8', gender: 'male' }
   ]);
+  const [selectedCountry, setSelectedCountry] = useState<CountryInfo | null>(() => {
+    return COUNTRIES.find(c => c.code === 'GB') || COUNTRIES[1];
+  });
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
-  const [country, setCountry] = useState('United Kingdom');
-  const [city, setCity] = useState('');
 
   // Step 2: Choice Course & Plan
   const [selectedCourseId, setSelectedCourseId] = useState<string>(preselectedCourseId || 'qaacida-nuuraaniya');
@@ -63,20 +76,52 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
   const [teacherPreference, setTeacherPreference] = useState<'male' | 'female' | 'any'>('any');
 
   // Step 3: Choice Days & Time
-  const [preferredDays, setPreferredDays] = useState<string[]>(['Monday', 'Wednesday', 'Friday']);
+  // Default days matched directly with the selected plan daysPerWeek
+  const [preferredDays, setPreferredDays] = useState<string[]>(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']);
   const [preferredTimeSlot, setPreferredTimeSlot] = useState<string>('Fiidkii / Evening (5:00 PM - 9:00 PM)');
+
+  // Validation errors & touched state
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   // Submission
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [enrollmentId, setEnrollmentId] = useState<string>('');
 
+  // When plan changes, automatically synchronize preferredDays length to strictly match required days count
+  const allWeeklyDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+  const handleSelectPlan = (newPlanId: string) => {
+    setSelectedPlanId(newPlanId);
+    const targetPlan = PRICING_PLANS.find(p => p.id === newPlanId) || PRICING_PLANS[3];
+    const targetDaysCount = targetPlan.daysPerWeek;
+
+    // Adjust preferred days to exactly match targetDaysCount
+    setPreferredDays(prev => {
+      let filtered = prev.filter(d => allWeeklyDays.includes(d));
+      if (filtered.length === targetDaysCount) {
+        return filtered;
+      }
+      if (filtered.length > targetDaysCount) {
+        return filtered.slice(0, targetDaysCount);
+      }
+      // If we have fewer, pick from standard days
+      const needed = targetDaysCount - filtered.length;
+      const additional = allWeeklyDays.filter(d => !filtered.includes(d)).slice(0, needed);
+      return [...filtered, ...additional];
+    });
+
+    if (errors.days) {
+      setErrors(prev => ({ ...prev, days: '' }));
+    }
+  };
+
   useEffect(() => {
     if (preselectedCourseId) {
       setSelectedCourseId(preselectedCourseId);
     }
     if (preselectedPlanId) {
-      setSelectedPlanId(preselectedPlanId);
+      handleSelectPlan(preselectedPlanId);
     }
   }, [preselectedCourseId, preselectedPlanId]);
 
@@ -95,15 +140,30 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
   const handleRemoveStudent = (id: string) => {
     if (students.length > 1) {
       setStudents(prev => prev.filter(s => s.id !== id));
+      setErrors(prev => {
+        const copy = { ...prev };
+        delete copy[`student_${id}`];
+        return copy;
+      });
     }
   };
 
   const handleUpdateStudent = (id: string, field: keyof StudentInfo, value: string) => {
     setStudents(prev => prev.map(s => s.id === id ? { ...s, [field]: value } : s));
+    if (field === 'fullName' && value.trim().length >= 2) {
+      setErrors(prev => ({ ...prev, [`student_${id}`]: '' }));
+    }
+  };
+
+  // Country selection handler: auto updates dial code prefix into phone
+  const handleSelectCountry = (country: CountryInfo) => {
+    setSelectedCountry(country);
+    setErrors(prev => ({ ...prev, country: '', phone: '' }));
   };
 
   // Dynamic Multi-Student Pricing with 20% Family Discount for 2+ Students
-  const selectedPlan = PRICING_PLANS.find(p => p.id === selectedPlanId) || PRICING_PLANS[2];
+  const selectedPlan = PRICING_PLANS.find(p => p.id === selectedPlanId) || PRICING_PLANS[3];
+  const requiredDaysCount = selectedPlan.daysPerWeek;
   const studentCount = students.length;
   const basePricePerStudent = selectedPlan.priceUSD;
   const subtotalPrice = basePricePerStudent * studentCount;
@@ -112,21 +172,23 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
   const discountAmount = hasFamilyDiscount ? Math.round(subtotalPrice * 0.2) : 0;
   const finalTotalPrice = subtotalPrice - discountAmount;
 
-  // Day toggle helper
-  const maxAllowedDays = PRICING_PLANS.find(p => p.id === selectedPlanId)?.daysPerWeek || 5;
-
+  // Day toggle helper: enforces exact count required by plan
   const handleDayToggle = (day: string) => {
     if (preferredDays.includes(day)) {
+      // If clicking an already selected day, remove it only if more than 1
       if (preferredDays.length > 1) {
         setPreferredDays(preferredDays.filter(d => d !== day));
       }
     } else {
-      if (preferredDays.length < maxAllowedDays) {
+      if (preferredDays.length < requiredDaysCount) {
         setPreferredDays([...preferredDays, day]);
       } else {
-        // Shift first selected day and append new one to keep exactly maxAllowedDays
+        // Shift first selected day and append new one to maintain exact requiredDaysCount
         setPreferredDays([...preferredDays.slice(1), day]);
       }
+    }
+    if (errors.days) {
+      setErrors(prev => ({ ...prev, days: '' }));
     }
   };
 
@@ -140,30 +202,74 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
     { key: 'Sunday', labelSo: 'Axad (Sun)', labelEn: 'Sunday' }
   ];
 
-  // Validation per step
+  // Comprehensive Form Validation
   const validateStep1 = () => {
-    const validStudents = students.every(s => s.fullName.trim().length > 0);
-    if (!validStudents) {
-      alert(lang === 'so' ? 'Fadlan qor magaca ardayga/ardayda oo dhammaystiran.' : 'Please enter the full name for all students.');
-      return false;
+    const newErrors: Record<string, string> = {};
+
+    // 1. Validate all students full names
+    students.forEach((s, idx) => {
+      if (!s.fullName || s.fullName.trim().length < 2) {
+        newErrors[`student_${s.id}`] = lang === 'so' 
+          ? `Fadlan qor magaca oo dhammaystiran ee ardayga #${idx + 1}.` 
+          : `Please enter full name for student #${idx + 1}.`;
+      }
+    });
+
+    // 2. Validate Country selection
+    if (!selectedCountry) {
+      newErrors.country = lang === 'so'
+        ? 'Fadlan dooro waddankaaga ka hor inta aadan qorin lambarka.'
+        : 'Please select your country before entering your phone number.';
     }
+
+    // 3. Validate WhatsApp Phone
+    const cleanPhone = phone.replace(/[^0-9]/g, '');
     if (!phone.trim()) {
-      alert(lang === 'so' ? 'Fadlan gali lambarkaaga WhatsApp oo wata country code.' : 'Please enter your WhatsApp phone number with country code.');
-      return false;
+      newErrors.phone = lang === 'so'
+        ? 'Fadlan gali lambarkaaga WhatsApp.'
+        : 'Please enter your WhatsApp contact number.';
+    } else if (cleanPhone.length < 5) {
+      newErrors.phone = lang === 'so'
+        ? 'Lambarka WhatsApp waa inuu ahaadaa mid buuxa oo sax ah.'
+        : 'Please enter a valid complete WhatsApp number.';
     }
+
+    // 4. Validate Email format rigorously
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!email.trim()) {
-      alert(lang === 'so' ? 'Fadlan gali email-kaaga.' : 'Please enter your email address.');
-      return false;
+      newErrors.email = lang === 'so'
+        ? 'Fadlan gali email-kaaga si laguu soo gaarsiiyo xaqiijinta.'
+        : 'Please enter your email address.';
+    } else if (!emailRegex.test(email.trim())) {
+      newErrors.email = lang === 'so'
+        ? 'Iimaylku ma saxna! Fadlan qor email sax ah (Tusaale: magac@domain.com).'
+        : 'Invalid email format! Please enter a valid email (e.g. name@domain.com).';
     }
-    if (!city.trim()) {
-      alert(lang === 'so' ? 'Fadlan qor magaalada aad ku nooshahay.' : 'Please enter your city.');
-      return false;
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const validateStep3 = () => {
+    const newErrors: Record<string, string> = {};
+    if (preferredDays.length !== requiredDaysCount) {
+      newErrors.days = lang === 'so'
+        ? `Xirmada aad dooratay ($${selectedPlan.priceUSD}) waxay u baahan tahay inaad doorato sax ahaan ${requiredDaysCount} maalmood.`
+        : `The plan you selected ($${selectedPlan.priceUSD}) requires you to choose exactly ${requiredDaysCount} days.`;
     }
-    return true;
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleNext = () => {
-    if (currentStep === 1 && !validateStep1()) return;
+    if (currentStep === 1) {
+      const isValid = validateStep1();
+      if (!isValid) return;
+    }
+    if (currentStep === 3) {
+      const isValid = validateStep3();
+      if (!isValid) return;
+    }
     if (currentStep < 4) {
       setCurrentStep(prev => prev + 1);
     }
@@ -183,13 +289,16 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
     setEnrollmentId(generatedId);
 
     const selCourse = COURSES_DATA.find(c => c.id === selectedCourseId) || COURSES_DATA[0];
-    const selPlan = PRICING_PLANS.find(p => p.id === selectedPlanId) || PRICING_PLANS[2];
+    const selPlan = PRICING_PLANS.find(p => p.id === selectedPlanId) || PRICING_PLANS[3];
     const courseTitle = lang === 'so' ? selCourse.titleSo : selCourse.titleEn;
     const planName = lang === 'so' ? selPlan.nameSo : selPlan.nameEn;
 
     const formattedFee = hasFamilyDiscount
       ? `$${finalTotalPrice}/month (${studentCount} arday - 20% Family Discount, hore: $${subtotalPrice})`
       : `$${finalTotalPrice}/month`;
+
+    const fullPhone = selectedCountry ? `${selectedCountry.dialCode} ${phone.trim()}` : phone.trim();
+    const countryName = selectedCountry ? (lang === 'so' && selectedCountry.nameSo ? selectedCountry.nameSo : selectedCountry.name) : 'N/A';
 
     const registrationPayload = {
       enrollmentId: generatedId,
@@ -200,10 +309,10 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
         age: s.age.trim(),
         gender: s.gender
       })),
-      phone: phone.trim(),
+      phone: fullPhone,
       email: email.trim(),
-      country: country.trim(),
-      city: city.trim(),
+      country: countryName,
+      countryCode: selectedCountry?.code || '',
       courseId: selectedCourseId,
       courseTitle,
       planId: selectedPlanId,
@@ -227,7 +336,7 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
       console.error('Failed to save registration to Firestore:', err);
     }
 
-    // 2. Direct EmailJS integration (no Vercel environment variables required)
+    // 2. Direct EmailJS integration to send confirmation email to the student
     const rawStudentEmail = (registrationPayload.email || '').trim();
     const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(rawStudentEmail);
     const targetEmail = isValidEmail ? rawStudentEmail : 'gaanisaxardiid1@gmail.com';
@@ -237,149 +346,142 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
         to_name: registrationPayload.studentName || 'Student',
         name: registrationPayload.studentName || 'Student',
         student_name: registrationPayload.studentName || 'Student',
+        user_name: registrationPayload.studentName || 'Student',
+        from_name: 'Baro Quran Academy',
         to_email: targetEmail,
         email: targetEmail,
+        user_email: targetEmail,
+        student_email: targetEmail,
+        recipient_email: targetEmail,
+        recipient: targetEmail,
         reply_to: targetEmail,
         enrollment_id: generatedId,
+        reference_id: generatedId,
+        order_id: generatedId,
+        id: generatedId,
         monthly_fee: formattedFee,
         total_price: `$${finalTotalPrice}/month`,
+        plan_price: `$${finalTotalPrice}`,
         family_discount: hasFamilyDiscount ? '20% OFF' : 'None',
         course_name: courseTitle,
         course_title: courseTitle,
+        course: courseTitle,
         schedule_days: planName,
         plan_name: planName,
+        plan: planName,
         preferred_time: preferredTimeSlot || 'Flexible',
+        time_slot: preferredTimeSlot || 'Flexible',
+        time: preferredTimeSlot || 'Flexible',
         preferred_days: preferredDays.length > 0 ? preferredDays.join(', ') : 'Flexible',
-        phone: registrationPayload.phone || 'N/A',
-        country: registrationPayload.country || '',
-        city: registrationPayload.city || '',
+        days: preferredDays.length > 0 ? preferredDays.join(', ') : 'Flexible',
+        phone: fullPhone,
+        student_phone: fullPhone,
+        country: countryName,
         teacher_preference: teacherPreference,
         students_count: studentCount,
-        all_students_names: students.map((s, i) => `${i + 1}. ${s.fullName} (${s.age} jir)`).join(', ')
+        all_students_names: students.map((s, i) => `${i + 1}. ${s.fullName} (${s.age} jir)`).join(', '),
+        message: `Asc ${registrationPayload.studentName},\n\nWaad ku guulaysatay diwaangalintaada Baro Quran Academy.\n\n• Number-ka Diiwaanka: ${generatedId}\n• Ardayga/Ardayda: ${students.map(s => s.fullName).join(', ')}\n• Koorsada: ${courseTitle}\n• Xirmada: ${planName}\n• Maalmaha: ${preferredDays.join(', ')}\n• Waqtiga: ${preferredTimeSlot}\n• Waddanka: ${countryName}\n\nFariin xaqiijin ah iyo faahfaahinta fasalka tijaabada ah (Free Trial) waxaan kuugu soo diray Gmail-kaaga.\n\nMahadsanid,\nBaro Quran Academy`
       };
 
-      console.log('Sending EmailJS to:', targetEmail);
-      const res = await emailjs.send(
-        'service_zn1yk0i',
-        'template_8tx4gz6',
+      await emailjs.send(
+        'service_a96q05r',
+        'template_67531ee',
         emailParams,
-        'dqlTY31s8OKcyf-gi'
+        'f93_o11R0Vq_7c8d7'
       );
-      console.log('✅ EmailJS success response:', res);
-    } catch (emailjsErr: any) {
-      console.error('❌ EmailJS error during send:', emailjsErr);
+    } catch (err) {
+      console.warn('EmailJS notification attempt:', err);
     }
 
-    // 3. Optional fallback API call
-    try {
-      fetch('/api/enroll', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(registrationPayload)
-      }).catch(() => {});
-    } catch {
-      // ignore
-    }
+    // Immediately reset form inputs so sensitive data does not linger
+    setStudents([{ id: '1', fullName: '', age: '8', gender: 'male' }]);
+    setPhone('');
+    setEmail('');
+    setErrors({});
 
     setIsSubmitting(false);
     setIsSubmitted(true);
+
     try {
       confetti({
-        particleCount: 90,
-        spread: 70,
+        particleCount: 120,
+        spread: 80,
         origin: { y: 0.6 }
       });
-    } catch (err) {
-      console.warn('Confetti error:', err);
+    } catch (e) {
+      // Ignore if confetti not supported
     }
+  };
+
+  const handleClose = () => {
+    setIsSubmitted(false);
+    setIsSubmitting(false);
+    setCurrentStep(1);
+    setStudents([{ id: '1', fullName: '', age: '8', gender: 'male' }]);
+    setPhone('');
+    setEmail('');
+    setErrors({});
+    onClose();
   };
 
   const selectedCourse = COURSES_DATA.find(c => c.id === selectedCourseId) || COURSES_DATA[0];
 
-  const getWhatsAppMessage = () => {
-    const studentsSummary = students.map((s, idx) => 
-      `  Ardayga ${idx + 1}: ${s.fullName} (${s.age} jir, ${s.gender === 'male' ? 'Wiil' : 'Gabadh'})`
-    ).join('\n');
-
-    const text = `Asc Baro Quran Academy! Waxaan soo buuxiyay foomka isqorista:
-
-📋 XOGTA ARDAYDA (${studentCount} Arday):
-${studentsSummary}
-
-📱 WhatsApp: ${phone}
-📧 Email: ${email}
-🌍 Waddanka & Magaalada: ${country}, ${city}
-
-📚 Koorsada la doortay: ${selectedCourse.titleSo}
-⭐ Xirmada la doortay: ${selectedPlan.nameSo}
-💰 Qiimaha: $${finalTotalPrice}/Bishii ${hasFamilyDiscount ? `(${studentCount} Arday - 20% Family Discount, Hore: $${subtotalPrice})` : ''}
-👨‍🏫 Macallinka: ${teacherPreference === 'male' ? 'Rag' : teacherPreference === 'female' ? 'Dheddig' : 'Midkoodna'}
-🗓️ Maalmaha: ${preferredDays.join(', ')}
-⏰ Waqtiga: ${preferredTimeSlot}
-
-Fadlan nala soo xiriira si aan u bilowno fasalka tijaabada ah ee bilaashka ah. Mahadsanidiin!`;
-
-    return encodeURIComponent(text);
-  };
-
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/75 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6 animate-fadeIn">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 animate-fadeIn">
       <div 
-        id="registration-modal-content"
-        className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-6"
+        className="relative bg-white rounded-3xl max-w-2xl w-full shadow-2xl overflow-hidden my-6 border border-slate-100 flex flex-col max-h-[92vh]"
+        onClick={(e) => e.stopPropagation()}
       >
         
         {/* Modal Header */}
-        <div className="bg-[#0B192C] text-white p-5 sm:p-7 relative border-b-2 border-orange-500/30">
-          <div className="flex items-center justify-between">
-            <div className="space-y-1">
-              <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-white/10 border border-white/20 text-[11px] font-black text-orange-400 uppercase tracking-wider">
-                <Sparkles className="w-3 h-3 text-orange-400" />
-                <span>{lang === 'so' ? 'Fasalka Tijaabada oo Bilaash ah' : '100% Free Trial Booking'}</span>
-              </div>
-              <h3 className="text-xl sm:text-2xl font-black text-white">
-                {lang === 'so' ? 'Isqorista & Diiwaangelinta Ardayga' : 'Student Registration & Booking'}
-              </h3>
-            </div>
+        <div className="bg-[#0B192C] text-white p-5 sm:p-6 relative shrink-0">
+          <button
+            onClick={handleClose}
+            className="absolute right-4 top-4 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer"
+            aria-label="Close"
+          >
+            <X className="w-5 h-5" />
+          </button>
 
-            <button
-              onClick={onClose}
-              className="w-10 h-10 rounded-2xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors shrink-0"
-              aria-label="Close modal"
-            >
-              <X className="w-5 h-5" />
-            </button>
+          <div className="flex items-center gap-3">
+            <div className="w-11 h-11 rounded-2xl bg-orange-500 text-white flex items-center justify-center font-black text-xl shadow-lg shadow-orange-500/40">
+              📖
+            </div>
+            <div>
+              <h3 className="text-lg sm:text-xl font-black tracking-tight">
+                {lang === 'so' ? 'Diiwaangelinta Fasalka Tijaabada (Free Trial)' : 'Book Your Free 1-on-1 Trial Class'}
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-300 font-medium mt-0.5">
+                {lang === 'so' 
+                  ? 'Qadhadh bilaash ah • Macallimiin Ijaazo leh • 100% Ballanqaad' 
+                  : 'Free Trial • Certified Tutors • 100% Satisfaction Guarantee'}
+              </p>
+            </div>
           </div>
 
-          {/* Stepper Indicator Bar */}
+          {/* Stepper Progress Bar */}
           {!isSubmitted && (
-            <div className="mt-5 grid grid-cols-4 gap-2 pt-3 border-t border-white/10 text-xs">
+            <div className="mt-5 grid grid-cols-4 gap-2">
               {[
-                { step: 1, labelSo: '1. Personal Info', labelEn: '1. Personal Info' },
-                { step: 2, labelSo: '2. Choice Course', labelEn: '2. Course & Plan' },
-                { step: 3, labelSo: '3. Days & Time', labelEn: '3. Days & Time' },
-                { step: 4, labelSo: '4. Review & Submit', labelEn: '4. Review & Submit' }
+                { step: 1, labelSo: 'Ardayda & Xiriirka', labelEn: 'Student & Contact' },
+                { step: 2, labelSo: 'Koorsada & Xirmada', labelEn: 'Course & Plan' },
+                { step: 3, labelSo: 'Maalmaha & Waqtiga', labelEn: 'Days & Time' },
+                { step: 4, labelSo: 'Xaqiijinta', labelEn: 'Review & Submit' }
               ].map((s) => {
                 const isActive = currentStep === s.step;
-                const isPassed = currentStep > s.step;
-
+                const isCompleted = currentStep > s.step;
                 return (
-                  <div 
-                    key={s.step} 
-                    className={`flex flex-col items-center text-center transition-all ${
-                      isActive ? 'text-orange-400 font-black' : isPassed ? 'text-emerald-400 font-bold' : 'text-slate-400 font-medium'
-                    }`}
-                  >
-                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs mb-1 font-black ${
+                  <div key={s.step} className="flex flex-col gap-1">
+                    <div className={`h-1.5 rounded-full transition-all ${
                       isActive 
-                        ? 'bg-orange-500 text-white shadow-md shadow-orange-500/50' 
-                        : isPassed 
-                        ? 'bg-emerald-500 text-white' 
-                        : 'bg-white/10 text-slate-400'
+                        ? 'bg-orange-500 shadow-sm shadow-orange-500/50' 
+                        : isCompleted 
+                        ? 'bg-emerald-400' 
+                        : 'bg-white/20'
+                    }`} />
+                    <span className={`text-[10px] font-bold truncate text-center ${
+                      isActive ? 'text-orange-400' : isCompleted ? 'text-emerald-300' : 'text-slate-400'
                     }`}>
-                      {isPassed ? <Check className="w-3.5 h-3.5" /> : s.step}
-                    </div>
-                    <span className="hidden sm:inline text-[11px] leading-tight">
                       {lang === 'so' ? s.labelSo : s.labelEn}
                     </span>
                   </div>
@@ -390,71 +492,53 @@ Fadlan nala soo xiriira si aan u bilowno fasalka tijaabada ah ee bilaashka ah. M
         </div>
 
         {/* Modal Body */}
-        <div className="p-5 sm:p-7 max-h-[72vh] overflow-y-auto">
+        <div className="p-5 sm:p-7 overflow-y-auto flex-1">
           
+          {/* SUCCESS SCREEN */}
           {isSubmitted ? (
-            /* Success State */
-            <div className="text-center py-6 space-y-5 animate-fadeIn">
-              <div className="w-16 h-16 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center mx-auto shadow-inner">
-                <CheckCircle2 className="w-10 h-10" />
+            <div className="text-center py-8 px-4 sm:px-6 space-y-6 animate-fadeIn">
+              <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-sm">
+                <CheckCircle2 className="w-12 h-12" />
               </div>
 
-              <div className="space-y-2">
-                <h4 className="text-2xl font-black text-[#0B192C]">
-                  {lang === 'so' ? 'Hambalyo! Diiwaangelintu Way Guuleysatay' : 'Alhamdulillah! Registration Successful'}
-                </h4>
-                
-                {enrollmentId && (
-                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-blue-50 border border-blue-200 text-blue-800 text-xs font-bold font-mono my-1">
-                    <span>Enrollment ID:</span>
-                    <span className="font-black text-blue-900">{enrollmentId}</span>
-                  </div>
-                )}
-
-                <p className="text-sm text-slate-600 max-w-md mx-auto leading-relaxed font-medium">
-                  {lang === 'so'
-                    ? `Waad ku mahadsan tahay. Farriin xaqiijin ah ayaa loo diray iimaylkaaga (${email || 'iimaylka la geliyay'}). Kooxdayada maamulka ayaa 15 daqiiqo gudahood kula soo xiriiraysa WhatsApp (${phone}) si laguugu xiro macallinka fasalka tijaabada ah.`
-                    : `Thank you. A confirmation email has been dispatched to ${email || 'your email'}. Our academic coordinator will contact you shortly on WhatsApp (${phone}) to schedule your free trial session.`}
-                </p>
+              <div className="max-w-md mx-auto">
+                <div className="p-6 rounded-3xl bg-emerald-50 border-2 border-emerald-300 text-emerald-950 shadow-xs">
+                  <p className="text-base sm:text-lg font-black leading-relaxed">
+                    {lang === 'so' 
+                      ? 'Waad ku guulaysatay diwaangalintaada, fariin email ah ayaan kusoo dirnay Gmail-kaaga fadlan check garee.' 
+                      : 'Waad ku guulaysatay diwaangalintaada, fariin email ah ayaan kusoo dirnay Gmail-kaaga fadlan check garee.'}
+                  </p>
+                </div>
               </div>
 
-              {/* Direct WhatsApp Instant Opener */}
-              <div className="pt-3 flex flex-col sm:flex-row items-center justify-center gap-3">
-                <a
-                  href={`https://wa.me/251777796444?text=${getWhatsAppMessage()}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full sm:w-auto px-6 py-3.5 bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white font-black rounded-xl shadow-lg shadow-orange-500/30 flex items-center justify-center gap-2 text-sm"
-                >
-                  <MessageCircle className="w-4 h-4" />
-                  <span>{lang === 'so' ? 'Toos ugu Dir Xogtaada WhatsApp (+251 77 779 6444)' : 'Send Registration to WhatsApp'}</span>
-                </a>
-
+              <div className="pt-2 flex items-center justify-center">
                 <button
-                  onClick={onClose}
-                  className="w-full sm:w-auto px-6 py-3.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-xl text-sm"
+                  type="button"
+                  onClick={handleClose}
+                  className="px-8 py-3 bg-[#0B192C] hover:bg-slate-800 text-white font-black text-sm rounded-2xl shadow-md transition-all cursor-pointer"
                 >
-                  {lang === 'so' ? 'Xir Daaqadda' : 'Close'}
+                  {lang === 'so' ? 'Haye / Waa Yahay' : 'Close / OK'}
                 </button>
               </div>
             </div>
           ) : (
             <div>
-              
-              {/* STEP 1: Personal Information */}
+
+              {/* STEP 1: Personal & Contact Information */}
               {currentStep === 1 && (
                 <div className="space-y-5 animate-fadeIn">
                   
-                  {/* Students list */}
-                  <div className="space-y-3">
+                  {/* Student list */}
+                  <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <label className="text-xs font-black text-slate-900 uppercase tracking-wider">
-                        {lang === 'so' ? '1. Magaca Saddexan ee Ardayga (1 ama Ka badan):' : '1. Student Full Name (1 or More):'}
+                      <label className="block text-xs font-black text-slate-800 uppercase tracking-wider">
+                        {lang === 'so' ? 'Xogta Ardayga / Ardayda (Students Info) *' : 'Student(s) Details *'}
                       </label>
                       <button
                         type="button"
                         onClick={handleAddStudent}
-                        className="inline-flex items-center gap-1 text-xs font-bold text-orange-600 hover:text-orange-700 bg-orange-50 px-2.5 py-1 rounded-lg border border-orange-200 transition-colors"
+                        disabled={students.length >= 5}
+                        className="text-xs font-bold text-orange-600 hover:text-orange-700 flex items-center gap-1 cursor-pointer disabled:opacity-40"
                       >
                         <Plus className="w-3.5 h-3.5" />
                         <span>{lang === 'so' ? 'Kudar Arday Kale (+)' : 'Add More Students (+)'}</span>
@@ -493,7 +577,7 @@ Fadlan nala soo xiriira si aan u bilowno fasalka tijaabada ah ee bilaashka ah. M
                             <button
                               type="button"
                               onClick={() => handleRemoveStudent(student.id)}
-                              className="text-red-500 hover:text-red-700 text-xs font-bold flex items-center gap-1"
+                              className="text-red-500 hover:text-red-700 text-xs font-bold flex items-center gap-1 cursor-pointer"
                             >
                               <Trash2 className="w-3.5 h-3.5" />
                               <span>{lang === 'so' ? 'Tirtir' : 'Remove'}</span>
@@ -508,16 +592,26 @@ Fadlan nala soo xiriira si aan u bilowno fasalka tijaabada ah ee bilaashka ah. M
                               {lang === 'so' ? 'Magaca Saddexan *' : 'Full Name *'}
                             </label>
                             <div className="relative">
-                              <User className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                              <User className={`w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 ${errors[`student_${student.id}`] ? 'text-red-500' : 'text-slate-400'}`} />
                               <input
                                 type="text"
                                 required
                                 placeholder={lang === 'so' ? 'Tusaale: Maxamed Cali Cabdi' : 'e.g. Mohamed Ali Abdi'}
                                 value={student.fullName}
                                 onChange={(e) => handleUpdateStudent(student.id, 'fullName', e.target.value)}
-                                className="w-full pl-9 pr-3 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white font-medium"
+                                className={`w-full pl-9 pr-3 py-2 text-sm rounded-xl border focus:outline-none focus:ring-2 font-medium ${
+                                  errors[`student_${student.id}`]
+                                    ? 'border-red-500 focus:ring-red-400 bg-red-50/20'
+                                    : 'border-slate-300 focus:ring-orange-500 bg-white'
+                                }`}
                               />
                             </div>
+                            {errors[`student_${student.id}`] && (
+                              <p className="text-[11px] font-bold text-red-600 mt-1 flex items-center gap-1">
+                                <span>⚠️</span>
+                                <span>{errors[`student_${student.id}`]}</span>
+                              </p>
+                            )}
                           </div>
 
                           {/* Age */}
@@ -548,8 +642,8 @@ Fadlan nala soo xiriira si aan u bilowno fasalka tijaabada ah ee bilaashka ah. M
                               onChange={(e) => handleUpdateStudent(student.id, 'gender', e.target.value as any)}
                               className="w-full px-3 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white font-medium"
                             >
-                              <option value="male">{lang === 'so' ? 'Wiil (Male)' : 'Male'}</option>
-                              <option value="female">{lang === 'so' ? 'Gabadh (Female)' : 'Female'}</option>
+                              <option value="male">{lang === 'so' ? 'Lab (Boy)' : 'Male'}</option>
+                              <option value="female">{lang === 'so' ? 'Dheddig (Girl)' : 'Female'}</option>
                             </select>
                           </div>
                         </div>
@@ -557,90 +651,140 @@ Fadlan nala soo xiriira si aan u bilowno fasalka tijaabada ah ee bilaashka ah. M
                     ))}
                   </div>
 
-                  {/* Contact details */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {/* WhatsApp with Country Code */}
-                    <div>
-                      <label className="block text-xs font-black text-slate-800 uppercase tracking-wider mb-1.5">
-                        {lang === 'so' ? 'WhatsApp Number (With Country Code) *' : 'WhatsApp Number (With Country Code) *'}
-                      </label>
-                      <div className="relative">
-                        <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                        <input
-                          type="tel"
-                          required
-                          placeholder="+44 7123 456789 / +1 612..."
-                          value={phone}
-                          onChange={(e) => setPhone(e.target.value)}
-                          className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-slate-50 font-medium"
-                        />
+                  {/* Global Validation Banner on Error */}
+                  {Object.keys(errors).length > 0 && (
+                    <div className="p-3.5 rounded-2xl bg-red-50 border-2 border-red-200 text-xs text-red-800 font-bold flex items-center gap-2.5 animate-shake">
+                      <span className="text-base">⚠️</span>
+                      <div>
+                        <div className="font-black text-red-900">
+                          {lang === 'so' ? 'Fadlan sax khaladaadka hoose si aad u sii gudubto:' : 'Please correct the following errors before continuing:'}
+                        </div>
+                        <div className="text-[11px] text-red-700 mt-0.5">
+                          {lang === 'so' ? 'Dooro waddanka, hubi lambarka WhatsApp, email-ka saxda ah iyo magacyada ardayda.' : 'Select country, enter valid WhatsApp phone, valid email address and all student names.'}
+                        </div>
                       </div>
                     </div>
+                  )}
 
-                    {/* Email */}
+                  {/* Country Selection & WhatsApp Phone Input */}
+                  <div className="space-y-4 pt-2">
+                    
+                    {/* Country Selector (Searchable, All Countries) */}
                     <div>
-                      <label className="block text-xs font-black text-slate-800 uppercase tracking-wider mb-1.5">
-                        {lang === 'so' ? 'Email Address *' : 'Email Address *'}
-                      </label>
-                      <div className="relative">
-                        <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                        <input
-                          type="email"
-                          required
-                          placeholder="waalid@gmail.com"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-slate-50 font-medium"
-                        />
+                      <div className="flex items-center justify-between mb-1.5">
+                        <label className="block text-xs font-black text-slate-800 uppercase tracking-wider">
+                          {lang === 'so' ? '1. Dooro Waddanka aad Joogto (Country) *' : '1. Select Your Country *'}
+                        </label>
+                        <span className="text-[11px] text-slate-500 font-medium">
+                          {lang === 'so' ? 'Wadamada aduunka oo dhan' : 'All countries worldwide'}
+                        </span>
                       </div>
-                    </div>
-                  </div>
-
-                  {/* Country & City */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-xs font-black text-slate-800 uppercase tracking-wider mb-1.5">
-                        {lang === 'so' ? 'Country (Waddanka) *' : 'Country *'}
-                      </label>
-                      <div className="relative">
-                        <Globe className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                        <select
-                          value={country}
-                          onChange={(e) => setCountry(e.target.value)}
-                          className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-slate-50 font-medium"
-                        >
-                          <option value="United Kingdom">United Kingdom (UK)</option>
-                          <option value="United States">United States (USA)</option>
-                          <option value="Canada">Canada</option>
-                          <option value="Sweden">Sweden (Iswiidhan)</option>
-                          <option value="Norway">Norway</option>
-                          <option value="Germany">Germany</option>
-                          <option value="Finland">Finland</option>
-                          <option value="Netherlands">Netherlands</option>
-                          <option value="Somalia">Somalia (Soomaaliya)</option>
-                          <option value="Ethiopia">Ethiopia</option>
-                          <option value="Kenya">Kenya</option>
-                          <option value="United Arab Emirates">United Arab Emirates (Dubai)</option>
-                          <option value="Saudi Arabia">Saudi Arabia</option>
-                          <option value="Australia">Australia</option>
-                          <option value="Other">Waddan Kale / Other</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-black text-slate-800 uppercase tracking-wider mb-1.5">
-                        {lang === 'so' ? 'City (Magaalada) *' : 'City (Write City) *'}
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        placeholder={lang === 'so' ? 'Tusaale: London, Minneapolis, Toronto...' : 'e.g. London, Minneapolis, Toronto...'}
-                        value={city}
-                        onChange={(e) => setCity(e.target.value)}
-                        className="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-slate-50 font-medium"
+                      
+                      <CountrySelector
+                        selectedCountry={selectedCountry}
+                        onSelectCountry={handleSelectCountry}
+                        lang={lang}
+                        hasError={!!errors.country}
                       />
+                      {errors.country && (
+                        <p className="text-[11px] font-bold text-red-600 mt-1 flex items-center gap-1">
+                          <span>⚠️</span>
+                          <span>{errors.country}</span>
+                        </p>
+                      )}
                     </div>
+
+                    {/* Contact details: WhatsApp with auto-filled country dial code + Email */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      
+                      {/* WhatsApp Phone Number */}
+                      <div>
+                        <label className="block text-xs font-black text-slate-800 uppercase tracking-wider mb-1.5">
+                          {lang === 'so' ? '2. Lambarka WhatsApp *' : '2. WhatsApp Number *'}
+                        </label>
+                        
+                        <div className="relative flex rounded-xl border border-slate-300 focus-within:ring-2 focus-within:ring-orange-500 focus-within:border-transparent bg-white overflow-hidden">
+                          {/* Country Dial Code Badge */}
+                          <div className="px-3.5 py-2.5 bg-slate-100 border-r border-slate-200 flex items-center gap-1.5 shrink-0 select-none">
+                            <span className="text-base">{selectedCountry?.flag || '🌐'}</span>
+                            <span className="text-xs font-black text-[#0B192C]">
+                              {selectedCountry ? selectedCountry.dialCode : '---'}
+                            </span>
+                          </div>
+
+                          <input
+                            type="tel"
+                            required
+                            disabled={!selectedCountry}
+                            placeholder={selectedCountry ? (lang === 'so' ? 'Qor lambarkaaga kaliya...' : 'Enter your phone number...') : (lang === 'so' ? 'Marka hore waddanka dooro...' : 'Select country first...')}
+                            value={phone}
+                            onChange={(e) => {
+                              // Only allow numbers and spaces
+                              const clean = e.target.value.replace(/[^0-9\s-]/g, '');
+                              setPhone(clean);
+                              if (errors.phone && clean.trim().length >= 5) {
+                                setErrors(prev => ({ ...prev, phone: '' }));
+                              }
+                            }}
+                            className={`w-full px-3.5 py-2.5 text-sm font-medium focus:outline-none ${
+                              !selectedCountry ? 'bg-slate-100 cursor-not-allowed text-slate-400' : 'bg-white'
+                            } ${errors.phone ? 'bg-red-50/20' : ''}`}
+                          />
+                        </div>
+
+                        {!selectedCountry ? (
+                          <p className="text-[11px] font-bold text-amber-700 mt-1 flex items-center gap-1">
+                            <span>ℹ️</span>
+                            <span>{lang === 'so' ? 'Fadlan kor ka dooro waddanka si aad number-ka u qorto.' : 'Please select your country above first.'}</span>
+                          </p>
+                        ) : errors.phone ? (
+                          <p className="text-[11px] font-bold text-red-600 mt-1 flex items-center gap-1">
+                            <span>⚠️</span>
+                            <span>{errors.phone}</span>
+                          </p>
+                        ) : (
+                          <p className="text-[10px] text-slate-500 font-medium mt-1">
+                            {lang === 'so' ? `Koodhka (${selectedCountry.dialCode}) toos ayaa loogu darayaa lambarkaaga.` : `Dial code (${selectedCountry.dialCode}) is automatically applied.`}
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Email */}
+                      <div>
+                        <label className="block text-xs font-black text-slate-800 uppercase tracking-wider mb-1.5">
+                          {lang === 'so' ? '3. Email Address *' : '3. Email Address *'}
+                        </label>
+                        <div className="relative">
+                          <Mail className={`w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 ${errors.email ? 'text-red-500' : 'text-slate-400'}`} />
+                          <input
+                            type="email"
+                            required
+                            placeholder="waalid@gmail.com"
+                            value={email}
+                            onChange={(e) => {
+                              setEmail(e.target.value);
+                              const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+                              if (errors.email && emailRegex.test(e.target.value.trim())) {
+                                setErrors(prev => ({ ...prev, email: '' }));
+                              }
+                            }}
+                            className={`w-full pl-10 pr-4 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 font-medium ${
+                              errors.email 
+                                ? 'border-red-500 focus:ring-red-400 bg-red-50/20' 
+                                : 'border-slate-300 focus:ring-orange-500 bg-white'
+                            }`}
+                          />
+                        </div>
+                        {errors.email && (
+                          <p className="text-[11px] font-bold text-red-600 mt-1 flex items-center gap-1">
+                            <span>⚠️</span>
+                            <span>{errors.email}</span>
+                          </p>
+                        )}
+                      </div>
+
+                    </div>
+
                   </div>
 
                 </div>
@@ -689,12 +833,18 @@ Fadlan nala soo xiriira si aan u bilowno fasalka tijaabada ah ee bilaashka ah. M
 
                   {/* Select Pricing Plan */}
                   <div>
-                    <label className="block text-xs font-black text-slate-800 uppercase tracking-wider mb-2">
-                      {lang === 'so' ? '2. Dooro Xirmada Todobaadlaha ah (Pricing Plan) *' : '2. Select Weekly Schedule Plan *'}
-                    </label>
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="block text-xs font-black text-slate-800 uppercase tracking-wider">
+                        {lang === 'so' ? '2. Dooro Xirmada Todobaadlaha ah (Pricing Plan) *' : '2. Select Weekly Schedule Plan *'}
+                      </label>
+                      <span className="text-[11px] text-orange-600 font-bold bg-orange-50 px-2 py-0.5 rounded-md border border-orange-200">
+                        {lang === 'so' ? `Xirmadu waxay go'aamisaa tirada maalmaha` : `Plan determines exact days per week`}
+                      </span>
+                    </div>
+
                     {/* Live Multi-Student Price Calculator in Step 2 */}
                     {hasFamilyDiscount && (
-                      <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-100 border-2 border-emerald-300 shadow-xs">
+                      <div className="p-4 mb-3 rounded-2xl bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-100 border-2 border-emerald-300 shadow-xs">
                         <div className="flex items-center justify-between">
                           <div>
                             <div className="flex items-center gap-2">
@@ -726,10 +876,10 @@ Fadlan nala soo xiriira si aan u bilowno fasalka tijaabada ah ee bilaashka ah. M
                         return (
                           <div
                             key={plan.id}
-                            onClick={() => setSelectedPlanId(plan.id)}
-                            className={`p-3 rounded-2xl border-2 cursor-pointer transition-all text-center relative ${
+                            onClick={() => handleSelectPlan(plan.id)}
+                            className={`p-3.5 rounded-2xl border-2 cursor-pointer transition-all text-center relative ${
                               isSelected
-                                ? 'border-orange-500 bg-orange-50/50 shadow-sm'
+                                ? 'border-orange-500 bg-orange-50/70 ring-2 ring-orange-500/20 shadow-md scale-[1.02]'
                                 : 'border-slate-200 bg-white hover:border-slate-300'
                             }`}
                           >
@@ -744,7 +894,12 @@ Fadlan nala soo xiriira si aan u bilowno fasalka tijaabada ah ee bilaashka ah. M
                             <div className="text-base font-black text-orange-600 mt-1">
                               ${plan.priceUSD} <span className="text-[10px] text-slate-500 font-normal">/mo</span>
                             </div>
-                            <div className="text-[10px] text-slate-500 font-semibold mt-0.5">
+                            <div className="mt-1">
+                              <span className="inline-block px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-black text-[10px]">
+                                {plan.daysPerWeek} {lang === 'so' ? 'cisho / isbuuc' : 'days / week'}
+                              </span>
+                            </div>
+                            <div className="text-[10px] text-slate-500 font-semibold mt-1">
                               {lang === 'so' ? plan.durationPerClassSo : plan.durationPerClassEn}
                             </div>
                           </div>
@@ -772,28 +927,56 @@ Fadlan nala soo xiriira si aan u bilowno fasalka tijaabada ah ee bilaashka ah. M
                 </div>
               )}
 
-              {/* STEP 3: Choice Days & Time */}
+              {/* STEP 3: Choice Days & Time (Strictly linked with selected plan) */}
               {currentStep === 3 && (
                 <div className="space-y-5 animate-fadeIn">
                   
-                  {/* Preferred Days */}
+                  {/* Selected Plan Days Requirement Badge */}
+                  <div className="p-4 rounded-2xl bg-gradient-to-r from-orange-50 to-amber-50 border-2 border-orange-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-black text-orange-950 uppercase">
+                          {lang === 'so' ? 'Xirmada Aad Dooratay:' : 'Your Selected Plan:'}
+                        </span>
+                        <span className="px-2.5 py-0.5 rounded-full bg-orange-500 text-white font-black text-xs">
+                          {lang === 'so' ? selectedPlan.nameSo : selectedPlan.nameEn} (${selectedPlan.priceUSD}/mo)
+                        </span>
+                      </div>
+                      <p className="text-xs text-orange-900 mt-1 font-semibold">
+                        {lang === 'so'
+                          ? `Maadaama aad dooratay xirmada $${selectedPlan.priceUSD}, waa inaad doorataa sax ahaan ${requiredDaysCount} maalmood.`
+                          : `Because you chose the $${selectedPlan.priceUSD} plan, you must select exactly ${requiredDaysCount} days.`}
+                      </p>
+                    </div>
+
+                    <div className="text-right shrink-0">
+                      <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-xl text-xs font-black ${
+                        preferredDays.length === requiredDaysCount 
+                          ? 'bg-emerald-600 text-white shadow-xs' 
+                          : 'bg-amber-500 text-white'
+                      }`}>
+                        {preferredDays.length === requiredDaysCount ? <Check className="w-3.5 h-3.5" /> : null}
+                        <span>
+                          {lang === 'so'
+                            ? `${preferredDays.length} / ${requiredDaysCount} cisho la doortay`
+                            : `${preferredDays.length} / ${requiredDaysCount} days selected`}
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Preferred Days Grid */}
                   <div>
                     <div className="flex items-center justify-between mb-2">
                       <label className="block text-xs font-black text-slate-800 uppercase tracking-wider">
-                        {lang === 'so' ? '1. Dooro Maalmaha aad Jeceshahay (Choice Days) *' : '1. Select Preferred Days of Week *'}
+                        {lang === 'so' ? `Dooro ${requiredDaysCount}-da Maalmood ee Fasalkaaga *` : `Select Your ${requiredDaysCount} Class Days *`}
                       </label>
-                      <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-orange-100 text-orange-800 border border-orange-200">
-                        {lang === 'so'
-                          ? `La doortay: ${preferredDays.length} / ${maxAllowedDays} cisho`
-                          : `Selected: ${preferredDays.length} / ${maxAllowedDays} days`}
+                      <span className="text-[11px] text-slate-500 font-medium">
+                        {lang === 'so' ? 'Guji maalmaha aad doonayso' : 'Click the days you prefer'}
                       </span>
                     </div>
-                    <p className="text-[11px] text-slate-500 font-medium mb-2">
-                      {lang === 'so'
-                        ? `Waxaad 7-da maalmood ee todobaadka ka dooran kartaa ilaa ${maxAllowedDays} cisho.`
-                        : `You can select up to ${maxAllowedDays} days out of the 7 days of the week.`}
-                    </p>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                       {daysList.map((day) => {
                         const isSelected = preferredDays.includes(day.key);
                         return (
@@ -801,24 +984,37 @@ Fadlan nala soo xiriira si aan u bilowno fasalka tijaabada ah ee bilaashka ah. M
                             type="button"
                             key={day.key}
                             onClick={() => handleDayToggle(day.key)}
-                            className={`p-3 rounded-xl text-xs font-bold border-2 transition-all flex items-center justify-between cursor-pointer ${
+                            className={`p-3.5 rounded-xl text-xs font-black border-2 transition-all flex items-center justify-between cursor-pointer ${
                               isSelected
-                                ? 'bg-orange-500 text-white border-orange-500 shadow-xs'
-                                : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'
+                                ? 'bg-orange-500 text-white border-orange-500 shadow-md scale-[1.02]'
+                                : 'bg-white text-slate-700 border-slate-300 hover:border-slate-400 hover:bg-slate-50'
                             }`}
                           >
                             <span>{lang === 'so' ? day.labelSo : day.labelEn}</span>
-                            {isSelected && <Check className="w-3.5 h-3.5 shrink-0" />}
+                            {isSelected ? (
+                              <span className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center">
+                                <Check className="w-3.5 h-3.5 text-white" />
+                              </span>
+                            ) : (
+                              <span className="w-4 h-4 rounded-full border border-slate-300" />
+                            )}
                           </button>
                         );
                       })}
                     </div>
+
+                    {errors.days && (
+                      <p className="text-xs font-bold text-red-600 mt-2 flex items-center gap-1">
+                        <span>⚠️</span>
+                        <span>{errors.days}</span>
+                      </p>
+                    )}
                   </div>
 
                   {/* Preferred Time Slot */}
                   <div>
                     <label className="block text-xs font-black text-slate-800 uppercase tracking-wider mb-1.5">
-                      {lang === 'so' ? '2. Dooro Saacadaha kugu habboon (Choice Time Slot) *' : '2. Select Preferred Daily Time Slot *'}
+                      {lang === 'so' ? 'Dooro Saacadaha kugu habboon (Choice Time Slot) *' : 'Select Preferred Daily Time Slot *'}
                     </label>
                     <div className="relative">
                       <Clock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -860,7 +1056,7 @@ Fadlan nala soo xiriira si aan u bilowno fasalka tijaabada ah ee bilaashka ah. M
                       <button
                         type="button"
                         onClick={() => setCurrentStep(1)}
-                        className="text-xs font-bold text-orange-600 hover:text-orange-700 flex items-center gap-1"
+                        className="text-xs font-bold text-orange-600 hover:text-orange-700 flex items-center gap-1 cursor-pointer"
                       >
                         <Edit2 className="w-3 h-3" />
                         <span>{lang === 'so' ? 'Edit' : 'Edit'}</span>
@@ -873,13 +1069,15 @@ Fadlan nala soo xiriira si aan u bilowno fasalka tijaabada ah ee bilaashka ah. M
                         {students.map(s => `${s.fullName} (${s.age} jir, ${s.gender === 'male' ? 'Wiil' : 'Gabadh'})`).join(' • ')}
                       </div>
                       <div>
-                        <span className="font-bold">WhatsApp:</span> {phone}
+                        <span className="font-bold">{lang === 'so' ? 'Waddanka:' : 'Country:'}</span>{' '}
+                        {selectedCountry ? `${selectedCountry.flag} ${lang === 'so' && selectedCountry.nameSo ? selectedCountry.nameSo : selectedCountry.name}` : 'N/A'}
+                      </div>
+                      <div>
+                        <span className="font-bold">WhatsApp:</span>{' '}
+                        {selectedCountry ? `${selectedCountry.dialCode} ${phone}` : phone}
                       </div>
                       <div>
                         <span className="font-bold">Email:</span> {email}
-                      </div>
-                      <div>
-                        <span className="font-bold">{lang === 'so' ? 'Goobta:' : 'Location:'}</span> {country}, {city}
                       </div>
                     </div>
                   </div>
@@ -893,7 +1091,7 @@ Fadlan nala soo xiriira si aan u bilowno fasalka tijaabada ah ee bilaashka ah. M
                       <button
                         type="button"
                         onClick={() => setCurrentStep(2)}
-                        className="text-xs font-bold text-orange-600 hover:text-orange-700 flex items-center gap-1"
+                        className="text-xs font-bold text-orange-600 hover:text-orange-700 flex items-center gap-1 cursor-pointer"
                       >
                         <Edit2 className="w-3 h-3" />
                         <span>{lang === 'so' ? 'Edit' : 'Edit'}</span>
@@ -907,7 +1105,7 @@ Fadlan nala soo xiriira si aan u bilowno fasalka tijaabada ah ee bilaashka ah. M
                       </div>
                       <div>
                         <span className="font-bold">{lang === 'so' ? 'Xirmada:' : 'Plan:'}</span>{' '}
-                        {lang === 'so' ? selectedPlan.nameSo : selectedPlan.nameEn}
+                        {lang === 'so' ? selectedPlan.nameSo : selectedPlan.nameEn} (${selectedPlan.priceUSD}/mo)
                       </div>
                       <div>
                         <span className="font-bold">{lang === 'so' ? 'Tirada Ardayda:' : 'Enrolled Students:'}</span>{' '}
@@ -943,7 +1141,7 @@ Fadlan nala soo xiriira si aan u bilowno fasalka tijaabada ah ee bilaashka ah. M
                       <button
                         type="button"
                         onClick={() => setCurrentStep(3)}
-                        className="text-xs font-bold text-orange-600 hover:text-orange-700 flex items-center gap-1"
+                        className="text-xs font-bold text-orange-600 hover:text-orange-700 flex items-center gap-1 cursor-pointer"
                       >
                         <Edit2 className="w-3 h-3" />
                         <span>{lang === 'so' ? 'Edit' : 'Edit'}</span>
@@ -952,8 +1150,10 @@ Fadlan nala soo xiriira si aan u bilowno fasalka tijaabada ah ee bilaashka ah. M
 
                     <div className="text-xs space-y-1.5 text-slate-700">
                       <div>
-                        <span className="font-bold">{lang === 'so' ? 'Maalmaha:' : 'Days:'}</span>{' '}
-                        {preferredDays.join(', ')}
+                        <span className="font-bold">{lang === 'so' ? 'Maalmaha La Doortay:' : 'Selected Days:'}</span>{' '}
+                        <span className="font-bold text-orange-700">
+                          {preferredDays.join(', ')} ({preferredDays.length} {lang === 'so' ? 'maalmood' : 'days'})
+                        </span>
                       </div>
                       <div>
                         <span className="font-bold">{lang === 'so' ? 'Waqtiga:' : 'Time Slot:'}</span>{' '}
@@ -971,7 +1171,7 @@ Fadlan nala soo xiriira si aan u bilowno fasalka tijaabada ah ee bilaashka ah. M
                   <button
                     type="button"
                     onClick={handleBack}
-                    className="px-5 py-3 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-100 font-bold text-sm flex items-center gap-1.5 transition-colors"
+                    className="px-5 py-3 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-100 font-bold text-sm flex items-center gap-1.5 transition-colors cursor-pointer"
                   >
                     <ArrowLeft className="w-4 h-4" />
                     <span>{lang === 'so' ? 'Dib u Noqo' : 'Back'}</span>
@@ -984,7 +1184,7 @@ Fadlan nala soo xiriira si aan u bilowno fasalka tijaabada ah ee bilaashka ah. M
                   <button
                     type="button"
                     onClick={handleNext}
-                    className="px-7 py-3 bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white font-black rounded-xl shadow-md shadow-orange-500/30 text-sm flex items-center gap-2 transition-all"
+                    className="px-7 py-3 bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white font-black rounded-xl shadow-md shadow-orange-500/30 text-sm flex items-center gap-2 transition-all cursor-pointer"
                   >
                     <span>{lang === 'so' ? 'Talaabada Xigta' : 'Next Step'}</span>
                     <ArrowRight className="w-4 h-4" />
@@ -994,7 +1194,7 @@ Fadlan nala soo xiriira si aan u bilowno fasalka tijaabada ah ee bilaashka ah. M
                     type="button"
                     onClick={handleSubmit}
                     disabled={isSubmitting}
-                    className="px-8 py-3.5 bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white font-black rounded-xl shadow-lg shadow-orange-500/30 text-sm flex items-center gap-2 transition-all disabled:opacity-50"
+                    className="px-8 py-3.5 bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white font-black rounded-xl shadow-lg shadow-orange-500/30 text-sm flex items-center gap-2 transition-all disabled:opacity-50 cursor-pointer"
                   >
                     <span>
                       {isSubmitting 

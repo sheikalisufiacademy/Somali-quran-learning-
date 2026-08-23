@@ -45,7 +45,16 @@ export interface StudentRegistrationData {
   phone: string;
   email: string;
   country: string;
-  city: string;
+  city?: string;
+  countryCode?: string;
+  enrollmentId?: string;
+  studentName?: string;
+  studentsCount?: number;
+  basePriceUSD?: number;
+  subtotalPriceUSD?: number;
+  discountPercent?: number;
+  discountAmountUSD?: number;
+  finalTotalPriceUSD?: number;
   courseId: string;
   courseTitle: string;
   planId: string;
