@@ -25,13 +25,13 @@ export const PolicyTermsPages: React.FC<PolicyTermsProps> = ({ lang, type, onNav
   const isPrivacy = type === 'privacy';
 
   return (
-    <div className="py-12 bg-slate-50 min-h-[85vh]">
+    <div className="py-12 bg-slate-50 dark:bg-[#070E18] min-h-[85vh] transition-colors">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Back Button */}
         <button
           onClick={onNavigateHome}
-          className="inline-flex items-center gap-2 px-4 py-2 mb-8 rounded-xl bg-white border border-slate-200 text-[#0B192C] text-xs font-black hover:bg-orange-50 hover:border-orange-300 hover:text-orange-600 transition-all shadow-xs cursor-pointer"
+          className="inline-flex items-center gap-2 px-4 py-2 mb-8 rounded-xl bg-white dark:bg-[#0E1A2C] border border-slate-200 dark:border-slate-700 text-[#0B192C] dark:text-white text-xs font-black hover:bg-orange-50 dark:hover:bg-slate-800 hover:border-orange-300 hover:text-orange-600 transition-all shadow-xs cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4 text-orange-500" />
           <span>{lang === 'so' ? 'Ku noqo Bogga Hore (Home)' : 'Back to Home'}</span>
@@ -41,17 +41,17 @@ export const PolicyTermsPages: React.FC<PolicyTermsProps> = ({ lang, type, onNav
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-3xl p-8 sm:p-12 border-2 border-slate-200 shadow-xl space-y-8"
+          className="bg-white dark:bg-[#0E1A2C] rounded-3xl p-8 sm:p-12 border-2 border-slate-200 dark:border-slate-800 shadow-xl space-y-8"
         >
           
           {/* Header */}
-          <div className="border-b border-slate-100 pb-6 space-y-3">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#0B192C] text-white text-xs font-black uppercase tracking-wider">
+          <div className="border-b border-slate-100 dark:border-slate-800 pb-6 space-y-3">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#0B192C] dark:bg-slate-800 text-white text-xs font-black uppercase tracking-wider">
               {isPrivacy ? <Lock className="w-3.5 h-3.5 text-orange-400" /> : <FileText className="w-3.5 h-3.5 text-orange-400" />}
               <span>{isPrivacy ? (lang === 'so' ? 'Ilaalinta Xogta & Qarsoodiga' : 'Privacy & Security') : (lang === 'so' ? 'Shuruudaha Adeegga' : 'Terms of Service')}</span>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#0B192C]">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#0B192C] dark:text-white">
               {isPrivacy ? (
                 lang === 'so' ? 'Shuruucda Ilaalinta Xogta & Qarsoodiga (Privacy Policy)' : 'Privacy Policy & Student Data Protection'
               ) : (
@@ -59,17 +59,17 @@ export const PolicyTermsPages: React.FC<PolicyTermsProps> = ({ lang, type, onNav
               )}
             </h1>
 
-            <p className="text-xs sm:text-sm text-slate-500 font-semibold">
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-semibold">
               {lang === 'so' ? 'La cusbooneysiiyay: Febraayo 2026 | Baro Quran Academy' : 'Last Updated: February 2026 | Baro Quran Academy'}
             </p>
           </div>
 
           {/* Content Body */}
           {isPrivacy ? (
-            <div className="space-y-6 text-sm text-slate-700 leading-relaxed font-medium">
+            <div className="space-y-6 text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
               
               <section className="space-y-2">
-                <h3 className="text-base font-black text-[#0B192C] flex items-center gap-2">
+                <h3 className="text-base font-black text-[#0B192C] dark:text-white flex items-center gap-2">
                   <ShieldCheck className="w-5 h-5 text-orange-500" />
                   <span>{lang === 'so' ? '1. Ballanqaadka Ilaalinta Xogta Carruurta & Qoyska' : '1. Commitment to Family & Child Data Privacy'}</span>
                 </h3>
@@ -81,7 +81,7 @@ export const PolicyTermsPages: React.FC<PolicyTermsProps> = ({ lang, type, onNav
               </section>
 
               <section className="space-y-2">
-                <h3 className="text-base font-black text-[#0B192C] flex items-center gap-2">
+                <h3 className="text-base font-black text-[#0B192C] dark:text-white flex items-center gap-2">
                   <Lock className="w-5 h-5 text-orange-500" />
                   <span>{lang === 'so' ? '2. Ammaanka Fasallada Tooska ah (Live Zoom / Teams / Meet)' : '2. Secure & Monitored Virtual Classrooms'}</span>
                 </h3>
@@ -93,7 +93,7 @@ export const PolicyTermsPages: React.FC<PolicyTermsProps> = ({ lang, type, onNav
               </section>
 
               <section className="space-y-2">
-                <h3 className="text-base font-black text-[#0B192C] flex items-center gap-2">
+                <h3 className="text-base font-black text-[#0B192C] dark:text-white flex items-center gap-2">
                   <UserCheck className="w-5 h-5 text-orange-500" />
                   <span>{lang === 'so' ? '3. Xogta Lama Wadaago Cid Kale' : '3. Zero Third-Party Data Sharing'}</span>
                 </h3>
@@ -105,7 +105,7 @@ export const PolicyTermsPages: React.FC<PolicyTermsProps> = ({ lang, type, onNav
               </section>
 
               <section className="space-y-2">
-                <h3 className="text-base font-black text-[#0B192C] flex items-center gap-2">
+                <h3 className="text-base font-black text-[#0B192C] dark:text-white flex items-center gap-2">
                   <Mail className="w-5 h-5 text-orange-500" />
                   <span>{lang === 'so' ? '4. Xuquuqdaada & La Xiriirka' : '4. Your Rights & Privacy Inquiries'}</span>
                 </h3>
@@ -118,10 +118,10 @@ export const PolicyTermsPages: React.FC<PolicyTermsProps> = ({ lang, type, onNav
 
             </div>
           ) : (
-            <div className="space-y-6 text-sm text-slate-700 leading-relaxed font-medium">
+            <div className="space-y-6 text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
               
               <section className="space-y-2">
-                <h3 className="text-base font-black text-[#0B192C] flex items-center gap-2">
+                <h3 className="text-base font-black text-[#0B192C] dark:text-white flex items-center gap-2">
                   <CheckCircle2 className="w-5 h-5 text-orange-500" />
                   <span>{lang === 'so' ? '1. Fasalka Tijaabada ah (Free Trial Policy)' : '1. Free Evaluation Class Policy'}</span>
                 </h3>
@@ -133,7 +133,7 @@ export const PolicyTermsPages: React.FC<PolicyTermsProps> = ({ lang, type, onNav
               </section>
 
               <section className="space-y-2">
-                <h3 className="text-base font-black text-[#0B192C] flex items-center gap-2">
+                <h3 className="text-base font-black text-[#0B192C] dark:text-white flex items-center gap-2">
                   <Clock className="w-5 h-5 text-orange-500" />
                   <span>{lang === 'so' ? '2. Ka-qaybgalka Fasallada & Beddelka Saacadaha (Rescheduling)' : '2. Attendance & Class Rescheduling'}</span>
                 </h3>
@@ -145,7 +145,7 @@ export const PolicyTermsPages: React.FC<PolicyTermsProps> = ({ lang, type, onNav
               </section>
 
               <section className="space-y-2">
-                <h3 className="text-base font-black text-[#0B192C] flex items-center gap-2">
+                <h3 className="text-base font-black text-[#0B192C] dark:text-white flex items-center gap-2">
                   <ShieldCheck className="w-5 h-5 text-orange-500" />
                   <span>{lang === 'so' ? '3. Lacag-bixinta & Joojinta (Subscription & Cancellation)' : '3. Monthly Subscriptions & Easy Cancellation'}</span>
                 </h3>
@@ -157,7 +157,7 @@ export const PolicyTermsPages: React.FC<PolicyTermsProps> = ({ lang, type, onNav
               </section>
 
               <section className="space-y-2">
-                <h3 className="text-base font-black text-[#0B192C] flex items-center gap-2">
+                <h3 className="text-base font-black text-[#0B192C] dark:text-white flex items-center gap-2">
                   <UserCheck className="w-5 h-5 text-orange-500" />
                   <span>{lang === 'so' ? '4. Anshaxa & Tayada Waxbarashada' : '4. Academic Excellence & Code of Conduct'}</span>
                 </h3>
@@ -172,12 +172,12 @@ export const PolicyTermsPages: React.FC<PolicyTermsProps> = ({ lang, type, onNav
           )}
 
           {/* Contact helpfooter inside page */}
-          <div className="pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 bg-slate-50 p-6 rounded-2xl">
+          <div className="pt-6 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 bg-slate-50 dark:bg-slate-800/50 p-6 rounded-2xl">
             <div className="space-y-0.5 text-center sm:text-left">
-              <h4 className="text-xs font-black text-[#0B192C] uppercase tracking-wider">
+              <h4 className="text-xs font-black text-[#0B192C] dark:text-white uppercase tracking-wider">
                 {lang === 'so' ? 'Miyaad qabtaa su’aal sharci ama qarsoodi ah?' : 'Have Questions About Our Policies?'}
               </h4>
-              <p className="text-xs text-slate-600 font-medium">
+              <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">
                 {lang === 'so' ? 'Nala soo xiriir 24/7 WhatsApp: +251 77 779 6444' : 'Reach our advisory desk anytime on WhatsApp'}
               </p>
             </div>

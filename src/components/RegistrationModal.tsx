@@ -24,7 +24,7 @@ import emailjs from '@emailjs/browser';
 // Initialize EmailJS public key
 try {
   emailjs.init({
-    publicKey: 'f93_o11R0Vq_7c8d7',
+    publicKey: 'DqlTY31s8OKcyf-gi',
   });
 } catch (e) {
   console.warn('EmailJS init warning:', e);
@@ -383,14 +383,15 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
         message: `Asc ${registrationPayload.studentName},\n\nWaad ku guulaysatay diwaangalintaada Baro Quran Academy.\n\n• Number-ka Diiwaanka: ${generatedId}\n• Ardayga/Ardayda: ${students.map(s => s.fullName).join(', ')}\n• Koorsada: ${courseTitle}\n• Xirmada: ${planName}\n• Maalmaha: ${preferredDays.join(', ')}\n• Waqtiga: ${preferredTimeSlot}\n• Waddanka: ${countryName}\n\nFariin xaqiijin ah iyo faahfaahinta fasalka tijaabada ah (Free Trial) waxaan kuugu soo diray Gmail-kaaga.\n\nMahadsanid,\nBaro Quran Academy`
       };
 
-      await emailjs.send(
-        'service_a96q05r',
-        'template_67531ee',
+      const result = await emailjs.send(
+        'service_zn1yk0i',
+        'template_8tx4gz6',
         emailParams,
-        'f93_o11R0Vq_7c8d7'
+        'DqlTY31s8OKcyf-gi'
       );
-    } catch (err) {
-      console.warn('EmailJS notification attempt:', err);
+      console.log('EmailJS response success:', result);
+    } catch (err: any) {
+      console.error('EmailJS send error:', err?.text || err?.message || err);
     }
 
     // Immediately reset form inputs so sensitive data does not linger
@@ -429,12 +430,12 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 animate-fadeIn">
       <div 
-        className="relative bg-white rounded-3xl max-w-2xl w-full shadow-2xl overflow-hidden my-6 border border-slate-100 flex flex-col max-h-[92vh]"
+        className="relative bg-white dark:bg-[#0E1A2C] rounded-3xl max-w-2xl w-full shadow-2xl overflow-hidden my-6 border border-slate-100 dark:border-slate-800 flex flex-col max-h-[92vh] transition-colors duration-200"
         onClick={(e) => e.stopPropagation()}
       >
         
         {/* Modal Header */}
-        <div className="bg-[#0B192C] text-white p-5 sm:p-6 relative shrink-0">
+        <div className="bg-[#0B192C] dark:bg-[#070E18] text-white p-5 sm:p-6 relative shrink-0 border-b border-slate-800">
           <button
             onClick={handleClose}
             className="absolute right-4 top-4 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer"
@@ -448,7 +449,7 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
               📖
             </div>
             <div>
-              <h3 className="text-lg sm:text-xl font-black tracking-tight">
+              <h3 className="text-lg sm:text-xl font-black tracking-tight text-white">
                 {lang === 'so' ? 'Diiwaangelinta Fasalka Tijaabada (Free Trial)' : 'Book Your Free 1-on-1 Trial Class'}
               </h3>
               <p className="text-xs sm:text-sm text-slate-300 font-medium mt-0.5">
@@ -492,17 +493,17 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
         </div>
 
         {/* Modal Body */}
-        <div className="p-5 sm:p-7 overflow-y-auto flex-1">
+        <div className="p-5 sm:p-7 overflow-y-auto flex-1 bg-white dark:bg-[#0E1A2C] text-slate-900 dark:text-white">
           
           {/* SUCCESS SCREEN */}
           {isSubmitted ? (
             <div className="text-center py-8 px-4 sm:px-6 space-y-6 animate-fadeIn">
-              <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-sm">
+              <div className="w-20 h-20 bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center mx-auto shadow-sm">
                 <CheckCircle2 className="w-12 h-12" />
               </div>
 
               <div className="max-w-md mx-auto">
-                <div className="p-6 rounded-3xl bg-emerald-50 border-2 border-emerald-300 text-emerald-950 shadow-xs">
+                <div className="p-6 rounded-3xl bg-emerald-50 dark:bg-emerald-950/50 border-2 border-emerald-300 dark:border-emerald-700 text-emerald-950 dark:text-emerald-200 shadow-xs">
                   <p className="text-base sm:text-lg font-black leading-relaxed">
                     {lang === 'so' 
                       ? 'Waad ku guulaysatay diwaangalintaada, fariin email ah ayaan kusoo dirnay Gmail-kaaga fadlan check garee.' 
@@ -515,7 +516,7 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
                 <button
                   type="button"
                   onClick={handleClose}
-                  className="px-8 py-3 bg-[#0B192C] hover:bg-slate-800 text-white font-black text-sm rounded-2xl shadow-md transition-all cursor-pointer"
+                  className="px-8 py-3 bg-[#0B192C] dark:bg-orange-500 hover:bg-slate-800 dark:hover:bg-orange-600 text-white font-black text-sm rounded-2xl shadow-md transition-all cursor-pointer"
                 >
                   {lang === 'so' ? 'Haye / Waa Yahay' : 'Close / OK'}
                 </button>
@@ -531,14 +532,14 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
                   {/* Student list */}
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <label className="block text-xs font-black text-slate-800 uppercase tracking-wider">
+                      <label className="block text-xs font-black text-slate-800 dark:text-slate-200 uppercase tracking-wider">
                         {lang === 'so' ? 'Xogta Ardayga / Ardayda (Students Info) *' : 'Student(s) Details *'}
                       </label>
                       <button
                         type="button"
                         onClick={handleAddStudent}
                         disabled={students.length >= 5}
-                        className="text-xs font-bold text-orange-600 hover:text-orange-700 flex items-center gap-1 cursor-pointer disabled:opacity-40"
+                        className="text-xs font-bold text-orange-600 dark:text-orange-400 hover:text-orange-700 flex items-center gap-1 cursor-pointer disabled:opacity-40"
                       >
                         <Plus className="w-3.5 h-3.5" />
                         <span>{lang === 'so' ? 'Kudar Arday Kale (+)' : 'Add More Students (+)'}</span>
@@ -547,7 +548,7 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
 
                     {/* Family Discount Notice if 2+ students */}
                     {hasFamilyDiscount && (
-                      <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-between text-xs text-emerald-900 animate-fadeIn">
+                      <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 flex items-center justify-between text-xs text-emerald-900 dark:text-emerald-300 animate-fadeIn">
                         <div className="flex items-center gap-2">
                           <span className="px-2 py-0.5 rounded-full bg-emerald-600 text-white font-black text-[10px] uppercase">
                             -20% OFF
@@ -558,7 +559,7 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
                               : `Family Discount: You unlocked 20% OFF for enrolling ${studentCount} students!`}
                           </span>
                         </div>
-                        <span className="font-extrabold text-emerald-700 hidden sm:inline">
+                        <span className="font-extrabold text-emerald-700 dark:text-emerald-400 hidden sm:inline">
                           {lang === 'so' ? 'Toos loo jaray' : 'Auto applied'}
                         </span>
                       </div>
@@ -567,10 +568,10 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
                     {students.map((student, idx) => (
                       <div 
                         key={student.id} 
-                        className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3"
+                        className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 space-y-3"
                       >
                         <div className="flex items-center justify-between">
-                          <span className="text-xs font-black text-slate-700">
+                          <span className="text-xs font-black text-slate-700 dark:text-slate-300">
                             {lang === 'so' ? `Ardayga #${idx + 1}` : `Student #${idx + 1}`}
                           </span>
                           {students.length > 1 && (
@@ -588,7 +589,7 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
                         <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
                           {/* Full Name */}
                           <div className="sm:col-span-6">
-                            <label className="block text-[11px] font-bold text-slate-600 mb-1">
+                            <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">
                               {lang === 'so' ? 'Magaca Saddexan *' : 'Full Name *'}
                             </label>
                             <div className="relative">
@@ -602,7 +603,7 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
                                 className={`w-full pl-9 pr-3 py-2 text-sm rounded-xl border focus:outline-none focus:ring-2 font-medium ${
                                   errors[`student_${student.id}`]
                                     ? 'border-red-500 focus:ring-red-400 bg-red-50/20'
-                                    : 'border-slate-300 focus:ring-orange-500 bg-white'
+                                    : 'border-slate-300 dark:border-slate-700 focus:ring-orange-500 bg-white dark:bg-slate-900 text-slate-900 dark:text-white'
                                 }`}
                               />
                             </div>
@@ -616,13 +617,13 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
 
                           {/* Age */}
                           <div className="sm:col-span-3">
-                            <label className="block text-[11px] font-bold text-slate-600 mb-1">
+                            <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">
                               {lang === 'so' ? 'Da’da (Age) *' : 'Age *'}
                             </label>
                             <select
                               value={student.age}
                               onChange={(e) => handleUpdateStudent(student.id, 'age', e.target.value)}
-                              className="w-full px-3 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white font-medium"
+                              className="w-full px-3 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-medium"
                             >
                               {[...Array(60)].map((_, i) => (
                                 <option key={i + 4} value={String(i + 4)}>
@@ -634,13 +635,13 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
 
                           {/* Gender */}
                           <div className="sm:col-span-3">
-                            <label className="block text-[11px] font-bold text-slate-600 mb-1">
+                            <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">
                               {lang === 'so' ? 'Jinsiga *' : 'Gender *'}
                             </label>
                             <select
                               value={student.gender}
                               onChange={(e) => handleUpdateStudent(student.id, 'gender', e.target.value as any)}
-                              className="w-full px-3 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white font-medium"
+                              className="w-full px-3 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-medium"
                             >
                               <option value="male">{lang === 'so' ? 'Lab (Boy)' : 'Male'}</option>
                               <option value="female">{lang === 'so' ? 'Dheddig (Girl)' : 'Female'}</option>
@@ -653,13 +654,13 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
 
                   {/* Global Validation Banner on Error */}
                   {Object.keys(errors).length > 0 && (
-                    <div className="p-3.5 rounded-2xl bg-red-50 border-2 border-red-200 text-xs text-red-800 font-bold flex items-center gap-2.5 animate-shake">
+                    <div className="p-3.5 rounded-2xl bg-red-50 dark:bg-red-950/50 border-2 border-red-200 dark:border-red-800 text-xs text-red-800 dark:text-red-300 font-bold flex items-center gap-2.5 animate-shake">
                       <span className="text-base">⚠️</span>
                       <div>
-                        <div className="font-black text-red-900">
+                        <div className="font-black text-red-900 dark:text-red-200">
                           {lang === 'so' ? 'Fadlan sax khaladaadka hoose si aad u sii gudubto:' : 'Please correct the following errors before continuing:'}
                         </div>
-                        <div className="text-[11px] text-red-700 mt-0.5">
+                        <div className="text-[11px] text-red-700 dark:text-red-300 mt-0.5">
                           {lang === 'so' ? 'Dooro waddanka, hubi lambarka WhatsApp, email-ka saxda ah iyo magacyada ardayda.' : 'Select country, enter valid WhatsApp phone, valid email address and all student names.'}
                         </div>
                       </div>
@@ -672,10 +673,10 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
                     {/* Country Selector (Searchable, All Countries) */}
                     <div>
                       <div className="flex items-center justify-between mb-1.5">
-                        <label className="block text-xs font-black text-slate-800 uppercase tracking-wider">
+                        <label className="block text-xs font-black text-slate-800 dark:text-slate-200 uppercase tracking-wider">
                           {lang === 'so' ? '1. Dooro Waddanka aad Joogto (Country) *' : '1. Select Your Country *'}
                         </label>
-                        <span className="text-[11px] text-slate-500 font-medium">
+                        <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
                           {lang === 'so' ? 'Wadamada aduunka oo dhan' : 'All countries worldwide'}
                         </span>
                       </div>
@@ -699,15 +700,15 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
                       
                       {/* WhatsApp Phone Number */}
                       <div>
-                        <label className="block text-xs font-black text-slate-800 uppercase tracking-wider mb-1.5">
+                        <label className="block text-xs font-black text-slate-800 dark:text-slate-200 uppercase tracking-wider mb-1.5">
                           {lang === 'so' ? '2. Lambarka WhatsApp *' : '2. WhatsApp Number *'}
                         </label>
                         
-                        <div className="relative flex rounded-xl border border-slate-300 focus-within:ring-2 focus-within:ring-orange-500 focus-within:border-transparent bg-white overflow-hidden">
+                        <div className="relative flex rounded-xl border border-slate-300 dark:border-slate-700 focus-within:ring-2 focus-within:ring-orange-500 focus-within:border-transparent bg-white dark:bg-slate-900 overflow-hidden">
                           {/* Country Dial Code Badge */}
-                          <div className="px-3.5 py-2.5 bg-slate-100 border-r border-slate-200 flex items-center gap-1.5 shrink-0 select-none">
+                          <div className="px-3.5 py-2.5 bg-slate-100 dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 flex items-center gap-1.5 shrink-0 select-none">
                             <span className="text-base">{selectedCountry?.flag || '🌐'}</span>
-                            <span className="text-xs font-black text-[#0B192C]">
+                            <span className="text-xs font-black text-[#0B192C] dark:text-white">
                               {selectedCountry ? selectedCountry.dialCode : '---'}
                             </span>
                           </div>
@@ -727,13 +728,13 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
                               }
                             }}
                             className={`w-full px-3.5 py-2.5 text-sm font-medium focus:outline-none ${
-                              !selectedCountry ? 'bg-slate-100 cursor-not-allowed text-slate-400' : 'bg-white'
+                              !selectedCountry ? 'bg-slate-100 dark:bg-slate-800 cursor-not-allowed text-slate-400' : 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white'
                             } ${errors.phone ? 'bg-red-50/20' : ''}`}
                           />
                         </div>
 
                         {!selectedCountry ? (
-                          <p className="text-[11px] font-bold text-amber-700 mt-1 flex items-center gap-1">
+                          <p className="text-[11px] font-bold text-amber-700 dark:text-amber-400 mt-1 flex items-center gap-1">
                             <span>ℹ️</span>
                             <span>{lang === 'so' ? 'Fadlan kor ka dooro waddanka si aad number-ka u qorto.' : 'Please select your country above first.'}</span>
                           </p>
@@ -743,7 +744,7 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
                             <span>{errors.phone}</span>
                           </p>
                         ) : (
-                          <p className="text-[10px] text-slate-500 font-medium mt-1">
+                          <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium mt-1">
                             {lang === 'so' ? `Koodhka (${selectedCountry.dialCode}) toos ayaa loogu darayaa lambarkaaga.` : `Dial code (${selectedCountry.dialCode}) is automatically applied.`}
                           </p>
                         )}
@@ -751,7 +752,7 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
 
                       {/* Email */}
                       <div>
-                        <label className="block text-xs font-black text-slate-800 uppercase tracking-wider mb-1.5">
+                        <label className="block text-xs font-black text-slate-800 dark:text-slate-200 uppercase tracking-wider mb-1.5">
                           {lang === 'so' ? '3. Email Address *' : '3. Email Address *'}
                         </label>
                         <div className="relative">
@@ -771,7 +772,7 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
                             className={`w-full pl-10 pr-4 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 font-medium ${
                               errors.email 
                                 ? 'border-red-500 focus:ring-red-400 bg-red-50/20' 
-                                : 'border-slate-300 focus:ring-orange-500 bg-white'
+                                : 'border-slate-300 dark:border-slate-700 focus:ring-orange-500 bg-white dark:bg-slate-900 text-slate-900 dark:text-white'
                             }`}
                           />
                         </div>
@@ -796,7 +797,7 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
                   
                   {/* Select Course */}
                   <div>
-                    <label className="block text-xs font-black text-slate-800 uppercase tracking-wider mb-2">
+                    <label className="block text-xs font-black text-slate-800 dark:text-slate-200 uppercase tracking-wider mb-2">
                       {lang === 'so' ? '1. Dooro Koorsada (Choice Course) *' : '1. Select Course *'}
                     </label>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -808,12 +809,12 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
                             onClick={() => setSelectedCourseId(course.id)}
                             className={`p-3.5 rounded-2xl border-2 cursor-pointer transition-all ${
                               isSelected
-                                ? 'border-orange-500 bg-orange-50/50 shadow-xs'
-                                : 'border-slate-200 bg-white hover:border-slate-300'
+                                ? 'border-orange-500 bg-orange-50/50 dark:bg-orange-950/40 shadow-xs'
+                                : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:border-slate-300 dark:hover:border-slate-600'
                             }`}
                           >
                             <div className="flex items-start justify-between">
-                              <span className="text-xs font-black text-[#0B192C]">
+                              <span className="text-xs font-black text-[#0B192C] dark:text-white">
                                 {lang === 'so' ? course.titleSo : course.titleEn}
                               </span>
                               {isSelected && (
@@ -822,7 +823,7 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
                                 </span>
                               )}
                             </div>
-                            <span className="text-[11px] text-slate-500 font-medium block mt-1">
+                            <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium block mt-1">
                               {lang === 'so' ? course.levelSo : course.levelEn}
                             </span>
                           </div>
@@ -834,28 +835,28 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
                   {/* Select Pricing Plan */}
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <label className="block text-xs font-black text-slate-800 uppercase tracking-wider">
+                      <label className="block text-xs font-black text-slate-800 dark:text-slate-200 uppercase tracking-wider">
                         {lang === 'so' ? '2. Dooro Xirmada Todobaadlaha ah (Pricing Plan) *' : '2. Select Weekly Schedule Plan *'}
                       </label>
-                      <span className="text-[11px] text-orange-600 font-bold bg-orange-50 px-2 py-0.5 rounded-md border border-orange-200">
+                      <span className="text-[11px] text-orange-600 dark:text-orange-400 font-bold bg-orange-50 dark:bg-orange-950/40 px-2 py-0.5 rounded-md border border-orange-200 dark:border-orange-900/50">
                         {lang === 'so' ? `Xirmadu waxay go'aamisaa tirada maalmaha` : `Plan determines exact days per week`}
                       </span>
                     </div>
 
                     {/* Live Multi-Student Price Calculator in Step 2 */}
                     {hasFamilyDiscount && (
-                      <div className="p-4 mb-3 rounded-2xl bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-100 border-2 border-emerald-300 shadow-xs">
+                      <div className="p-4 mb-3 rounded-2xl bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-100 dark:from-emerald-950/50 dark:via-teal-950/40 dark:to-emerald-900/50 border-2 border-emerald-300 dark:border-emerald-700 shadow-xs">
                         <div className="flex items-center justify-between">
                           <div>
                             <div className="flex items-center gap-2">
-                              <span className="text-xs font-black text-emerald-950 uppercase">
+                              <span className="text-xs font-black text-emerald-950 dark:text-emerald-200 uppercase">
                                 {lang === 'so' ? `Xisaabinta Qiimaha (${studentCount} Arday):` : `Family Price Calculation (${studentCount} Students):`}
                               </span>
                               <span className="px-2 py-0.5 rounded-full bg-emerald-600 text-white font-black text-[10px]">
                                 20% OFF
                               </span>
                             </div>
-                            <p className="text-[11px] text-emerald-800 mt-0.5">
+                            <p className="text-[11px] text-emerald-800 dark:text-emerald-300 mt-0.5">
                               {lang === 'so'
                                 ? `$${basePricePerStudent} × ${studentCount} arday = $${subtotalPrice} - $${discountAmount} (20% Dhimis)`
                                 : `$${basePricePerStudent} × ${studentCount} students = $${subtotalPrice} - $${discountAmount} (20% Off)`}
@@ -863,8 +864,8 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
                           </div>
                           <div className="text-right">
                             <span className="text-xs text-slate-400 line-through mr-1.5 font-bold">${subtotalPrice}</span>
-                            <span className="text-2xl font-black text-emerald-700">${finalTotalPrice}</span>
-                            <span className="text-xs text-emerald-800 font-bold block">/bishii</span>
+                            <span className="text-2xl font-black text-emerald-700 dark:text-emerald-400">${finalTotalPrice}</span>
+                            <span className="text-xs text-emerald-800 dark:text-emerald-300 font-bold block">/bishii</span>
                           </div>
                         </div>
                       </div>
@@ -879,8 +880,8 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
                             onClick={() => handleSelectPlan(plan.id)}
                             className={`p-3.5 rounded-2xl border-2 cursor-pointer transition-all text-center relative ${
                               isSelected
-                                ? 'border-orange-500 bg-orange-50/70 ring-2 ring-orange-500/20 shadow-md scale-[1.02]'
-                                : 'border-slate-200 bg-white hover:border-slate-300'
+                                ? 'border-orange-500 bg-orange-50/70 dark:bg-orange-950/40 ring-2 ring-orange-500/20 shadow-md scale-[1.02]'
+                                : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:border-slate-300 dark:hover:border-slate-600'
                             }`}
                           >
                             {plan.popular && (
@@ -888,18 +889,18 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
                                 {lang === 'so' ? 'Ugu Caansan' : 'Popular'}
                               </div>
                             )}
-                            <div className="text-[11px] font-black text-[#0B192C] leading-tight">
+                            <div className="text-[11px] font-black text-[#0B192C] dark:text-white leading-tight">
                               {lang === 'so' ? plan.nameSo : plan.nameEn}
                             </div>
-                            <div className="text-base font-black text-orange-600 mt-1">
-                              ${plan.priceUSD} <span className="text-[10px] text-slate-500 font-normal">/mo</span>
+                            <div className="text-base font-black text-orange-600 dark:text-orange-400 mt-1">
+                              ${plan.priceUSD} <span className="text-[10px] text-slate-500 dark:text-slate-400 font-normal">/mo</span>
                             </div>
                             <div className="mt-1">
-                              <span className="inline-block px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-black text-[10px]">
+                              <span className="inline-block px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-black text-[10px]">
                                 {plan.daysPerWeek} {lang === 'so' ? 'cisho / isbuuc' : 'days / week'}
                               </span>
                             </div>
-                            <div className="text-[10px] text-slate-500 font-semibold mt-1">
+                            <div className="text-[10px] text-slate-500 dark:text-slate-400 font-semibold mt-1">
                               {lang === 'so' ? plan.durationPerClassSo : plan.durationPerClassEn}
                             </div>
                           </div>
@@ -910,13 +911,13 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
 
                   {/* Teacher Gender Preference */}
                   <div>
-                    <label className="block text-xs font-black text-slate-800 uppercase tracking-wider mb-1.5">
+                    <label className="block text-xs font-black text-slate-800 dark:text-slate-200 uppercase tracking-wider mb-1.5">
                       {lang === 'so' ? '3. Nooca Macallinka (Teacher Preference):' : '3. Teacher Preference:'}
                     </label>
                     <select
                       value={teacherPreference}
                       onChange={(e) => setTeacherPreference(e.target.value as any)}
-                      className="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-slate-50 font-medium"
+                      className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white font-medium"
                     >
                       <option value="any">{lang === 'so' ? 'Midkoodna (Lab ama Dheddig)' : 'Any (Male or Female)'}</option>
                       <option value="male">{lang === 'so' ? 'Macallin Rag ah (Male Teacher)' : 'Male Teacher'}</option>
@@ -932,17 +933,17 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
                 <div className="space-y-5 animate-fadeIn">
                   
                   {/* Selected Plan Days Requirement Badge */}
-                  <div className="p-4 rounded-2xl bg-gradient-to-r from-orange-50 to-amber-50 border-2 border-orange-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="p-4 rounded-2xl bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/40 dark:to-amber-950/30 border-2 border-orange-200 dark:border-orange-900/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="text-xs font-black text-orange-950 uppercase">
+                        <span className="text-xs font-black text-orange-950 dark:text-orange-200 uppercase">
                           {lang === 'so' ? 'Xirmada Aad Dooratay:' : 'Your Selected Plan:'}
                         </span>
                         <span className="px-2.5 py-0.5 rounded-full bg-orange-500 text-white font-black text-xs">
                           {lang === 'so' ? selectedPlan.nameSo : selectedPlan.nameEn} (${selectedPlan.priceUSD}/mo)
                         </span>
                       </div>
-                      <p className="text-xs text-orange-900 mt-1 font-semibold">
+                      <p className="text-xs text-orange-900 dark:text-orange-300 mt-1 font-semibold">
                         {lang === 'so'
                           ? `Maadaama aad dooratay xirmada $${selectedPlan.priceUSD}, waa inaad doorataa sax ahaan ${requiredDaysCount} maalmood.`
                           : `Because you chose the $${selectedPlan.priceUSD} plan, you must select exactly ${requiredDaysCount} days.`}
@@ -968,10 +969,10 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
                   {/* Preferred Days Grid */}
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <label className="block text-xs font-black text-slate-800 uppercase tracking-wider">
+                      <label className="block text-xs font-black text-slate-800 dark:text-slate-200 uppercase tracking-wider">
                         {lang === 'so' ? `Dooro ${requiredDaysCount}-da Maalmood ee Fasalkaaga *` : `Select Your ${requiredDaysCount} Class Days *`}
                       </label>
-                      <span className="text-[11px] text-slate-500 font-medium">
+                      <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
                         {lang === 'so' ? 'Guji maalmaha aad doonayso' : 'Click the days you prefer'}
                       </span>
                     </div>
@@ -987,7 +988,7 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
                             className={`p-3.5 rounded-xl text-xs font-black border-2 transition-all flex items-center justify-between cursor-pointer ${
                               isSelected
                                 ? 'bg-orange-500 text-white border-orange-500 shadow-md scale-[1.02]'
-                                : 'bg-white text-slate-700 border-slate-300 hover:border-slate-400 hover:bg-slate-50'
+                                : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800'
                             }`}
                           >
                             <span>{lang === 'so' ? day.labelSo : day.labelEn}</span>
@@ -996,7 +997,7 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
                                 <Check className="w-3.5 h-3.5 text-white" />
                               </span>
                             ) : (
-                              <span className="w-4 h-4 rounded-full border border-slate-300" />
+                              <span className="w-4 h-4 rounded-full border border-slate-300 dark:border-slate-600" />
                             )}
                           </button>
                         );
@@ -1013,7 +1014,7 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
 
                   {/* Preferred Time Slot */}
                   <div>
-                    <label className="block text-xs font-black text-slate-800 uppercase tracking-wider mb-1.5">
+                    <label className="block text-xs font-black text-slate-800 dark:text-slate-200 uppercase tracking-wider mb-1.5">
                       {lang === 'so' ? 'Dooro Saacadaha kugu habboon (Choice Time Slot) *' : 'Select Preferred Daily Time Slot *'}
                     </label>
                     <div className="relative">
@@ -1021,7 +1022,7 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
                       <select
                         value={preferredTimeSlot}
                         onChange={(e) => setPreferredTimeSlot(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-slate-50 font-medium"
+                        className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white font-medium"
                       >
                         <option value="Subaxdii / Morning (8:00 AM - 12:00 PM)">{lang === 'so' ? 'Subaxdii (8:00 AM - 12:00 PM)' : 'Morning (8:00 AM - 12:00 PM)'}</option>
                         <option value="Galabtii / Afternoon (1:00 PM - 5:00 PM)">{lang === 'so' ? 'Galabtii (1:00 PM - 5:00 PM)' : 'Afternoon (1:00 PM - 5:00 PM)'}</option>
@@ -1038,32 +1039,32 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
               {currentStep === 4 && (
                 <div className="space-y-4 animate-fadeIn">
                   
-                  <div className="p-4 rounded-2xl bg-orange-50 border border-orange-200">
-                    <div className="text-xs font-black text-orange-900 uppercase tracking-wider mb-1">
+                  <div className="p-4 rounded-2xl bg-orange-50 dark:bg-orange-950/40 border border-orange-200 dark:border-orange-900/50">
+                    <div className="text-xs font-black text-orange-900 dark:text-orange-200 uppercase tracking-wider mb-1">
                       {lang === 'so' ? 'Fadlan dib u eeg xogtaada ka hor inta aadan dirin' : 'Please review your registration details before submitting'}
                     </div>
-                    <p className="text-xs text-orange-700">
+                    <p className="text-xs text-orange-700 dark:text-orange-300">
                       {lang === 'so' ? 'Waxaad riixi kartaa badhanka dib-u-habaynta (Edit) si aad u saxdo tallaabo kasta.' : 'You can click any Edit button to adjust information.'}
                     </p>
                   </div>
 
                   {/* Review Box 1: Personal Info */}
-                  <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
-                    <div className="flex items-center justify-between border-b border-slate-200 pb-2">
-                      <span className="text-xs font-black text-[#0B192C] uppercase tracking-wider">
+                  <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 space-y-2">
+                    <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-2">
+                      <span className="text-xs font-black text-[#0B192C] dark:text-white uppercase tracking-wider">
                         {lang === 'so' ? '1. Xogta Ardayda & Xiriirka' : '1. Personal Information'}
                       </span>
                       <button
                         type="button"
                         onClick={() => setCurrentStep(1)}
-                        className="text-xs font-bold text-orange-600 hover:text-orange-700 flex items-center gap-1 cursor-pointer"
+                        className="text-xs font-bold text-orange-600 dark:text-orange-400 hover:text-orange-700 flex items-center gap-1 cursor-pointer"
                       >
                         <Edit2 className="w-3 h-3" />
                         <span>{lang === 'so' ? 'Edit' : 'Edit'}</span>
                       </button>
                     </div>
 
-                    <div className="text-xs space-y-1.5 text-slate-700">
+                    <div className="text-xs space-y-1.5 text-slate-700 dark:text-slate-300">
                       <div>
                         <span className="font-bold">{lang === 'so' ? 'Ardayda:' : 'Students:'}</span>{' '}
                         {students.map(s => `${s.fullName} (${s.age} jir, ${s.gender === 'male' ? 'Wiil' : 'Gabadh'})`).join(' • ')}
@@ -1083,22 +1084,22 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
                   </div>
 
                   {/* Review Box 2: Course & Plan */}
-                  <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
-                    <div className="flex items-center justify-between border-b border-slate-200 pb-2">
-                      <span className="text-xs font-black text-[#0B192C] uppercase tracking-wider">
+                  <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 space-y-2">
+                    <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-2">
+                      <span className="text-xs font-black text-[#0B192C] dark:text-white uppercase tracking-wider">
                         {lang === 'so' ? '2. Koorsada & Xirmada' : '2. Course & Plan'}
                       </span>
                       <button
                         type="button"
                         onClick={() => setCurrentStep(2)}
-                        className="text-xs font-bold text-orange-600 hover:text-orange-700 flex items-center gap-1 cursor-pointer"
+                        className="text-xs font-bold text-orange-600 dark:text-orange-400 hover:text-orange-700 flex items-center gap-1 cursor-pointer"
                       >
                         <Edit2 className="w-3 h-3" />
                         <span>{lang === 'so' ? 'Edit' : 'Edit'}</span>
                       </button>
                     </div>
 
-                    <div className="text-xs space-y-1.5 text-slate-700">
+                    <div className="text-xs space-y-1.5 text-slate-700 dark:text-slate-300">
                       <div>
                         <span className="font-bold">{lang === 'so' ? 'Koorsada:' : 'Course:'}</span>{' '}
                         {lang === 'so' ? selectedCourse.titleSo : selectedCourse.titleEn}
@@ -1111,15 +1112,15 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
                         <span className="font-bold">{lang === 'so' ? 'Tirada Ardayda:' : 'Enrolled Students:'}</span>{' '}
                         {studentCount} {lang === 'so' ? 'arday' : 'student(s)'}
                       </div>
-                      <div className="pt-1 border-t border-slate-200 mt-1 flex items-center justify-between">
+                      <div className="pt-1 border-t border-slate-200 dark:border-slate-700 mt-1 flex items-center justify-between">
                         <span className="font-bold">{lang === 'so' ? 'Wadarta Qiimaha Bishii:' : 'Total Monthly Tuition:'}</span>
                         <div className="text-right">
                           {hasFamilyDiscount && (
                             <span className="text-[11px] text-slate-400 line-through mr-1 font-bold">${subtotalPrice}</span>
                           )}
-                          <span className="font-black text-orange-600 text-sm">${finalTotalPrice}/mo</span>
+                          <span className="font-black text-orange-600 dark:text-orange-400 text-sm">${finalTotalPrice}/mo</span>
                           {hasFamilyDiscount && (
-                            <span className="ml-1.5 px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-bold">
+                            <span className="ml-1.5 px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 text-[10px] font-bold">
                               20% OFF
                             </span>
                           )}
@@ -1133,25 +1134,25 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
                   </div>
 
                   {/* Review Box 3: Days & Time */}
-                  <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
-                    <div className="flex items-center justify-between border-b border-slate-200 pb-2">
-                      <span className="text-xs font-black text-[#0B192C] uppercase tracking-wider">
+                  <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 space-y-2">
+                    <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-2">
+                      <span className="text-xs font-black text-[#0B192C] dark:text-white uppercase tracking-wider">
                         {lang === 'so' ? '3. Maalmaha & Waqtiga' : '3. Days & Time'}
                       </span>
                       <button
                         type="button"
                         onClick={() => setCurrentStep(3)}
-                        className="text-xs font-bold text-orange-600 hover:text-orange-700 flex items-center gap-1 cursor-pointer"
+                        className="text-xs font-bold text-orange-600 dark:text-orange-400 hover:text-orange-700 flex items-center gap-1 cursor-pointer"
                       >
                         <Edit2 className="w-3 h-3" />
                         <span>{lang === 'so' ? 'Edit' : 'Edit'}</span>
                       </button>
                     </div>
 
-                    <div className="text-xs space-y-1.5 text-slate-700">
+                    <div className="text-xs space-y-1.5 text-slate-700 dark:text-slate-300">
                       <div>
                         <span className="font-bold">{lang === 'so' ? 'Maalmaha La Doortay:' : 'Selected Days:'}</span>{' '}
-                        <span className="font-bold text-orange-700">
+                        <span className="font-bold text-orange-700 dark:text-orange-400">
                           {preferredDays.join(', ')} ({preferredDays.length} {lang === 'so' ? 'maalmood' : 'days'})
                         </span>
                       </div>
@@ -1166,12 +1167,12 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
               )}
 
               {/* Nav buttons */}
-              <div className="pt-6 flex items-center justify-between gap-3 border-t border-slate-100 mt-6">
+              <div className="pt-6 flex items-center justify-between gap-3 border-t border-slate-100 dark:border-slate-800 mt-6">
                 {currentStep > 1 ? (
                   <button
                     type="button"
                     onClick={handleBack}
-                    className="px-5 py-3 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-100 font-bold text-sm flex items-center gap-1.5 transition-colors cursor-pointer"
+                    className="px-5 py-3 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 font-bold text-sm flex items-center gap-1.5 transition-colors cursor-pointer"
                   >
                     <ArrowLeft className="w-4 h-4" />
                     <span>{lang === 'so' ? 'Dib u Noqo' : 'Back'}</span>

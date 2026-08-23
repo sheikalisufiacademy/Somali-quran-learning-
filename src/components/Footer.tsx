@@ -29,7 +29,7 @@ export const Footer: React.FC<FooterProps> = ({ lang, onOpenRegister, onNavigate
   };
 
   return (
-    <footer id="contact" className="bg-[#0B192C] text-slate-300 relative overflow-hidden pt-16 pb-12 border-t-2 border-orange-500/20">
+    <footer id="contact" className="bg-[#0B192C] dark:bg-[#070E18] text-slate-300 relative overflow-hidden pt-16 pb-12 border-t-2 border-orange-500/20 dark:border-orange-500/10">
       
       {/* Decorative pattern */}
       <div className="absolute inset-0 opacity-5 pattern-dots-navy pointer-events-none" />
@@ -37,14 +37,14 @@ export const Footer: React.FC<FooterProps> = ({ lang, onOpenRegister, onNavigate
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Top Call to Action in Footer */}
-        <div className="mb-14 pb-12 border-b border-slate-800 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <div className="mb-14 pb-12 border-b border-slate-800 dark:border-slate-800/80 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           <div className="lg:col-span-8 space-y-2">
             <h3 className="text-2xl sm:text-3xl font-black text-white">
               {lang === 'so'
                 ? 'Bilow Safarka Barashada Qur’aanka ee Ilmahaaga Maanta'
                 : 'Start Your Child’s Quranic Journey Today'}
             </h3>
-            <p className="text-sm text-slate-300 max-w-2xl font-medium">
+            <p className="text-sm text-slate-300 dark:text-slate-400 max-w-2xl font-medium">
               {lang === 'so'
                 ? 'Ku biir boqolaal qoys oo ku nool aduunka oo dhan oo u doortay Baro Quran Academy carruurtooda.'
                 : 'Join hundreds of satisfied families worldwide who entrust their children\'s Quran education to Baro Quran Academy.'}
@@ -62,7 +62,7 @@ export const Footer: React.FC<FooterProps> = ({ lang, onOpenRegister, onNavigate
               href="https://wa.me/251777796444"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-5 py-3.5 text-center text-sm font-bold text-white bg-slate-800 hover:bg-slate-700 rounded-xl border border-slate-700 transition-all flex items-center justify-center gap-2"
+              className="px-5 py-3.5 text-center text-sm font-bold text-white bg-slate-800 dark:bg-slate-800/80 hover:bg-slate-700 dark:hover:bg-slate-700 rounded-xl border border-slate-700 dark:border-slate-700 transition-all flex items-center justify-center gap-2"
             >
               <MessageCircle className="w-4 h-4 text-orange-400" />
               <span>WhatsApp</span>
@@ -71,7 +71,7 @@ export const Footer: React.FC<FooterProps> = ({ lang, onOpenRegister, onNavigate
         </div>
 
         {/* Main Footer 4 Columns */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 pb-12 border-b border-slate-800">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 pb-12 border-b border-slate-800 dark:border-slate-800/80">
           
           {/* Col 1: Brand & Bio (4 cols) */}
           <div className="lg:col-span-4 space-y-4">

@@ -36,38 +36,38 @@ export const Pricing: React.FC<PricingProps> = ({ lang, onSelectPlan }) => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.6, ease: "easeOut" }}
-      className="py-20 bg-slate-50 relative"
+      className="py-20 bg-slate-50 dark:bg-[#070E18] relative transition-colors duration-200"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-12 space-y-3">
-          <div className="inline-flex items-center gap-1.5 px-4 py-1 rounded-full bg-[#0B192C] text-white text-xs font-black uppercase tracking-wider">
+          <div className="inline-flex items-center gap-1.5 px-4 py-1 rounded-full bg-[#0B192C] dark:bg-[#0E1A2C] text-white text-xs font-black uppercase tracking-wider border border-slate-700">
             <Sparkles className="w-3.5 h-3.5 text-orange-400" />
             <span>{lang === 'so' ? 'Qidmadaha & Xirmooyinka' : 'Affordable & Transparent Pricing'}</span>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl font-black text-[#0B192C] tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-black text-[#0B192C] dark:text-white tracking-tight">
             {lang === 'so' ? (
               <>
-                Dooro Xirmada <span className="text-[#0B192C] underline decoration-orange-500 decoration-4 underline-offset-6">Kugu Habboon</span> ee Madarasadda
+                Dooro Xirmada <span className="text-[#0B192C] dark:text-white underline decoration-orange-500 decoration-4 underline-offset-6">Kugu Habboon</span> ee Madarasadda
               </>
             ) : (
               <>
-                Flexible Plans for <span className="text-[#0B192C] underline decoration-orange-500 decoration-4 underline-offset-6">Every Family</span>
+                Flexible Plans for <span className="text-[#0B192C] dark:text-white underline decoration-orange-500 decoration-4 underline-offset-6">Every Family</span>
               </>
             )}
           </h2>
 
-          <p className="text-base text-slate-700 font-medium">
+          <p className="text-base text-slate-700 dark:text-slate-300 font-medium">
             {lang === 'so'
-              ? 'Qiimo jaban oo ku habboon qoysaska qurbaha ($30, $35, $40, $50/bishii). Fasalka tijaabada ah waa bilaash.'
+              ? 'Qiimo jaban oo ku habboon qoys kasta oo Soomaaliyeed aduunka daafihiisa ($30, $35, $40, $50/bishii). Fasalka tijaabada ah waa bilaash.'
               : 'Affordable monthly plans with certified scholars, no admission fees, and full schedule flexibility ($30, $35, $40, $50/month).'}
           </p>
 
           {/* Currency Switcher */}
           <div className="pt-4 flex items-center justify-center gap-1.5 flex-wrap">
-            <span className="text-xs font-bold text-slate-700 mr-2">
+            <span className="text-xs font-bold text-slate-700 dark:text-slate-300 mr-2">
               {lang === 'so' ? 'Lacagta (Currency):' : 'Currency:'}
             </span>
             {(['USD', 'GBP', 'EUR', 'CAD', 'SEK'] as Currency[]).map((curr) => (
@@ -77,7 +77,7 @@ export const Pricing: React.FC<PricingProps> = ({ lang, onSelectPlan }) => {
                 className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer ${
                   currency === curr
                     ? 'bg-orange-500 text-white shadow-md shadow-orange-500/20'
-                    : 'bg-white text-slate-700 hover:bg-slate-200 border border-slate-300'
+                    : 'bg-white dark:bg-[#0E1A2C] text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 border border-slate-300 dark:border-slate-700'
                 }`}
               >
                 {curr === 'USD' ? '$ USD' : curr === 'GBP' ? '£ GBP' : curr === 'EUR' ? '€ EUR' : curr === 'CAD' ? 'C$ CAD' : 'kr SEK'}
@@ -100,10 +100,10 @@ export const Pricing: React.FC<PricingProps> = ({ lang, onSelectPlan }) => {
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: idx * 0.1 }}
                 id={`plan-${plan.id}`}
-                className={`relative flex flex-col bg-white rounded-3xl border-2 transition-all duration-300 ${
+                className={`relative flex flex-col bg-white dark:bg-[#0E1A2C] rounded-3xl border-2 transition-all duration-300 ${
                   isPopular
                     ? 'border-orange-500 shadow-2xl ring-2 ring-orange-500/30 transform lg:-translate-y-2'
-                    : 'border-slate-200 shadow-sm hover:shadow-xl hover:border-orange-400'
+                    : 'border-slate-200 dark:border-slate-700/80 shadow-sm hover:shadow-xl hover:border-orange-400 dark:hover:border-orange-400'
                 }`}
               >
                 {/* Popular Pill */}
@@ -113,36 +113,36 @@ export const Pricing: React.FC<PricingProps> = ({ lang, onSelectPlan }) => {
                   </div>
                 )}
 
-                <div className="p-6 pb-4 border-b border-slate-100">
-                  <h3 className="text-lg font-black text-[#0B192C] mb-1">
+                <div className="p-6 pb-4 border-b border-slate-100 dark:border-slate-700/60">
+                  <h3 className="text-lg font-black text-[#0B192C] dark:text-white mb-1">
                     {lang === 'so' ? plan.nameSo : plan.nameEn}
                   </h3>
-                  <p className="text-xs text-slate-600 min-h-[32px] font-medium">
+                  <p className="text-xs text-slate-600 dark:text-slate-400 min-h-[32px] font-medium">
                     {lang === 'so' ? plan.subtitleSo : plan.subtitleEn}
                   </p>
 
                   {/* Price */}
                   <div className="mt-4 flex items-baseline gap-1">
-                    <span className="text-3xl sm:text-4xl font-black text-[#0B192C]">
+                    <span className="text-3xl sm:text-4xl font-black text-[#0B192C] dark:text-white">
                       {symbol}{amount}
                     </span>
-                    <span className="text-xs font-bold text-slate-600">
+                    <span className="text-xs font-bold text-slate-600 dark:text-slate-400">
                       {lang === 'so' ? '/ Bishii' : '/ Month'}
                     </span>
                   </div>
 
-                  <div className="mt-2 inline-flex items-center gap-1.5 text-xs font-black text-[#0B192C] bg-orange-100 px-3 py-1 rounded-lg border border-orange-200">
+                  <div className="mt-2 inline-flex items-center gap-1.5 text-xs font-black text-[#0B192C] dark:text-orange-400 bg-orange-100 dark:bg-orange-950/40 px-3 py-1 rounded-lg border border-orange-200 dark:border-orange-900/50">
                     <span>{lang === 'so' ? plan.durationPerClassSo : plan.durationPerClassEn}</span>
                   </div>
                 </div>
 
                 {/* Features list */}
                 <div className="p-6 flex-1 space-y-3">
-                  <span className="text-[11px] font-black text-slate-500 uppercase tracking-wider block">
+                  <span className="text-[11px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
                     {lang === 'so' ? 'Waxyaabaha ay Ka Kooban tahay:' : 'Plan Includes:'}
                   </span>
 
-                  <ul className="space-y-2.5 text-xs text-slate-700 font-medium">
+                  <ul className="space-y-2.5 text-xs text-slate-700 dark:text-slate-300 font-medium">
                     {(lang === 'so' ? plan.featuresSo : plan.featuresEn).map((feat, fIdx) => (
                       <li key={fIdx} className="flex items-start gap-2">
                         <Check className="w-4 h-4 text-orange-500 shrink-0 mt-0.5" />
@@ -160,7 +160,7 @@ export const Pricing: React.FC<PricingProps> = ({ lang, onSelectPlan }) => {
                     className={`w-full py-3.5 px-4 rounded-xl text-sm font-black transition-all flex items-center justify-center gap-2 cursor-pointer ${
                       isPopular
                         ? 'bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white shadow-md shadow-orange-500/30'
-                        : 'bg-[#0B192C] hover:bg-orange-500 text-white shadow-xs'
+                        : 'bg-[#0B192C] dark:bg-slate-800 hover:bg-orange-500 dark:hover:bg-orange-500 text-white shadow-xs'
                     }`}
                   >
                     <span>{lang === 'so' ? 'Dooro Qorshahan' : 'Choose This Plan'}</span>
@@ -174,7 +174,7 @@ export const Pricing: React.FC<PricingProps> = ({ lang, onSelectPlan }) => {
         </div>
 
         {/* Guarantee Note */}
-        <div className="mt-12 max-w-2xl mx-auto text-center p-4 rounded-2xl bg-white border-2 border-slate-200 text-xs font-bold text-slate-800 flex items-center justify-center gap-3 shadow-sm">
+        <div className="mt-12 max-w-2xl mx-auto text-center p-4 rounded-2xl bg-white dark:bg-[#0E1A2C] border-2 border-slate-200 dark:border-slate-700/80 text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center justify-center gap-3 shadow-sm">
           <ShieldCheck className="w-5 h-5 text-orange-500 shrink-0" />
           <span>
             {lang === 'so'

@@ -1,5 +1,6 @@
 export type Language = 'so' | 'en';
-export type AppPage = 'home' | 'why-us' | 'courses' | 'pricing' | 'reviews' | 'faq' | 'contact' | 'privacy' | 'terms' | 'student-dashboard';
+export type Theme = 'light' | 'dark';
+export type AppPage = 'home' | 'why-us' | 'courses' | 'pricing' | 'reviews' | 'faq' | 'contact' | 'privacy' | 'terms';
 
 export interface LessonLog {
   id: string;

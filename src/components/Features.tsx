@@ -31,8 +31,8 @@ export const Features: React.FC<FeaturesProps> = ({ lang }) => {
       bgLight: 'bg-orange-500 text-white border-orange-500',
       titleSo: 'Macallimiin Soomaali Qur’aan Online leh Ijaazo',
       titleEn: 'Certified Male & Female Scholars with Ijazah',
-      descSo: 'Dhammaan macallimiinteennu waa Xaafidiin haysta Sanad ku xiran Rasuulka (NNKH), shahaadooyin jaamacadeed, iyo qibrad gaar ah oo ku saabsan carruurta qurbaha (Diaspora).',
-      descEn: 'All our instructors hold continuous Ijazah Sanad chains, university degrees in Shariah/Quranic sciences, and specialized experience in educating diaspora youth.'
+      descSo: 'Dhammaan macallimiinteennu waa Xaafidiin haysta Sanad ku xiran Rasuulka (NNKH), shahaadooyin jaamacadeed, iyo qibrad gaar ah oo ku saabsan baridda carruurta iyo qoysaska Soomaaliyeed meel kasta oo ay joogaan.',
+      descEn: 'All our instructors hold continuous Ijazah Sanad chains, university degrees in Shariah/Quranic sciences, and extensive experience in educating students and youth worldwide.'
     },
     {
       icon: Clock,
@@ -75,35 +75,35 @@ export const Features: React.FC<FeaturesProps> = ({ lang }) => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.6, ease: "easeOut" }}
-      className="py-20 bg-slate-50 relative overflow-hidden"
+      className="py-20 bg-slate-50 dark:bg-[#070E18] relative overflow-hidden transition-colors duration-200"
     >
       
       {/* Background subtle geometric touches */}
-      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent" />
+      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-slate-300 dark:via-slate-800 to-transparent" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
-          <div className="inline-flex items-center gap-1.5 px-4 py-1 rounded-full bg-[#0B192C] text-white text-xs font-black uppercase tracking-wider">
+          <div className="inline-flex items-center gap-1.5 px-4 py-1 rounded-full bg-[#0B192C] dark:bg-[#0E1A2C] text-white text-xs font-black uppercase tracking-wider border border-slate-700">
             <Sparkles className="w-3.5 h-3.5 text-orange-400" />
             <span>{lang === 'so' ? 'Maxaad Noo Dooranaysaa?' : 'Why Choose Us?'}</span>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl font-black text-[#0B192C] tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-black text-[#0B192C] dark:text-white tracking-tight">
             {lang === 'so' ? (
               <>
-                Sababaha <span className="text-[#0B192C] underline decoration-orange-500 decoration-4 underline-offset-6">Baro Quran Academy</span> ay u Tahay Madarasadda 1-aad
+                Sababaha <span className="text-[#0B192C] dark:text-white underline decoration-orange-500 decoration-4 underline-offset-6">Baro Quran Academy</span> ay u Tahay Madarasadda 1-aad
               </>
             ) : (
               <>
-                Why Families Globally Trust <span className="text-[#0B192C] underline decoration-orange-500 decoration-4 underline-offset-6">Baro Quran Academy</span>
+                Why Families Globally Trust <span className="text-[#0B192C] dark:text-white underline decoration-orange-500 decoration-4 underline-offset-6">Baro Quran Academy</span>
               </>
             )}
           </h2>
 
-          <p className="text-base text-slate-700 font-medium">
+          <p className="text-base text-slate-700 dark:text-slate-300 font-medium">
             {lang === 'so'
-              ? 'Waxaan dhisnay madarasad & malcaamad online oo ammaan ah, tayadeedu sarrayso, oo carruurta qurbaha ku dhiirrigelisa barashada Qur’aanka Kariimka iyo culuumta Islaamka.'
+              ? 'Waxaan dhisnay madarasad & malcaamad online oo ammaan ah, tayadeedu sarrayso, oo qoys kasta oo Soomaaliyeed aduunka daafihiisa ku dhiirrigelisa barashada Qur’aanka Kariimka iyo culuumta Islaamka.'
               : 'We combine authentic Islamic scholarly tradition with modern interactive educational technology for transformative Quranic learning.'}
           </p>
         </div>
@@ -120,7 +120,7 @@ export const Features: React.FC<FeaturesProps> = ({ lang }) => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: idx * 0.08 }}
-                className="group relative bg-white rounded-3xl p-8 border-2 border-slate-200 shadow-sm hover:shadow-xl hover:border-orange-500 transition-all duration-300 transform hover:-translate-y-1"
+                className="group relative bg-white dark:bg-[#0E1A2C] rounded-3xl p-8 border-2 border-slate-200 dark:border-slate-700/80 shadow-sm hover:shadow-xl hover:border-orange-500 dark:hover:border-orange-500 transition-all duration-300 transform hover:-translate-y-1"
               >
                 {/* Icon Container */}
                 <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-6 shadow-md border ${item.bgLight} group-hover:scale-110 transition-transform duration-200`}>
@@ -128,17 +128,17 @@ export const Features: React.FC<FeaturesProps> = ({ lang }) => {
                 </div>
 
                 {/* Title */}
-                <h3 className="text-lg font-black text-[#0B192C] mb-3 group-hover:text-orange-600 transition-colors">
+                <h3 className="text-lg font-black text-[#0B192C] dark:text-white mb-3 group-hover:text-orange-500 transition-colors">
                   {lang === 'so' ? item.titleSo : item.titleEn}
                 </h3>
 
                 {/* Description */}
-                <p className="text-sm text-slate-700 leading-relaxed font-medium">
+                <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
                   {lang === 'so' ? item.descSo : item.descEn}
                 </p>
 
                 {/* Bottom decorative accent */}
-                <div className="mt-6 pt-4 border-t border-slate-100 flex items-center gap-2 text-xs font-bold text-orange-600">
+                <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-700/60 flex items-center gap-2 text-xs font-bold text-orange-600 dark:text-orange-400">
                   <CheckCircle className="w-4 h-4 text-orange-500" />
                   <span>{lang === 'so' ? 'Tayo la hubo' : 'Guaranteed Excellence'}</span>
                 </div>

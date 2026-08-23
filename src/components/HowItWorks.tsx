@@ -58,30 +58,30 @@ export const HowItWorks: React.FC<HowItWorksProps> = ({ lang, onOpenRegister }) 
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.6, ease: "easeOut" }}
-      className="py-20 bg-slate-50 relative"
+      className="py-20 bg-slate-50 dark:bg-[#070E18] relative transition-colors duration-200"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
-          <div className="inline-flex items-center gap-1.5 px-4 py-1 rounded-full bg-[#0B192C] text-white text-xs font-black uppercase tracking-wider">
+          <div className="inline-flex items-center gap-1.5 px-4 py-1 rounded-full bg-[#0B192C] dark:bg-[#0E1A2C] text-white text-xs font-black uppercase tracking-wider border border-slate-700">
             <Sparkles className="w-3.5 h-3.5 text-orange-400" />
             <span>{lang === 'so' ? 'Sidee Loo Bilaabaa?' : 'How It Works'}</span>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl font-black text-[#0B192C] tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-black text-[#0B192C] dark:text-white tracking-tight">
             {lang === 'so' ? (
               <>
-                4 Talaabo oo Fudud oo aad ku <span className="text-[#0B192C] underline decoration-orange-500 decoration-4 underline-offset-6">Bilaabayso</span> Barashada Qur’aanka
+                4 Talaabo oo Fudud oo aad ku <span className="text-[#0B192C] dark:text-white underline decoration-orange-500 decoration-4 underline-offset-6">Bilaabayso</span> Barashada Qur’aanka
               </>
             ) : (
               <>
-                Start Learning in <span className="text-[#0B192C] underline decoration-orange-500 decoration-4 underline-offset-6">4 Simple Steps</span>
+                Start Learning in <span className="text-[#0B192C] dark:text-white underline decoration-orange-500 decoration-4 underline-offset-6">4 Simple Steps</span>
               </>
             )}
           </h2>
 
-          <p className="text-base text-slate-700 font-medium">
+          <p className="text-base text-slate-700 dark:text-slate-300 font-medium">
             {lang === 'so'
               ? 'Nidaam sahlan oo online ah: isdiiwaangeli, qaado fasalka tijaabada ee bilaashka ah, ka dibna bilow koorsadaada.'
               : 'Our streamlined onboarding process gets your child learning with zero friction.'}
@@ -99,28 +99,28 @@ export const HowItWorks: React.FC<HowItWorksProps> = ({ lang, onOpenRegister }) 
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: idx * 0.1 }}
-                className="relative bg-white rounded-3xl p-6 border-2 border-slate-200 shadow-sm hover:shadow-xl hover:border-orange-500 transition-all duration-300 flex flex-col justify-between"
+                className="relative bg-white dark:bg-[#0E1A2C] rounded-3xl p-6 border-2 border-slate-200 dark:border-slate-700/80 shadow-sm hover:shadow-xl hover:border-orange-500 dark:hover:border-orange-500 transition-all duration-300 flex flex-col justify-between"
               >
                 {/* Step Number Badge */}
                 <div className="flex items-center justify-between mb-4">
-                  <div className="w-12 h-12 rounded-2xl bg-[#0B192C] text-white flex items-center justify-center shadow-md">
+                  <div className="w-12 h-12 rounded-2xl bg-[#0B192C] dark:bg-slate-800 text-white flex items-center justify-center shadow-md">
                     <Icon className="w-6 h-6 text-orange-400" />
                   </div>
-                  <span className="text-3xl font-black text-slate-300">
+                  <span className="text-3xl font-black text-slate-300 dark:text-slate-600">
                     {step.number}
                   </span>
                 </div>
 
                 <div>
-                  <h3 className="text-base font-black text-[#0B192C] mb-2">
+                  <h3 className="text-base font-black text-[#0B192C] dark:text-white mb-2">
                     {lang === 'so' ? step.titleSo : step.titleEn}
                   </h3>
-                  <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium">
+                  <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
                     {lang === 'so' ? step.descSo : step.descEn}
                   </p>
                 </div>
 
-                <div className="mt-4 pt-3 border-t border-slate-100 flex items-center text-xs font-bold text-orange-600">
+                <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-700/60 flex items-center text-xs font-bold text-orange-600 dark:text-orange-400">
                   <span>{lang === 'so' ? 'Talaabada ' + (idx + 1) : 'Step ' + (idx + 1)}</span>
                 </div>
               </motion.div>
@@ -129,7 +129,7 @@ export const HowItWorks: React.FC<HowItWorksProps> = ({ lang, onOpenRegister }) 
         </div>
 
         {/* Quick CTA Banner in Deep Navy with Orange Action Button */}
-        <div className="mt-14 p-8 sm:p-10 rounded-3xl bg-[#0B192C] text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl border-2 border-orange-500/30">
+        <div className="mt-14 p-8 sm:p-10 rounded-3xl bg-[#0B192C] dark:bg-[#0E1A2C] text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl border-2 border-orange-500/30">
           <div className="space-y-1.5 text-center md:text-left">
             <h3 className="text-xl sm:text-2xl font-black text-white">
               {lang === 'so'

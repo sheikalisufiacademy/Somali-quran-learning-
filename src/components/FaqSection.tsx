@@ -27,30 +27,30 @@ export const FaqSection: React.FC<FaqSectionProps> = ({ lang }) => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.6, ease: "easeOut" }}
-      className="py-20 bg-white relative"
+      className="py-20 bg-white dark:bg-[#070E18] relative transition-colors duration-200"
     >
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
         <div className="text-center mb-16 space-y-3">
-          <div className="inline-flex items-center gap-1.5 px-4 py-1 rounded-full bg-[#0B192C] text-white text-xs font-black uppercase tracking-wider">
+          <div className="inline-flex items-center gap-1.5 px-4 py-1 rounded-full bg-[#0B192C] dark:bg-[#0E1A2C] text-white text-xs font-black uppercase tracking-wider border border-slate-700">
             <HelpCircle className="w-3.5 h-3.5 text-orange-400" />
             <span>{lang === 'so' ? 'Su’aalaha Badanaa La Isweydiiyo (FAQ)' : 'Frequently Asked Questions'}</span>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl font-black text-[#0B192C] tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-black text-[#0B192C] dark:text-white tracking-tight">
             {lang === 'so' ? (
               <>
-                Su’aalaha Ku Saabsan <span className="text-[#0B192C] underline decoration-orange-500 decoration-4 underline-offset-6">Barashada Qur’aanka</span> & Fasallada
+                Su’aalaha Ku Saabsan <span className="text-[#0B192C] dark:text-white underline decoration-orange-500 decoration-4 underline-offset-6">Barashada Qur’aanka</span> & Fasallada
               </>
             ) : (
               <>
-                Everything You Need to Know About <span className="text-[#0B192C] underline decoration-orange-500 decoration-4 underline-offset-6">Our Classes</span>
+                Everything You Need to Know About <span className="text-[#0B192C] dark:text-white underline decoration-orange-500 decoration-4 underline-offset-6">Our Classes</span>
               </>
             )}
           </h2>
 
-          <p className="text-base text-slate-700 font-medium">
+          <p className="text-base text-slate-700 dark:text-slate-300 font-medium">
             {lang === 'so'
               ? 'Halkan waxaad ka helaysaa jawaabaha su’aalaha ugu muhiimsan ee waalidiinta iyo ardaydu isweydiiyaan: macallimiinta, saacadaha fasalka, qiimaha, iyo sida fasalka bilaashka ah loo qaato.'
               : 'Find answers to common questions about our scheduling, teaching methods, pricing, and trial sessions.'}
@@ -70,19 +70,21 @@ export const FaqSection: React.FC<FaqSectionProps> = ({ lang }) => {
                 transition={{ duration: 0.35, delay: idx * 0.05 }}
                 id={`faq-item-${faq.id}`}
                 className={`rounded-3xl border-2 transition-all duration-200 overflow-hidden ${
-                  isOpen ? 'border-orange-500 bg-white shadow-lg' : 'border-slate-200 bg-slate-50 shadow-xs hover:border-slate-300'
+                  isOpen 
+                    ? 'border-orange-500 bg-white dark:bg-[#0E1A2C] shadow-lg' 
+                    : 'border-slate-200 dark:border-slate-700/80 bg-slate-50 dark:bg-[#0E1A2C]/60 shadow-xs hover:border-slate-300 dark:hover:border-slate-600'
                 }`}
               >
                 <button
                   onClick={() => toggleFaq(faq.id)}
-                  className="w-full p-6 text-left flex items-center justify-between gap-4 hover:bg-slate-50/80 transition-colors cursor-pointer"
+                  className="w-full p-6 text-left flex items-center justify-between gap-4 hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors cursor-pointer"
                   aria-expanded={isOpen}
                 >
-                  <span className="text-base font-black text-[#0B192C] leading-snug">
+                  <span className="text-base font-black text-[#0B192C] dark:text-white leading-snug">
                     {lang === 'so' ? faq.questionSo : faq.questionEn}
                   </span>
                   <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-200 ${
-                    isOpen ? 'bg-orange-500 text-white rotate-180' : 'bg-slate-200 text-slate-700'
+                    isOpen ? 'bg-orange-500 text-white rotate-180' : 'bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
                   }`}>
                     <ChevronDown className="w-4 h-4 stroke-[3]" />
                   </div>
@@ -94,7 +96,7 @@ export const FaqSection: React.FC<FaqSectionProps> = ({ lang }) => {
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: 'auto' }}
                       exit={{ opacity: 0, height: 0 }}
-                      className="px-6 pb-6 pt-2 text-sm text-slate-700 leading-relaxed border-t border-slate-100 font-medium"
+                      className="px-6 pb-6 pt-2 text-sm text-slate-700 dark:text-slate-300 leading-relaxed border-t border-slate-100 dark:border-slate-700/60 font-medium"
                     >
                       <p>{lang === 'so' ? faq.answerSo : faq.answerEn}</p>
                     </motion.div>
@@ -106,7 +108,7 @@ export const FaqSection: React.FC<FaqSectionProps> = ({ lang }) => {
         </div>
 
         {/* Still Have Questions Box in Navy / Orange */}
-        <div className="mt-14 p-8 sm:p-10 rounded-3xl bg-[#0B192C] text-white border-2 border-orange-500/30 shadow-2xl text-center space-y-4">
+        <div className="mt-14 p-8 sm:p-10 rounded-3xl bg-[#0B192C] dark:bg-[#0E1A2C] text-white border-2 border-orange-500/30 shadow-2xl text-center space-y-4">
           <div className="w-14 h-14 rounded-2xl bg-orange-500 text-white flex items-center justify-center mx-auto shadow-md">
             <MessageCircle className="w-7 h-7" />
           </div>

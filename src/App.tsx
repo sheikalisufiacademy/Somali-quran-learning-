@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Language, AppPage, StudentProfile } from './types';
+import { 
+  BookOpen, 
+  ArrowLeft,
+  Calendar,
+  Globe,
+  Sparkles
+} from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Language, AppPage, Theme } from './types';
+
+// Subcomponents
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { Features } from './components/Features';
@@ -12,54 +22,32 @@ import { ContactPage } from './components/ContactPage';
 import { PolicyTermsPages } from './components/PolicyTermsPages';
 import { Footer } from './components/Footer';
 import { RegistrationModal } from './components/RegistrationModal';
-import { StudentLoginModal } from './components/StudentLoginModal';
-import { StudentDashboard } from './components/StudentDashboard';
 import { FloatingWhatsApp } from './components/FloatingWhatsApp';
-import { ArrowLeft, Home, Sparkles } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
-
-// Default Student Profile fallback
-const DEFAULT_STUDENT: StudentProfile = {
-  studentId: 'STD-2024-88',
-  fullName: 'Cabdiraxmaan Maxamed Cali',
-  age: '9',
-  gender: 'male',
-  email: 'abdirahman@gmail.com',
-  phone: '+44 7123 456789',
-  enrolledCourseId: 'quran-reading',
-  enrolledCourseTitleSo: 'Akhriska Saxda ah & Tajweedka Sare (Quran Reading with Tajweed)',
-  enrolledCourseTitleEn: 'Quran Reading with Advanced Tajweed Rules',
-  assignedTeacherNameSo: 'Sheekh Cabdullaahi Maxamed (Macalinkaaga)',
-  assignedTeacherNameEn: 'Sheikh Abdullahi Mohamed (Your Assigned Teacher)',
-  assignedTeacherPhoto: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80',
-  classTime: '06:00 PM (UK / GMT)',
-  scheduleDays: ['Isniin (Mon)', 'Talaado (Tue)', 'Arbaco (Wed)', 'Khamiis (Thu)', 'Jimco (Fri)'],
-  meetingLink: 'https://meet.google.com/baro-quran-live',
-  tomorrowsLesson: 'Suuratul Al-Mulk (Aayadaha 1 - 10) & Xeerka Ghunnah',
-  tomorrowPrepNotes: 'Fadlan dib u akhri aayadaha 1-10 ee Suuratul Mulk ugu yaraan 3 jeer inta aadan fasalka soo galin.',
-  attendanceRate: 98,
-  totalCompletedLessons: 42,
-  juzMemorized: 4
-};
 
 export default function App() {
   const [lang, setLang] = useState<Language>('so');
+  const [theme, setTheme] = useState<Theme>(() => {
+    const savedTheme = localStorage.getItem('baro_theme');
+    if (savedTheme === 'dark' || savedTheme === 'light') {
+      return savedTheme;
+    }
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  });
+
   const [currentPage, setCurrentPage] = useState<AppPage>('home');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isLoginOpen, setIsLoginOpen] = useState(false);
-  const [currentStudent, setCurrentStudent] = useState<StudentProfile | null>(() => {
-    const saved = localStorage.getItem('baro_active_student');
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch (e) {
-        return null;
-      }
-    }
-    return null;
-  });
   const [preselectedCourse, setPreselectedCourse] = useState<string | undefined>();
   const [preselectedPlan, setPreselectedPlan] = useState<string | undefined>();
+
+  // Manage Dark / Light Theme Class on document root
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    localStorage.setItem('baro_theme', theme);
+  }, [theme]);
 
   // Sync hash routing and language params on mount and hashchange
   useEffect(() => {
@@ -73,7 +61,7 @@ export default function App() {
 
       // Check hash for page routing
       const hash = window.location.hash.replace('#', '').toLowerCase();
-      const validPages: AppPage[] = ['home', 'courses', 'why-us', 'pricing', 'reviews', 'faq', 'contact', 'privacy', 'terms', 'student-dashboard'];
+      const validPages: AppPage[] = ['home', 'courses', 'why-us', 'pricing', 'reviews', 'faq', 'contact', 'privacy', 'terms'];
       if (validPages.includes(hash as AppPage)) {
         setCurrentPage(hash as AppPage);
       }
@@ -90,14 +78,10 @@ export default function App() {
     if (lang === 'so') {
       document.title = currentPage === 'home'
         ? "Baro Qur'aanka Online | Baro Quran Academy - Akadeemiyada Tajwiidka, Higaada & Xifdiga"
-        : currentPage === 'student-dashboard'
-        ? "Dashboard-ka Ardayga | Baro Quran Academy"
         : `Baro Quran Academy | ${currentPage.toUpperCase()}`;
     } else {
       document.title = currentPage === 'home'
         ? "Learn Quran Online | Baro Quran Academy - Tajweed, Qaida & Hifz"
-        : currentPage === 'student-dashboard'
-        ? "Student Dashboard | Baro Quran Academy"
         : `Baro Quran Academy | ${currentPage.toUpperCase()}`;
     }
   }, [lang, currentPage]);
@@ -118,33 +102,18 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleLoginSuccess = (student: StudentProfile) => {
-    setCurrentStudent(student);
-    localStorage.setItem('baro_active_student', JSON.stringify(student));
-    setCurrentPage('student-dashboard');
-    window.location.hash = 'student-dashboard';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handleLogout = () => {
-    setCurrentStudent(null);
-    localStorage.removeItem('baro_active_student');
-    setCurrentPage('home');
-    window.location.hash = '';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-orange-500 selection:text-white flex flex-col">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#070E18] text-slate-900 dark:text-slate-100 font-sans selection:bg-orange-500 selection:text-white flex flex-col transition-colors duration-200">
       
       {/* Header and Top Navigation */}
       <Navbar
         lang={lang}
         setLang={setLang}
+        theme={theme}
+        setTheme={setTheme}
         currentPage={currentPage}
         onNavigate={handleNavigate}
         onOpenRegister={handleOpenRegister}
-        onOpenLogin={() => setIsLoginOpen(true)}
       />
 
       {/* Main Content Area */}
@@ -194,24 +163,7 @@ export default function App() {
             </motion.div>
           )}
 
-          {currentPage === 'student-dashboard' && (
-            <motion.div
-              key="page-student-dashboard"
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -15 }}
-              transition={{ duration: 0.3 }}
-            >
-              <StudentDashboard
-                student={currentStudent || DEFAULT_STUDENT}
-                lang={lang}
-                onLogout={handleLogout}
-                onNavigateHome={() => handleNavigate('home')}
-              />
-            </motion.div>
-          )}
-
-          {currentPage !== 'home' && currentPage !== 'student-dashboard' && (
+          {currentPage !== 'home' && (
             <motion.div
               key={`page-${currentPage}`}
               initial={{ opacity: 0, y: 15 }}
@@ -224,7 +176,7 @@ export default function App() {
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-4">
                 <button
                   onClick={() => handleNavigate('home')}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-slate-200 text-[#0B192C] text-xs font-black hover:bg-orange-50 hover:border-orange-300 hover:text-orange-600 transition-all shadow-xs cursor-pointer"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-[#0E1A2C] border border-slate-200 dark:border-slate-700 text-[#0B192C] dark:text-white text-xs font-black hover:bg-orange-50 dark:hover:bg-slate-800 hover:border-orange-300 hover:text-orange-600 transition-all shadow-xs cursor-pointer"
                 >
                   <ArrowLeft className="w-4 h-4 text-orange-500" />
                   <span>{lang === 'so' ? '← Ku noqo Bogga Hore (Home)' : '← Back to Home'}</span>
@@ -311,13 +263,11 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      {currentPage !== 'student-dashboard' && (
-        <Footer
-          lang={lang}
-          onOpenRegister={handleOpenRegister}
-          onNavigate={handleNavigate}
-        />
-      )}
+      <Footer
+        lang={lang}
+        onOpenRegister={handleOpenRegister}
+        onNavigate={handleNavigate}
+      />
 
       {/* Interactive Registration & Free Trial Booking Modal */}
       <RegistrationModal
@@ -326,14 +276,6 @@ export default function App() {
         lang={lang}
         preselectedCourseId={preselectedCourse}
         preselectedPlanId={preselectedPlan}
-      />
-
-      {/* Student Login Modal */}
-      <StudentLoginModal
-        isOpen={isLoginOpen}
-        onClose={() => setIsLoginOpen(false)}
-        onLoginSuccess={handleLoginSuccess}
-        lang={lang}
       />
 
       {/* Floating WhatsApp Quick Launcher */}

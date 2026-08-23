@@ -78,30 +78,30 @@ export const Courses: React.FC<CoursesProps> = ({ lang, onSelectCourse }) => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.6, ease: "easeOut" }}
-      className="py-20 bg-white relative"
+      className="py-20 bg-white dark:bg-[#070E18] relative transition-colors duration-200"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Title */}
         <div className="text-center max-w-3xl mx-auto mb-12 space-y-3">
-          <div className="inline-flex items-center gap-1.5 px-4 py-1 rounded-full bg-[#0B192C] text-white text-xs font-black uppercase tracking-wider">
+          <div className="inline-flex items-center gap-1.5 px-4 py-1 rounded-full bg-[#0B192C] dark:bg-[#0E1A2C] text-white text-xs font-black uppercase tracking-wider border border-slate-700">
             <BookOpen className="w-3.5 h-3.5 text-orange-400" />
             <span>{lang === 'so' ? 'Manhajka & Koorsooyinka' : 'Curriculum & Programs'}</span>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl font-black text-[#0B192C] tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-black text-[#0B192C] dark:text-white tracking-tight">
             {lang === 'so' ? (
               <>
-                Koorsooyinka <span className="text-[#0B192C] underline decoration-orange-500 decoration-4 underline-offset-6">Baro Quran Academy</span>: Higaadda, Tajwiidka & Xifdiga
+                Koorsooyinka <span className="text-[#0B192C] dark:text-white underline decoration-orange-500 decoration-4 underline-offset-6">Baro Quran Academy</span>: Higaadda, Tajwiidka & Xifdiga
               </>
             ) : (
               <>
-                Structured Quran & Islamic Studies <span className="text-[#0B192C] underline decoration-orange-500 decoration-4 underline-offset-6">Programs</span>
+                Structured Quran & Islamic Studies <span className="text-[#0B192C] dark:text-white underline decoration-orange-500 decoration-4 underline-offset-6">Programs</span>
               </>
             )}
           </h2>
 
-          <p className="text-base text-slate-700 font-medium">
+          <p className="text-base text-slate-700 dark:text-slate-300 font-medium">
             {lang === 'so'
               ? 'Manhaj habaysan oo ka bilaabmaya barashada higaada iyo Qaacidada Nuuraaniyada ilaa tajwiidka suubban, xifdiga Qur’aanka, axaadiista saxiixa ah, iyo seeradda Nabiga (SCW).'
               : 'From complete beginners learning the alphabet to advanced students completing the entire Quran with Ijazah.'}
@@ -117,7 +117,7 @@ export const Courses: React.FC<CoursesProps> = ({ lang, onSelectCourse }) => {
               className={`px-5 py-2.5 rounded-xl text-sm font-extrabold transition-all cursor-pointer ${
                 selectedCategory === cat.id
                   ? 'bg-orange-500 text-white shadow-md shadow-orange-500/30'
-                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                  : 'bg-slate-100 dark:bg-[#0E1A2C] text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-800 border border-transparent dark:border-slate-700'
               }`}
             >
               {lang === 'so' ? cat.labelSo : cat.labelEn}
@@ -140,10 +140,10 @@ export const Courses: React.FC<CoursesProps> = ({ lang, onSelectCourse }) => {
                   exit={{ opacity: 0, scale: 0.96 }}
                   transition={{ duration: 0.35, delay: idx * 0.05 }}
                   id={`course-${course.id}`}
-                  className={`flex flex-col bg-white rounded-3xl border-2 overflow-hidden transition-all duration-300 hover:shadow-2xl group ${
+                  className={`flex flex-col bg-white dark:bg-[#0E1A2C] rounded-3xl border-2 overflow-hidden transition-all duration-300 hover:shadow-2xl group ${
                     course.popular 
                       ? 'border-orange-500 shadow-lg ring-2 ring-orange-400/30' 
-                      : 'border-slate-200 shadow-sm hover:border-orange-400'
+                      : 'border-slate-200 dark:border-slate-700/80 shadow-sm hover:border-orange-400 dark:hover:border-orange-400'
                   }`}
                 >
                   {/* Card Visual Image with Floating "Faahfaahin Dheeraad ah" Button */}
@@ -186,7 +186,7 @@ export const Courses: React.FC<CoursesProps> = ({ lang, onSelectCourse }) => {
                       <button
                         id={`btn-details-${course.id}`}
                         onClick={() => handleOpenCourseDetails(course)}
-                        className="px-3.5 py-1.5 rounded-full bg-white/95 hover:bg-white text-[#0B192C] text-xs font-black shadow-lg backdrop-blur-md flex items-center gap-1.5 transition-all transform hover:scale-105 active:scale-95 cursor-pointer border border-slate-200"
+                        className="px-3.5 py-1.5 rounded-full bg-white/95 dark:bg-[#0E1A2C]/90 hover:bg-white dark:hover:bg-[#1E293B] text-[#0B192C] dark:text-white text-xs font-black shadow-lg backdrop-blur-md flex items-center gap-1.5 transition-all transform hover:scale-105 active:scale-95 cursor-pointer border border-slate-200 dark:border-slate-700"
                         title={lang === 'so' ? 'Gudaha u gal si aad u barato faahfaahin dheeraad ah' : 'View full course details'}
                       >
                         <Eye className="w-3.5 h-3.5 text-orange-500" />
@@ -203,41 +203,41 @@ export const Courses: React.FC<CoursesProps> = ({ lang, onSelectCourse }) => {
                   </div>
 
                   {/* Course Main Body Content */}
-                  <div className="p-6 pb-4 border-b border-slate-100 flex-1">
-                    <h3 className="text-xl font-black text-[#0B192C] mb-2 leading-snug">
+                  <div className="p-6 pb-4 border-b border-slate-100 dark:border-slate-700/60 flex-1">
+                    <h3 className="text-xl font-black text-[#0B192C] dark:text-white mb-2 leading-snug">
                       {lang === 'so' ? course.titleSo : course.titleEn}
                     </h3>
 
-                    <p className="text-xs sm:text-sm text-slate-700 line-clamp-3 font-medium">
+                    <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 line-clamp-3 font-medium">
                       {lang === 'so' ? course.descriptionSo : course.descriptionEn}
                     </p>
                   </div>
 
                   {/* Key Meta Details */}
-                  <div className="p-6 pt-3 pb-3 bg-slate-50 border-b border-slate-100 grid grid-cols-2 gap-3 text-xs text-slate-700">
+                  <div className="p-6 pt-3 pb-3 bg-slate-50 dark:bg-[#070E18] border-b border-slate-100 dark:border-slate-700/60 grid grid-cols-2 gap-3 text-xs text-slate-700 dark:text-slate-300">
                     <div className="flex items-center gap-2">
                       <Users className="w-4 h-4 text-orange-500 shrink-0" />
                       <div>
-                        <span className="text-slate-500 block text-[10px] uppercase font-bold">{lang === 'so' ? 'Da’da:' : 'Age Group:'}</span>
-                        <span className="font-black text-slate-900">{lang === 'so' ? course.ageGroupSo : course.ageGroupEn}</span>
+                        <span className="text-slate-500 dark:text-slate-400 block text-[10px] uppercase font-bold">{lang === 'so' ? 'Da’da:' : 'Age Group:'}</span>
+                        <span className="font-black text-slate-900 dark:text-slate-100">{lang === 'so' ? course.ageGroupSo : course.ageGroupEn}</span>
                       </div>
                     </div>
 
                     <div className="flex items-center gap-2">
                       <Clock className="w-4 h-4 text-orange-500 shrink-0" />
                       <div>
-                        <span className="text-slate-500 block text-[10px] uppercase font-bold">{lang === 'so' ? 'Muddada:' : 'Duration:'}</span>
-                        <span className="font-black text-slate-900">{lang === 'so' ? course.durationSo : course.durationEn}</span>
+                        <span className="text-slate-500 dark:text-slate-400 block text-[10px] uppercase font-bold">{lang === 'so' ? 'Muddada:' : 'Duration:'}</span>
+                        <span className="font-black text-slate-900 dark:text-slate-100">{lang === 'so' ? course.durationSo : course.durationEn}</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Features Checklist */}
                   <div className="p-6 space-y-3">
-                    <h4 className="text-xs font-black text-[#0B192C] uppercase tracking-wider">
+                    <h4 className="text-xs font-black text-[#0B192C] dark:text-white uppercase tracking-wider">
                       {lang === 'so' ? 'Waxyaabaha Muhiimka ah:' : 'Key Highlights:'}
                     </h4>
-                    <ul className="space-y-2 text-xs text-slate-700 font-medium">
+                    <ul className="space-y-2 text-xs text-slate-700 dark:text-slate-300 font-medium">
                       {(lang === 'so' ? course.featuresSo : course.featuresEn).slice(0, 3).map((feature, fIdx) => (
                         <li key={fIdx} className="flex items-start gap-2">
                           <Check className="w-4 h-4 text-orange-500 shrink-0 mt-0.5" />
@@ -250,13 +250,13 @@ export const Courses: React.FC<CoursesProps> = ({ lang, onSelectCourse }) => {
                     <div className="pt-2 flex items-center gap-2">
                       <button
                         onClick={() => handleOpenCourseDetails(course)}
-                        className="w-full py-2 px-3 rounded-xl text-xs font-bold text-[#0B192C] bg-orange-50 hover:bg-orange-100/80 border border-orange-200 transition-colors flex items-center justify-between cursor-pointer"
+                        className="w-full py-2 px-3 rounded-xl text-xs font-bold text-[#0B192C] dark:text-orange-400 bg-orange-50 dark:bg-orange-950/20 hover:bg-orange-100/80 dark:hover:bg-orange-900/40 border border-orange-200 dark:border-orange-900/50 transition-colors flex items-center justify-between cursor-pointer"
                       >
                         <span className="flex items-center gap-1.5">
-                          <Info className="w-3.5 h-3.5 text-orange-600" />
+                          <Info className="w-3.5 h-3.5 text-orange-600 dark:text-orange-400" />
                           {lang === 'so' ? 'Arag Manhajka & Natiijooyinka' : 'View Full Syllabus & Outcomes'}
                         </span>
-                        <ArrowRight className="w-3.5 h-3.5 text-orange-600" />
+                        <ArrowRight className="w-3.5 h-3.5 text-orange-600 dark:text-orange-400" />
                       </button>
                     </div>
                   </div>

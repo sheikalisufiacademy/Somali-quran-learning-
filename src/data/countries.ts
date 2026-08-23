@@ -7,7 +7,7 @@ export interface CountryInfo {
 }
 
 export const COUNTRIES: CountryInfo[] = [
-  // Top Diasporas & Somali regions
+  // Popular Countries & Somali Regions Worldwide
   { code: 'SO', name: 'Somalia', nameSo: 'Soomaaliya', dialCode: '+252', flag: '🇸🇴' },
   { code: 'GB', name: 'United Kingdom', nameSo: 'Boqortooyada Midowday (UK)', dialCode: '+44', flag: '🇬🇧' },
   { code: 'US', name: 'United States', nameSo: 'Maraykanka (USA)', dialCode: '+1', flag: '🇺🇸' },

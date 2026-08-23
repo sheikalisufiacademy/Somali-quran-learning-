@@ -17,17 +17,17 @@ interface TeachersProps {
 
 export const Teachers: React.FC<TeachersProps> = ({ lang, onOpenRegister }) => {
   return (
-    <section id="teachers" className="py-20 bg-white relative">
+    <section id="teachers" className="py-20 bg-white dark:bg-[#070E18] relative transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
-          <div className="inline-flex items-center gap-1.5 px-4 py-1 rounded-full bg-[#0B192C] text-white text-xs font-black uppercase tracking-wider">
+          <div className="inline-flex items-center gap-1.5 px-4 py-1 rounded-full bg-[#0B192C] dark:bg-[#0E1A2C] text-white text-xs font-black uppercase tracking-wider border border-slate-700">
             <Award className="w-3.5 h-3.5 text-orange-400" />
             <span>{lang === 'so' ? 'Macallimiinta Tayada Sare Leh' : 'Certified Scholars & Hafiz Tutors'}</span>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl font-black text-[#0B192C] tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-black text-[#0B192C] dark:text-white tracking-tight">
             {lang === 'so' ? (
               <>
                 Kala Baro <span className="text-orange-500">Macallimiinteena Sharafta Leh</span>
@@ -39,10 +39,10 @@ export const Teachers: React.FC<TeachersProps> = ({ lang, onOpenRegister }) => {
             )}
           </h2>
 
-          <p className="text-base text-slate-600 font-medium">
+          <p className="text-base text-slate-600 dark:text-slate-300 font-medium">
             {lang === 'so'
-              ? 'Macallimiin iyo Macallimado leh Ijaazooyin sax ah, yaqaanna luuqadaha Soomaaliga, Carabiga iyo Ingiriisiga, oo khibrad u leh carruurta qurbaha.'
-              : 'Our vetted educators hold authentic Sanad chains, are fluent in Somali, Arabic, and English, and specialize in teaching youth.'}
+              ? 'Macallimiin iyo Macallimado leh Ijaazooyin sax ah, yaqaanna luuqadaha Soomaaliga, Carabiga iyo Ingiriisiga, oo khibrad durugsan u leh carruurta iyo qoysaska Soomaaliyeed ee aduunka daafihiisa ku nool.'
+              : 'Our vetted educators hold authentic Sanad chains, are fluent in Somali, Arabic, and English, and specialize in teaching Somali youth and families worldwide.'}
           </p>
         </div>
 
@@ -52,17 +52,17 @@ export const Teachers: React.FC<TeachersProps> = ({ lang, onOpenRegister }) => {
             <div
               key={teacher.id}
               id={`teacher-${teacher.id}`}
-              className="bg-white rounded-3xl border-2 border-slate-200 shadow-sm hover:shadow-2xl hover:border-orange-500 transition-all duration-300 overflow-hidden flex flex-col justify-between"
+              className="bg-white dark:bg-[#0E1A2C] rounded-3xl border-2 border-slate-200 dark:border-slate-700/80 shadow-sm hover:shadow-2xl hover:border-orange-500 dark:hover:border-orange-500 transition-all duration-300 overflow-hidden flex flex-col justify-between"
             >
               {/* Teacher Image & Badge */}
-              <div className="relative h-52 overflow-hidden bg-slate-100">
+              <div className="relative h-52 overflow-hidden bg-slate-100 dark:bg-slate-800">
                 <img
                   src={teacher.avatarUrl}
                   alt={lang === 'so' ? teacher.nameSo : teacher.nameEn}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   loading="lazy"
                 />
-                <div className="absolute top-3 right-3 px-3 py-1 rounded-full bg-white/90 backdrop-blur-xs text-xs font-black text-[#0B192C] flex items-center gap-1 shadow-sm">
+                <div className="absolute top-3 right-3 px-3 py-1 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-xs text-xs font-black text-[#0B192C] dark:text-white flex items-center gap-1 shadow-sm">
                   <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
                   <span>{teacher.rating}</span>
                 </div>
@@ -80,15 +80,15 @@ export const Teachers: React.FC<TeachersProps> = ({ lang, onOpenRegister }) => {
                     {lang === 'so' ? teacher.roleSo : teacher.roleEn}
                   </span>
                   
-                  <h3 className="text-lg font-black text-[#0B192C] mt-1 mb-2">
+                  <h3 className="text-lg font-black text-[#0B192C] dark:text-white mt-1 mb-2">
                     {lang === 'so' ? teacher.nameSo : teacher.nameEn}
                   </h3>
 
-                  <p className="text-xs text-slate-600 leading-relaxed mb-3 font-medium">
+                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-3 font-medium">
                     {lang === 'so' ? teacher.qualificationSo : teacher.qualificationEn}
                   </p>
 
-                  <div className="space-y-1.5 pt-2 border-t border-slate-100 text-xs text-slate-500 font-medium">
+                  <div className="space-y-1.5 pt-2 border-t border-slate-100 dark:border-slate-700/60 text-xs text-slate-500 dark:text-slate-400 font-medium">
                     <div className="flex items-center gap-2">
                       <GraduationCap className="w-4 h-4 text-orange-500 shrink-0" />
                       <span>{lang === 'so' ? teacher.experienceSo : teacher.experienceEn}</span>
@@ -103,7 +103,7 @@ export const Teachers: React.FC<TeachersProps> = ({ lang, onOpenRegister }) => {
                 <div className="pt-3">
                   <button
                     onClick={onOpenRegister}
-                    className="w-full py-3 text-center text-xs font-black text-white bg-[#0B192C] hover:bg-orange-500 rounded-xl transition-colors shadow-xs"
+                    className="w-full py-3 text-center text-xs font-black text-white bg-[#0B192C] dark:bg-slate-800 hover:bg-orange-500 dark:hover:bg-orange-500 rounded-xl transition-colors shadow-xs cursor-pointer"
                   >
                     {lang === 'so' ? 'Qaado Fasal Tijaabo ah' : 'Book Trial with Teacher'}
                   </button>
