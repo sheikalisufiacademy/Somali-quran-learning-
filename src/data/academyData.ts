@@ -1,4 +1,9 @@
 import { Course, PricingPlan, Teacher, Testimonial, FaqItem } from '../types';
+import qaidaImg from '../assets/images/noorani_qaida_online_class_1787416190508.jpg';
+import tajweedImg from '../assets/images/tajweed_mastery_classroom_1787416204441.jpg';
+import hifzImg from '../assets/images/quran_hifz_circle_1787416218745.jpg';
+import islamicStudiesImg from '../assets/images/islamic_studies_books_1787416231030.jpg';
+import sistersMothersImg from '../assets/images/sisters_mothers_quran_class_1787484480960.jpg';
 
 export const COURSES_DATA: Course[] = [
   {
@@ -9,13 +14,31 @@ export const COURSES_DATA: Course[] = [
     categoryEn: 'Beginner Level',
     descriptionSo: 'Barashada xarfaha afka Carabiga, makhariijta saxda ah, shaqallada (Fatxa, Kasra, Damma), Sujuunka, Shaddada, iyo isku xirka xarfaha si ardaygu u awoodo akhrinta Qur’aanka Kariimka.',
     descriptionEn: 'Learn the Arabic alphabet from scratch, correct pronunciation (Makharij), vowels (Fatha, Kasra, Damma), Sukoon, Shaddah, and combining letters to build fluent Quran reading skills.',
+    fullOverviewSo: 'Koorsada Qaacidada Nuuraaniyada waa aasaaska koowaad ee waxbarashada Qur’aanka Kariimka. Waxaa loogu talagalay carruurta yaryar iyo qof kasta oo raba inuu bilaabo akhriska xarfaha Carabiga. Macallinka oo sita khamiis cad iyo koofiyad cad ayaa ardayga online 1-on-1 ugu sharxaya isagoo adeegsanaya sabuuradaha casriga ah, buugga Qaacidada, iyo sixitaanka dhawaaqa xaraf kasta.',
+    fullOverviewEn: 'Noorani Qaida is the fundamental stepping stone for mastering Quranic recitation. Designed specifically for kids and beginners, certified teachers guide students 1-on-1 through letter recognition, articulation points, and vowel combinations with interactive digital tools.',
     iconName: 'BookOpen',
+    imageUrl: qaidaImg,
+    imageAlt: 'Barashada Qaacidada Nuuraaniyada iyo Higaada Online',
     levelSo: 'Kuwa Hadda Bilaabaya',
     levelEn: 'Beginner',
     ageGroupSo: 'Carruurta (4-12 jir) & Dadka Waaweyn',
     ageGroupEn: 'Kids (4-12 yrs) & Adults',
     durationSo: '2 - 3 Bilood',
     durationEn: '2 - 3 Months',
+    recommendedScheduleSo: '3 ilaa 5 Maalmood todobaadkii (30 daqiiqo kalfadhigiiba)',
+    recommendedScheduleEn: '3 to 5 Days a week (30 mins per session)',
+    learningOutcomesSo: [
+      'Aqoonsiga iyo dhawaaqa 28-ka xaraf ee Carabiga oo makhariij sax ah leh',
+      'Fahamka iyo akhriska shaqallada (Fatxa, Kasra, Dammah)',
+      'Akhriska xarfaha isku xiran iyo ereyada Qur’aanka Kariimka',
+      'Awood u yeelashada inuu ardaygu toos uga bilaabo Mus-xafka (Juz Camma)'
+    ],
+    learningOutcomesEn: [
+      'Mastery of all 28 Arabic letters with correct phonetic points',
+      'Flawless recognition of vowels, Tanween, Sukoon, and Shaddah',
+      'Ability to blend letters into full Quranic words',
+      'Smooth transition into reading directly from the Holy Quran'
+    ],
     syllabusSo: [
       'Xarfaha Carabiga iyo dhawaaqooda saxda ah (Makharij)',
       'Shaqallada gaagaaban: Fatxa, Kasra, Dammah',
@@ -53,13 +76,31 @@ export const COURSES_DATA: Course[] = [
     categoryEn: 'Intermediate & Advanced',
     descriptionSo: 'Koorsadan waxaad ku baranaysaa dhammaan xeerarka Tajwiidka cilmiyan iyo ficil ahaanba (Axkaamta Nuun Saakina, Meem Saakina, Maddadka, Qalqalaha) si aad Qur’aanka ugu akhrido sida loo soo dajiyay.',
     descriptionEn: 'Master all the theoretical and practical rules of Tajweed (Noon Sakinah, Meem Sakinah, Mudood, Qalqalah, Sifaat) to recite the Holy Quran with beautified fluency and precision.',
+    fullOverviewSo: 'Koorsada Tajwiidka waxay ku baraysaa xeerarka qiraa’ada suubban sida uu Nabigu (SCW) noo baray. Fasallada waxaa lagu bixiyaa hab casri ah oo shaashado waaweyn (TV/Smart Screen) lagaga sharxayo axkaamta Tajwiidka, jaantusyada makhariijta xarfaha, iyo xeerarka Nuun Saakina, Meem Saakina iyo Maddadka, iyadoo macallinku toos u saxayo arday kasta akhriskiisa.',
+    fullOverviewEn: 'Master the rules of Tajweed with interactive live digital presentations showing articulation diagrams, phonetic rules, and continuous recitation correction from certified Ijazah holders.',
     iconName: 'Sparkles',
+    imageUrl: tajweedImg,
+    imageAlt: 'Barashada Tajwiidka iyo Akhriska Quraanka Online',
     levelSo: 'Dhexe / Sare',
     levelEn: 'Intermediate / Advanced',
     ageGroupSo: 'Dhammaan Da’aha (Carruur & Waaweyn)',
     ageGroupEn: 'All Ages (Kids & Adults)',
     durationSo: '3 - 6 Bilood',
     durationEn: '3 - 6 Months',
+    recommendedScheduleSo: '3 ilaa 4 Maalmood todobaadkii (40 daqiiqo kalfadhigiiba)',
+    recommendedScheduleEn: '3 to 4 Days a week (40 mins per session)',
+    learningOutcomesSo: [
+      'Barashada dhammaan xeerarka Nuun Saakina, Tanwiin iyo Meem Saakina',
+      'Fahamka iyo ku dhaqanka xeerarka Qalqalaha iyo Maddadka kala duwan',
+      'Saxidda Makhariijta xarfaha culus (Tafkhiim) iyo kuwa khafiifka ah (Tarqeeq)',
+      'Akhriska Qur’aanka oo leh cod qurux badan iyo qiraa’o sugan'
+    ],
+    learningOutcomesEn: [
+      'Comprehensive grasp of Noon & Meem Sakinah rules',
+      'Practical mastery of Madd extensions, Qalqalah, and Waqf/Ibtida',
+      'Distinction between heavy and light Arabic letters',
+      'Beautified, fluent recitation matching authentic Qira’at standards'
+    ],
     syllabusSo: [
       'Axkaamta Nuun As-Saakina iyo Tanwiin (Ith-haar, Idghaam, Iqlaab, Ikhfaa)',
       'Axkaamta Meem As-Saakina (Ikhfaa Shafawi, Idghaam, Ith-haar Shafawi)',
@@ -97,13 +138,31 @@ export const COURSES_DATA: Course[] = [
     categoryEn: 'Memorization & Revision',
     descriptionSo: 'Barnaamij habaysan oo maalinle iyo todobaadle ah oo ardayga ka caawinaya xifdinta Qur’aanka Kariimka oo dhan ama qaybo ka mid ah, iyadoo la raacayo qorshe muraajaco adag si aan loo iloobin.',
     descriptionEn: 'A structured, step-by-step memorization and continuous revision program tailored to help students memorize the entire Quran or selected Surahs with solid retention and zero forgetfulness.',
+    fullOverviewSo: 'Barnaamijka Xifdiga Qur’aanka Kariimka waxaa loogu talagalay ardayda doonaysa inay noqdaan Xaafidul Qur’aan. Waxaa lagu maamulaa nidaamka xalaqooyinka Islaamiga ah (Halaqah) iyo subcis maalinle ah oo leh 3 tiir: Sabak (Casharka cusub), Sabqi (Muraajacada dhaw), iyo Manzil/Amukhta (Muraajacada fog). Ardaygu wuxuu si qurux badan oo khushuuc leh u fariisanayaa xalaqada isagoo akhrinaya Mus-xafka.',
+    fullOverviewEn: 'Structured full Quran memorization track following classical Halaqah methods: new memorization (Sabaq), short-term retention (Sabqi), and comprehensive long-term revision (Manzil) under certified Hafiz mentors.',
     iconName: 'Award',
+    imageUrl: hifzImg,
+    imageAlt: 'Xifdiga iyo Subcinta Quraanka Kariimka',
     levelSo: 'Heer kasta (Laga bilaabo Juz Camma)',
     levelEn: 'All levels (From Juz Amma to 30 Juz)',
     ageGroupSo: '6 jir iyo wixii ka weyn',
     ageGroupEn: '6 years & above',
     durationSo: 'Qorshe Gaar ah (6 Bilood - 3 Sano)',
     durationEn: 'Custom Pace (6 Months - 3 Years)',
+    recommendedScheduleSo: '4 ilaa 5 Maalmood todobaadkii (45 daqiiqo kalfadhigiiba)',
+    recommendedScheduleEn: '4 to 5 Days a week (45 mins per session)',
+    learningOutcomesSo: [
+      'Xifdinta Qur’aanka Kariimka oo adag (oo aan la iloobayn)',
+      'Dhisidda muraajaco joogto ah oo ardaygu kaligiis samayn karo',
+      'Kalsoonida in ardaygu tujiyo salaadaha iyo Taraawiixda',
+      'Shahaadada Xifdiga Qur’aanka iyo Xaflad qalinjabin heer caalami ah'
+    ],
+    learningOutcomesEn: [
+      'Solid long-term Quranic retention with zero gaps',
+      'Disciplined daily revision habits (Manzil)',
+      'Confidence to lead prayers and Taraweeh',
+      'Formal Hifz completion certificate & graduation recognition'
+    ],
     syllabusSo: [
       'Xifdinta maalinlaha ah (Sabak cusub oo maalin kasta la qaato)',
       'Muraajacada dhaw (Sabak-para / Casharradii dhowaa)',
@@ -140,13 +199,31 @@ export const COURSES_DATA: Course[] = [
     categoryEn: 'Islamic Studies',
     descriptionSo: 'Barashada aasaaska diinta Islaamka: Caqiidada saxda ah, Siirada Nebiga (NNKH), Axkaamta Salaadda iyo Daahirada (Fiqh), Ducooyinka maalinlaha ah, iyo Aadaabta wanaagsan ee Muslimka.',
     descriptionEn: 'Essential Islamic foundational education covering correct Aqeedah, Seerah of the Prophet (PBUH), Fiqh of Salah and Taharah, daily Duas, and cultivating noble Islamic morals and manners.',
+    fullOverviewSo: 'Koorsada Culuumta Islaamka iyo Tarbiyada waxay ardayda baraysaa cilmiga shareecada ee laga soo xigtay kutubta waaweyn ee Islaamka. Waxaa lagu baranayaa Caqiidada, Axaadiista saxiixa ah, Siirada Rasuulka (SCW), Fiqhiga Salaadda, Ducooyinka maalinlaha ah, iyo anshaxa suuban ee Muslimka si carruurta loogu tarbiyeeyo diinta saxda ah.',
+    fullOverviewEn: 'Comprehensive Islamic curriculum covering essential classical texts, authentic Hadith, Prophetic biography (Seerah), Islamic jurisprudence (Fiqh), daily supplications, and youth character development.',
     iconName: 'GraduationCap',
+    imageUrl: islamicStudiesImg,
+    imageAlt: 'Barashada Culuumta Shareecada iyo Kutubta Diinta',
     levelSo: 'Dhammaan Heerarka',
     levelEn: 'All Levels',
     ageGroupSo: 'Carruurta (5-18 jir) & Qoysaska',
     ageGroupEn: 'Kids (5-18 yrs) & Families',
     durationSo: 'Manhaj Joogto ah',
     durationEn: 'Ongoing Curriculum',
+    recommendedScheduleSo: '2 ilaa 3 Maalmood todobaadkii (45 daqiiqo kalfadhigiiba)',
+    recommendedScheduleEn: '2 to 3 Days a week (45 mins per session)',
+    learningOutcomesSo: [
+      'Fahamka Arkaanta Islaamka iyo Arkaanta Iimaanka',
+      'Barashada taariikhda iyo seeradda Nabiga (SCW)',
+      'Barashada habka saxda ah ee weysada iyo salaadda',
+      'Xifdinta ducooyinka maalinlaha ah iyo axaadiis gaagaaban'
+    ],
+    learningOutcomesEn: [
+      'Firm understanding of the pillars of Islam and Iman',
+      'In-depth knowledge of the Prophetic biography (Seerah)',
+      'Flawless practical knowledge of Wudu and Salah',
+      'Memorization of daily authentic Duas and moral Hadiths'
+    ],
     syllabusSo: [
       'Arkaanta Islaamka & Arkaanta Iimaanka',
       'Siirada iyo Taariikhda Rasuulka (NNKH) iyo Saxaabada',
@@ -183,13 +260,29 @@ export const COURSES_DATA: Course[] = [
     categoryEn: 'Arabic Language',
     descriptionSo: 'Baro luqadda Qur’aanka Kariimka laga bilaabo aasaaska ilaa heerka sare. Dhis awooddaada ku hadalka Carabiga, qoraalka, naxwaha iyo sarfiga si aad toos ugu fahanto micnaha aayadaha.',
     descriptionEn: 'Learn the language of the Holy Quran from foundational grammar to conversational fluency. Build strong vocabulary, reading comprehension, and Nahw/Sarf to understand the Quran directly.',
+    fullOverviewSo: 'Koorsada Luuqadda Carabiga waxay ardayga u fududaynaysaa inuu si toos ah u fahmo hadalka Eebbe ee Qur’aanka. Waxay isugu jirtaa naxwaha, sarfiga, erey-bixinta Qur’aanka iyo wadahadalka tooska ah.',
+    fullOverviewEn: 'Learn the language of revelation from essential grammar to fluent speech and direct Quranic vocabulary understanding.',
     iconName: 'Languages',
+    imageUrl: qaidaImg,
+    imageAlt: 'Barashada Luuqadda Carabiga ee Quraanka',
     levelSo: 'Bilow ilaa Sare',
     levelEn: 'Beginner to Advanced',
     ageGroupSo: 'Carruurta & Dadka Waaweyn',
     ageGroupEn: 'Kids & Adults',
     durationSo: '3 - 12 Bilood',
     durationEn: '3 - 12 Months',
+    recommendedScheduleSo: '3 Maalmood todobaadkii (40 daqiiqo)',
+    recommendedScheduleEn: '3 Days a week (40 mins)',
+    learningOutcomesSo: [
+      'Fahamka ereyada ugu badan ee Qur’aanka Kariimka',
+      'Awoodda ku hadalka iyo wada-sheekaysiga Carabiga aasaasiga ah',
+      'Qorista iyo naxwaha xukuma jumladaha Carabiga'
+    ],
+    learningOutcomesEn: [
+      'Comprehension of the most frequent Quranic words',
+      'Daily conversational Arabic speaking ability',
+      'Grammar fundamentals (Nahw & Sarf)'
+    ],
     syllabusSo: [
       'Qaamuuska ereyada ugu muhiimsan ee Qur’aanka',
       'Aasaaska Naxwaha Carabiga (Kala saaridda Isim, Ficil, Xaraf)',
@@ -223,13 +316,29 @@ export const COURSES_DATA: Course[] = [
     categoryEn: 'Exclusive Sisters Program',
     descriptionSo: 'Fasallo gaar ah oo 100% ay bixiyaan Macallimado haween ah oo Ijaazo iyo aqoon diineed sare leh. Waxaa loogu talagalay gabdhaha yar-yar, gabdhaha qaangaarka ah iyo hooyooyinka.',
     descriptionEn: 'Dedicated private 1-on-1 sessions led exclusively by certified female scholars and Hafidhas. Designed with utmost comfort and privacy for young girls, teens, and mothers.',
+    fullOverviewSo: 'Barnaamijka gaarka ah ee gabdhaha iyo hooyooyinka waxaa 100% bixiya macallimado dumar ah oo leh Ijaazooyin sare. Waxaa lagu baranayaa Qaacidada, Tajwiidka, Xifdiga, iyo Fiqhiga dumarka oo jawi xurmo iyo xishood leh ku baxaya.',
+    fullOverviewEn: 'Tailored 1-on-1 Quran and Tajweed classes conducted exclusively by qualified female scholars for sisters and young daughters with complete privacy.',
     iconName: 'HeartHandshake',
+    imageUrl: sistersMothersImg,
+    imageAlt: 'Fasallada Gaarka ah ee Gabdhaha iyo Hooyooyinka',
     levelSo: 'Dhammaan Heerarka (Qaacida, Tajweed, Xifdi, Fiqh)',
     levelEn: 'All Levels (Qaida, Tajweed, Hifz, Fiqh)',
     ageGroupSo: 'Gabdhaha (Dhammaan Da’aha) & Hooyooyinka',
     ageGroupEn: 'Girls (All Ages) & Mothers',
     durationSo: 'Waqti Dabacsan',
     durationEn: 'Flexible Schedule',
+    recommendedScheduleSo: '3 ilaa 5 Maalmood todobaadkii (Waqti Dabacsan)',
+    recommendedScheduleEn: '3 to 5 Days a week (Flexible Timings)',
+    learningOutcomesSo: [
+      'Akhriska iyo barashada Tajwiidka suubban ee Qur’aanka',
+      'Xifdinta iyo muraajacada joogtada ah',
+      'Barashada Fiqhiga dumarka iyo tarbiyada Islaamka'
+    ],
+    learningOutcomesEn: [
+      'Mastery of Tajweed and correct Quran recitation',
+      'Solid Hifz memorization with regular revision',
+      'Women\'s Islamic jurisprudence and Tarbiyah'
+    ],
     syllabusSo: [
       'Qur’aanka Kariimka iyo Tajwiidka oo ay barayso Macallimad Ijaazo leh',
       'Xifdinta Qur’aanka iyo Muraajacada joogtada ah',

@@ -9,7 +9,11 @@ export interface Course {
   categoryEn: string;
   descriptionSo: string;
   descriptionEn: string;
+  fullOverviewSo?: string;
+  fullOverviewEn?: string;
   iconName: string;
+  imageUrl?: string;
+  imageAlt?: string;
   levelSo: string;
   levelEn: string;
   ageGroupSo: string;
@@ -22,6 +26,10 @@ export interface Course {
   featuresEn: string[];
   badge?: string;
   popular?: boolean;
+  learningOutcomesSo?: string[];
+  learningOutcomesEn?: string[];
+  recommendedScheduleSo?: string;
+  recommendedScheduleEn?: string;
 }
 
 export interface PricingPlan {

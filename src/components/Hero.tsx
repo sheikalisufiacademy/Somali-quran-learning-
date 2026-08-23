@@ -254,28 +254,28 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenRegister, onNavigate }) 
           className="mt-14 p-6 rounded-2xl bg-[#0B192C] text-white shadow-xl grid grid-cols-2 md:grid-cols-4 gap-6 text-center border-2 border-orange-500/40"
         >
           <div className="space-y-1">
-            <div className="text-2xl sm:text-3xl font-black text-white">1,500+</div>
+            <div className="text-2xl sm:text-3xl font-black text-white">569+</div>
             <div className="text-xs sm:text-sm text-slate-300 font-bold">
               {lang === 'so' ? 'Arday oo Qalinjabisay' : 'Graduated Students'}
             </div>
           </div>
 
           <div className="space-y-1 border-l border-slate-700 pl-4">
-            <div className="text-2xl sm:text-3xl font-black text-white">45+</div>
+            <div className="text-2xl sm:text-3xl font-black text-white">13</div>
             <div className="text-xs sm:text-sm text-slate-300 font-bold">
               {lang === 'so' ? 'Macallimiin Ijaazo Leh' : 'Certified Scholars & Hafiz'}
             </div>
           </div>
 
           <div className="space-y-1 border-l border-slate-700 pl-4">
-            <div className="text-2xl sm:text-3xl font-black text-white">25+</div>
+            <div className="text-2xl sm:text-3xl font-black text-white">40+</div>
             <div className="text-xs sm:text-sm text-slate-300 font-bold">
               {lang === 'so' ? 'Waddan oo Ardaydu joogaan' : 'Countries Worldwide'}
             </div>
           </div>
 
           <div className="space-y-1 border-l border-slate-700 pl-4">
-            <div className="text-2xl sm:text-3xl font-black text-white">99.8%</div>
+            <div className="text-2xl sm:text-3xl font-black text-white">100%</div>
             <div className="text-xs sm:text-sm text-slate-300 font-bold">
               {lang === 'so' ? 'Qanacsanaanta Waalidiinta' : 'Parent Satisfaction Rate'}
             </div>

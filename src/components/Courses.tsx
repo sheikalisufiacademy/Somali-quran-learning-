@@ -11,11 +11,15 @@ import {
   Users, 
   ArrowRight,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Info,
+  ExternalLink,
+  Eye
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Language, Course } from '../types';
 import { COURSES_DATA } from '../data/academyData';
+import { CourseDetailModal } from './CourseDetailModal';
 
 interface CoursesProps {
   lang: Language;
@@ -25,12 +29,17 @@ interface CoursesProps {
 export const Courses: React.FC<CoursesProps> = ({ lang, onSelectCourse }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [expandedSyllabus, setExpandedSyllabus] = useState<Record<string, boolean>>({});
+  const [activeModalCourse, setActiveModalCourse] = useState<Course | null>(null);
 
   const toggleSyllabus = (courseId: string) => {
     setExpandedSyllabus(prev => ({
       ...prev,
       [courseId]: !prev[courseId]
     }));
+  };
+
+  const handleOpenCourseDetails = (course: Course) => {
+    setActiveModalCourse(course);
   };
 
   const getIcon = (name: string) => {
@@ -131,31 +140,71 @@ export const Courses: React.FC<CoursesProps> = ({ lang, onSelectCourse }) => {
                   exit={{ opacity: 0, scale: 0.96 }}
                   transition={{ duration: 0.35, delay: idx * 0.05 }}
                   id={`course-${course.id}`}
-                  className={`flex flex-col bg-white rounded-3xl border-2 transition-all duration-300 hover:shadow-2xl ${
+                  className={`flex flex-col bg-white rounded-3xl border-2 overflow-hidden transition-all duration-300 hover:shadow-2xl group ${
                     course.popular 
                       ? 'border-orange-500 shadow-lg ring-2 ring-orange-400/30' 
                       : 'border-slate-200 shadow-sm hover:border-orange-400'
                   }`}
                 >
-                  {/* Top Badge Header */}
-                  <div className="p-6 pb-4 border-b border-slate-100">
-                    <div className="flex items-center justify-between gap-2 mb-3">
-                      <div className="p-3 rounded-2xl bg-[#0B192C] shadow-sm">
+                  {/* Card Visual Image with Floating "Faahfaahin Dheeraad ah" Button */}
+                  <div className="relative h-52 w-full bg-slate-900 overflow-hidden shrink-0">
+                    {course.imageUrl ? (
+                      <img
+                        src={course.imageUrl}
+                        alt={course.imageAlt || (lang === 'so' ? course.titleSo : course.titleEn)}
+                        className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                        referrerPolicy="no-referrer"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-[#0B192C] to-[#1E3E62] flex items-center justify-center">
                         {getIcon(course.iconName)}
                       </div>
+                    )}
 
-                      {course.badge && (
-                        <span className="px-3 py-1 text-xs font-black rounded-full bg-orange-500 text-white">
-                          {course.badge}
-                        </span>
-                      )}
+                    {/* Gradient Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0B192C]/90 via-[#0B192C]/40 to-transparent" />
+
+                    {/* Top Floating Badge */}
+                    <div className="absolute top-3 left-3 z-10 flex items-center gap-1.5">
+                      <span className="px-3 py-1 text-xs font-black rounded-full bg-[#0B192C]/90 text-white border border-white/20 backdrop-blur-sm">
+                        {lang === 'so' ? course.categorySo : course.categoryEn}
+                      </span>
                     </div>
 
-                    <span className="text-xs font-black text-orange-600 uppercase tracking-wider">
-                      {lang === 'so' ? course.categorySo : course.categoryEn}
-                    </span>
+                    {/* Top Right Popular / Badge */}
+                    {course.badge && (
+                      <div className="absolute top-3 right-3 z-10">
+                        <span className="px-3 py-1 text-xs font-black rounded-full bg-orange-500 text-white shadow-md">
+                          {course.badge}
+                        </span>
+                      </div>
+                    )}
 
-                    <h3 className="text-xl font-black text-[#0B192C] mt-1 mb-2">
+                    {/* Floating Clickable "Faahfaahin Dheeraad ah / Learn More" Button on top of Image */}
+                    <div className="absolute bottom-3 right-3 z-10">
+                      <button
+                        id={`btn-details-${course.id}`}
+                        onClick={() => handleOpenCourseDetails(course)}
+                        className="px-3.5 py-1.5 rounded-full bg-white/95 hover:bg-white text-[#0B192C] text-xs font-black shadow-lg backdrop-blur-md flex items-center gap-1.5 transition-all transform hover:scale-105 active:scale-95 cursor-pointer border border-slate-200"
+                        title={lang === 'so' ? 'Gudaha u gal si aad u barato faahfaahin dheeraad ah' : 'View full course details'}
+                      >
+                        <Eye className="w-3.5 h-3.5 text-orange-500" />
+                        <span>{lang === 'so' ? 'Faahfaahin Dheeraad ah' : 'Course Details'}</span>
+                      </button>
+                    </div>
+
+                    {/* Bottom Left Icon inside Image */}
+                    <div className="absolute bottom-3 left-3 z-10 flex items-center gap-2">
+                      <div className="p-2 rounded-xl bg-orange-500 text-white shadow-md">
+                        {getIcon(course.iconName)}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Course Main Body Content */}
+                  <div className="p-6 pb-4 border-b border-slate-100 flex-1">
+                    <h3 className="text-xl font-black text-[#0B192C] mb-2 leading-snug">
                       {lang === 'so' ? course.titleSo : course.titleEn}
                     </h3>
 
@@ -165,7 +214,7 @@ export const Courses: React.FC<CoursesProps> = ({ lang, onSelectCourse }) => {
                   </div>
 
                   {/* Key Meta Details */}
-                  <div className="p-6 pt-4 pb-4 bg-slate-50 border-b border-slate-100 grid grid-cols-2 gap-3 text-xs text-slate-700">
+                  <div className="p-6 pt-3 pb-3 bg-slate-50 border-b border-slate-100 grid grid-cols-2 gap-3 text-xs text-slate-700">
                     <div className="flex items-center gap-2">
                       <Users className="w-4 h-4 text-orange-500 shrink-0" />
                       <div>
@@ -184,12 +233,12 @@ export const Courses: React.FC<CoursesProps> = ({ lang, onSelectCourse }) => {
                   </div>
 
                   {/* Features Checklist */}
-                  <div className="p-6 flex-1 space-y-3">
+                  <div className="p-6 space-y-3">
                     <h4 className="text-xs font-black text-[#0B192C] uppercase tracking-wider">
                       {lang === 'so' ? 'Waxyaabaha Muhiimka ah:' : 'Key Highlights:'}
                     </h4>
                     <ul className="space-y-2 text-xs text-slate-700 font-medium">
-                      {(lang === 'so' ? course.featuresSo : course.featuresEn).map((feature, fIdx) => (
+                      {(lang === 'so' ? course.featuresSo : course.featuresEn).slice(0, 3).map((feature, fIdx) => (
                         <li key={fIdx} className="flex items-start gap-2">
                           <Check className="w-4 h-4 text-orange-500 shrink-0 mt-0.5" />
                           <span>{feature}</span>
@@ -197,39 +246,18 @@ export const Courses: React.FC<CoursesProps> = ({ lang, onSelectCourse }) => {
                       ))}
                     </ul>
 
-                    {/* Expandable Syllabus preview */}
-                    <div className="pt-2">
+                    {/* Quick Button to open full modal for complete syllabus */}
+                    <div className="pt-2 flex items-center gap-2">
                       <button
-                        onClick={() => toggleSyllabus(course.id)}
-                        className="w-full py-2 px-3 rounded-xl text-xs font-bold text-[#0B192C] bg-slate-100 hover:bg-slate-200 border border-slate-300 transition-colors flex items-center justify-between cursor-pointer"
+                        onClick={() => handleOpenCourseDetails(course)}
+                        className="w-full py-2 px-3 rounded-xl text-xs font-bold text-[#0B192C] bg-orange-50 hover:bg-orange-100/80 border border-orange-200 transition-colors flex items-center justify-between cursor-pointer"
                       >
-                        <span>
-                          {isExpanded 
-                            ? (lang === 'so' ? 'Qari Manhajka' : 'Hide Syllabus Details')
-                            : (lang === 'so' ? 'Arag Manhajka Koorsada' : 'View Course Syllabus')}
+                        <span className="flex items-center gap-1.5">
+                          <Info className="w-3.5 h-3.5 text-orange-600" />
+                          {lang === 'so' ? 'Arag Manhajka & Natiijooyinka' : 'View Full Syllabus & Outcomes'}
                         </span>
-                        {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                        <ArrowRight className="w-3.5 h-3.5 text-orange-600" />
                       </button>
-
-                      {isExpanded && (
-                        <motion.div 
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: 'auto' }}
-                          exit={{ opacity: 0, height: 0 }}
-                          className="mt-3 p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-2 text-xs text-slate-700"
-                        >
-                          <p className="font-bold text-[#0B192C]">
-                            {lang === 'so' ? 'Qodobada la qaadanayo:' : 'Topics Covered:'}
-                          </p>
-                          <ul className="space-y-1.5 pl-2 list-disc list-inside">
-                            {(lang === 'so' ? course.syllabusSo : course.syllabusEn).map((item, sIdx) => (
-                              <li key={sIdx} className="text-slate-700 leading-snug">
-                                {item}
-                              </li>
-                            ))}
-                          </ul>
-                        </motion.div>
-                      )}
                     </div>
                   </div>
 
@@ -252,6 +280,18 @@ export const Courses: React.FC<CoursesProps> = ({ lang, onSelectCourse }) => {
         </div>
 
       </div>
+
+      {/* Full Screen Course Detail Modal */}
+      <CourseDetailModal
+        course={activeModalCourse}
+        isOpen={!!activeModalCourse}
+        lang={lang}
+        onClose={() => setActiveModalCourse(null)}
+        onEnroll={(courseId) => {
+          setActiveModalCourse(null);
+          onSelectCourse(courseId);
+        }}
+      />
     </motion.section>
   );
 };
