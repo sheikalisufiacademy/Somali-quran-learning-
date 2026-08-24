@@ -16,7 +16,10 @@ import {
   Plus,
   Trash2,
   Check,
-  Edit2
+  Edit2,
+  CreditCard,
+  Zap,
+  Lock
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import emailjs from '@emailjs/browser';
@@ -35,6 +38,7 @@ import { COURSES_DATA, PRICING_PLANS } from '../data/academyData';
 import { CountrySelector } from './CountrySelector';
 import { COUNTRIES, CountryInfo } from '../data/countries';
 import { saveRegistrationToFirestore } from '../firebase';
+import { openLemonSqueezyCheckout, getLemonSqueezyCheckoutUrl } from '../lib/lemonsqueezy';
 
 interface StudentInfo {
   id: string;
@@ -281,8 +285,7 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleProcessRegistration = async (redirectToPayment: boolean = false) => {
     setIsSubmitting(true);
 
     const generatedId = `BQA-${Math.floor(100000 + Math.random() * 900000)}`;
@@ -293,16 +296,20 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
     const courseTitle = lang === 'so' ? selCourse.titleSo : selCourse.titleEn;
     const planName = lang === 'so' ? selPlan.nameSo : selPlan.nameEn;
 
-    const formattedFee = hasFamilyDiscount
-      ? `$${finalTotalPrice}/month (${studentCount} arday - 20% Family Discount, hore: $${subtotalPrice})`
-      : `$${finalTotalPrice}/month`;
+    const formattedFee = selPlan.isAnnual
+      ? `$${finalTotalPrice} (Sanadle / 12 Bilood)`
+      : hasFamilyDiscount
+        ? `$${finalTotalPrice}/month (${studentCount} arday - 20% Family Discount, hore: $${subtotalPrice})`
+        : `$${finalTotalPrice}/month`;
 
     const fullPhone = selectedCountry ? `${selectedCountry.dialCode} ${phone.trim()}` : phone.trim();
     const countryName = selectedCountry ? (lang === 'so' && selectedCountry.nameSo ? selectedCountry.nameSo : selectedCountry.name) : 'N/A';
+    const primaryStudentName = students[0]?.fullName?.trim() || 'Student';
+    const studentEmail = email.trim();
 
     const registrationPayload = {
       enrollmentId: generatedId,
-      studentName: students[0]?.fullName?.trim() || 'Student',
+      studentName: primaryStudentName,
       studentsCount: studentCount,
       students: students.map(s => ({
         fullName: s.fullName.trim(),
@@ -310,7 +317,7 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
         gender: s.gender
       })),
       phone: fullPhone,
-      email: email.trim(),
+      email: studentEmail,
       country: countryName,
       countryCode: selectedCountry?.code || '',
       courseId: selectedCourseId,
@@ -326,7 +333,8 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
       teacherPreference,
       preferredDays,
       preferredTimeSlot,
-      language: lang
+      language: lang,
+      paymentOption: redirectToPayment ? 'instant_lemonsqueezy' : 'free_trial'
     };
 
     // 1. Save to Cloud Firestore
@@ -343,10 +351,10 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
 
     try {
       const emailParams: Record<string, unknown> = {
-        to_name: registrationPayload.studentName || 'Student',
-        name: registrationPayload.studentName || 'Student',
-        student_name: registrationPayload.studentName || 'Student',
-        user_name: registrationPayload.studentName || 'Student',
+        to_name: primaryStudentName,
+        name: primaryStudentName,
+        student_name: primaryStudentName,
+        user_name: primaryStudentName,
         from_name: 'Baro Quran Academy',
         to_email: targetEmail,
         email: targetEmail,
@@ -360,7 +368,7 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
         order_id: generatedId,
         id: generatedId,
         monthly_fee: formattedFee,
-        total_price: `$${finalTotalPrice}/month`,
+        total_price: `$${finalTotalPrice}`,
         plan_price: `$${finalTotalPrice}`,
         family_discount: hasFamilyDiscount ? '20% OFF' : 'None',
         course_name: courseTitle,
@@ -380,25 +388,31 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
         teacher_preference: teacherPreference,
         students_count: studentCount,
         all_students_names: students.map((s, i) => `${i + 1}. ${s.fullName} (${s.age} jir)`).join(', '),
-        message: `Asc ${registrationPayload.studentName},\n\nWaad ku guulaysatay diwaangalintaada Baro Quran Academy.\n\n• Number-ka Diiwaanka: ${generatedId}\n• Ardayga/Ardayda: ${students.map(s => s.fullName).join(', ')}\n• Koorsada: ${courseTitle}\n• Xirmada: ${planName}\n• Maalmaha: ${preferredDays.join(', ')}\n• Waqtiga: ${preferredTimeSlot}\n• Waddanka: ${countryName}\n\nFariin xaqiijin ah iyo faahfaahinta fasalka tijaabada ah (Free Trial) waxaan kuugu soo diray Gmail-kaaga.\n\nMahadsanid,\nBaro Quran Academy`
+        message: `Asc ${primaryStudentName},\n\nWaad ku guulaysatay diwaangalintaada Baro Quran Academy.\n\n• Number-ka Diiwaanka: ${generatedId}\n• Ardayga/Ardayda: ${students.map(s => s.fullName).join(', ')}\n• Koorsada: ${courseTitle}\n• Xirmada: ${planName}\n• Maalmaha: ${preferredDays.join(', ')}\n• Waqtiga: ${preferredTimeSlot}\n• Waddanka: ${countryName}\n\nFariin xaqiijin ah iyo faahfaahinta fasalka tijaabada ah waxaan kuugu soo diray Gmail-kaaga.\n\nMahadsanid,\nBaro Quran Academy`
       };
 
-      const result = await emailjs.send(
+      await emailjs.send(
         'service_zn1yk0i',
         'template_8tx4gz6',
         emailParams,
         'DqlTY31s8OKcyf-gi'
       );
-      console.log('EmailJS response success:', result);
     } catch (err: any) {
       console.error('EmailJS send error:', err?.text || err?.message || err);
     }
 
-    // Immediately reset form inputs so sensitive data does not linger
-    setStudents([{ id: '1', fullName: '', age: '8', gender: 'male' }]);
-    setPhone('');
-    setEmail('');
-    setErrors({});
+    // 3. If the user opted to pay now, trigger Lemon Squeezy with their filled data
+    if (redirectToPayment) {
+      openLemonSqueezyCheckout({
+        planId: selPlan.id,
+        planName: planName,
+        courseId: selCourse.id,
+        courseTitle: courseTitle,
+        monthlyPrice: finalTotalPrice,
+        email: studentEmail,
+        name: primaryStudentName
+      });
+    }
 
     setIsSubmitting(false);
     setIsSubmitted(true);
@@ -412,6 +426,16 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
     } catch (e) {
       // Ignore if confetti not supported
     }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    handleProcessRegistration(false);
+  };
+
+  const handlePayAndSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    handleProcessRegistration(true);
   };
 
   const handleClose = () => {
@@ -502,7 +526,7 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
                 <CheckCircle2 className="w-12 h-12" />
               </div>
 
-              <div className="max-w-md mx-auto">
+              <div className="max-w-md mx-auto space-y-4">
                 <div className="p-6 rounded-3xl bg-emerald-50 dark:bg-emerald-950/50 border-2 border-emerald-300 dark:border-emerald-700 text-emerald-950 dark:text-emerald-200 shadow-xs">
                   <p className="text-base sm:text-lg font-black leading-relaxed">
                     {lang === 'so' 
@@ -510,15 +534,53 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
                       : 'Waad ku guulaysatay diwaangalintaada, fariin email ah ayaan kusoo dirnay Gmail-kaaga fadlan check garee.'}
                   </p>
                 </div>
+
+                {/* Instant Online Payment via Lemon Squeezy option */}
+                <div className="p-4 rounded-2xl bg-orange-50 dark:bg-orange-950/30 border border-orange-200 dark:border-orange-900/50 text-left space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Zap className="w-4 h-4 text-orange-500 fill-current" />
+                    <span className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">
+                      {lang === 'so' ? 'Ma doonaysaa inaad toos u bixiso hadda?' : 'Ready to start immediately?'}
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-600 dark:text-slate-300 font-medium">
+                    {lang === 'so'
+                      ? 'Waxaad si toos ah oo ammaan ah ugu bixin kartaa qidmadda (Mastercard / Visa / Apple Pay / Google Pay).'
+                      : 'You can securely pay for your plan now (Mastercard / Visa / Apple Pay / Google Pay).'}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      openLemonSqueezyCheckout({
+                        planId: selectedPlan.id,
+                        planName: lang === 'so' ? selectedPlan.nameSo : selectedPlan.nameEn,
+                        courseId: selectedCourse.id,
+                        courseTitle: lang === 'so' ? selectedCourse.titleSo : selectedCourse.titleEn,
+                        monthlyPrice: finalTotalPrice,
+                        email: email,
+                        name: students[0]?.fullName || ''
+                      });
+                    }}
+                    className="w-full mt-2 py-3 px-4 rounded-xl bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md shadow-orange-500/25 transition-all cursor-pointer"
+                  >
+                    <CreditCard className="w-4 h-4" />
+                    <span>
+                      {lang === 'so' 
+                        ? `Bixi Qidmadda Hadda ($${finalTotalPrice}/mo)` 
+                        : `Pay Tuition Now ($${finalTotalPrice}/mo)`}
+                    </span>
+                    <Zap className="w-3.5 h-3.5 fill-current" />
+                  </button>
+                </div>
               </div>
 
-              <div className="pt-2 flex items-center justify-center">
+              <div className="pt-2 flex items-center justify-center gap-3">
                 <button
                   type="button"
                   onClick={handleClose}
-                  className="px-8 py-3 bg-[#0B192C] dark:bg-orange-500 hover:bg-slate-800 dark:hover:bg-orange-600 text-white font-black text-sm rounded-2xl shadow-md transition-all cursor-pointer"
+                  className="px-8 py-3 bg-[#0B192C] dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 text-white font-black text-sm rounded-2xl shadow-md transition-all cursor-pointer"
                 >
-                  {lang === 'so' ? 'Haye / Waa Yahay' : 'Close / OK'}
+                  {lang === 'so' ? 'Xir Daaqadda' : 'Close'}
                 </button>
               </div>
             </div>
@@ -871,37 +933,55 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
                       </div>
                     )}
 
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5">
                       {PRICING_PLANS.map((plan) => {
                         const isSelected = selectedPlanId === plan.id;
                         return (
                           <div
                             key={plan.id}
                             onClick={() => handleSelectPlan(plan.id)}
-                            className={`p-3.5 rounded-2xl border-2 cursor-pointer transition-all text-center relative ${
+                            className={`p-3 rounded-2xl border-2 cursor-pointer transition-all text-center relative flex flex-col justify-between ${
                               isSelected
                                 ? 'border-orange-500 bg-orange-50/70 dark:bg-orange-950/40 ring-2 ring-orange-500/20 shadow-md scale-[1.02]'
                                 : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:border-slate-300 dark:hover:border-slate-600'
                             }`}
                           >
-                            {plan.popular && (
+                            {plan.isAnnual ? (
+                              <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-purple-600 text-white text-[8px] font-black uppercase whitespace-nowrap">
+                                {lang === 'so' ? 'Sanadle 💎' : 'Annual 💎'}
+                              </div>
+                            ) : plan.popular ? (
                               <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-orange-500 text-white text-[8px] font-black uppercase whitespace-nowrap">
                                 {lang === 'so' ? 'Ugu Caansan' : 'Popular'}
                               </div>
-                            )}
-                            <div className="text-[11px] font-black text-[#0B192C] dark:text-white leading-tight">
-                              {lang === 'so' ? plan.nameSo : plan.nameEn}
+                            ) : null}
+
+                            <div>
+                              <div className="text-[11px] font-black text-[#0B192C] dark:text-white leading-tight">
+                                {lang === 'so' ? plan.nameSo : plan.nameEn}
+                              </div>
+                              <div className="text-base font-black text-orange-600 dark:text-orange-400 mt-1">
+                                ${plan.priceUSD} <span className="text-[10px] text-slate-500 dark:text-slate-400 font-normal">
+                                  {plan.isAnnual ? (lang === 'so' ? '/sanad' : '/yr') : (lang === 'so' ? '/mo' : '/mo')}
+                                </span>
+                              </div>
                             </div>
-                            <div className="text-base font-black text-orange-600 dark:text-orange-400 mt-1">
-                              ${plan.priceUSD} <span className="text-[10px] text-slate-500 dark:text-slate-400 font-normal">/mo</span>
-                            </div>
-                            <div className="mt-1">
-                              <span className="inline-block px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-black text-[10px]">
-                                {plan.daysPerWeek} {lang === 'so' ? 'cisho / isbuuc' : 'days / week'}
-                              </span>
-                            </div>
-                            <div className="text-[10px] text-slate-500 dark:text-slate-400 font-semibold mt-1">
-                              {lang === 'so' ? plan.durationPerClassSo : plan.durationPerClassEn}
+
+                            <div className="mt-1 space-y-0.5">
+                              <div>
+                                <span className={`inline-block px-1.5 py-0.5 rounded-md font-black text-[9px] ${
+                                  plan.isAnnual 
+                                    ? 'bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300' 
+                                    : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
+                                }`}>
+                                  {plan.isAnnual 
+                                    ? (lang === 'so' ? '12 Bilood' : '12 Months') 
+                                    : `${plan.daysPerWeek} ${lang === 'so' ? 'cisho / w' : 'days / w'}`}
+                                </span>
+                              </div>
+                              <div className="text-[9px] text-slate-500 dark:text-slate-400 font-semibold truncate">
+                                {lang === 'so' ? plan.durationPerClassSo : plan.durationPerClassEn}
+                              </div>
                             </div>
                           </div>
                         );
@@ -1191,19 +1271,38 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
                     <ArrowRight className="w-4 h-4" />
                   </button>
                 ) : (
-                  <button
-                    type="button"
-                    onClick={handleSubmit}
-                    disabled={isSubmitting}
-                    className="px-8 py-3.5 bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white font-black rounded-xl shadow-lg shadow-orange-500/30 text-sm flex items-center gap-2 transition-all disabled:opacity-50 cursor-pointer"
-                  >
-                    <span>
-                      {isSubmitting 
-                        ? (lang === 'so' ? 'Waa la dirayaa...' : 'Submitting...') 
-                        : (lang === 'so' ? 'Xaqiiji & Gudbi Foomka' : 'Submit & Book Free Trial')}
-                    </span>
-                    <CheckCircle2 className="w-4 h-4" />
-                  </button>
+                  <div className="flex flex-wrap items-center gap-2.5 justify-end">
+                    <button
+                      type="button"
+                      onClick={handlePayAndSubmit}
+                      disabled={isSubmitting}
+                      className="px-5 py-3.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-black rounded-xl shadow-md shadow-emerald-600/25 text-xs sm:text-sm flex items-center gap-2 transition-all disabled:opacity-50 cursor-pointer"
+                    >
+                      <CreditCard className="w-4 h-4" />
+                      <span>
+                        {isSubmitting
+                          ? (lang === 'so' ? 'Waa la diiwaangelinayaa...' : 'Processing...')
+                          : selectedPlan.isAnnual
+                            ? (lang === 'so' ? `Bixi Sanadkii Hadda ($${finalTotalPrice})` : `Pay Annual Now ($${finalTotalPrice})`)
+                            : (lang === 'so' ? `Bixi Qidmadda Hadda ($${finalTotalPrice}/mo)` : `Pay Tuition Now ($${finalTotalPrice}/mo)`)}
+                      </span>
+                      <Zap className="w-3.5 h-3.5 fill-current" />
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={handleSubmit}
+                      disabled={isSubmitting}
+                      className="px-6 py-3.5 bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white font-black rounded-xl shadow-lg shadow-orange-500/30 text-xs sm:text-sm flex items-center gap-2 transition-all disabled:opacity-50 cursor-pointer"
+                    >
+                      <span>
+                        {isSubmitting 
+                          ? (lang === 'so' ? 'Waa la dirayaa...' : 'Submitting...') 
+                          : (lang === 'so' ? 'Gudbi (Fasal Tijaabo ah)' : 'Submit (Free Trial)')}
+                      </span>
+                      <CheckCircle2 className="w-4 h-4" />
+                    </button>
+                  </div>
                 )}
               </div>
 

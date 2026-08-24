@@ -11,12 +11,21 @@ import {
   Globe2, 
   ShieldCheck,
   Calendar,
-  Loader2
+  Loader2,
+  Facebook,
+  Share2
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import emailjs from '@emailjs/browser';
 import { Language } from '../types';
 import { saveContactMessageToFirestore } from '../firebase';
+import { ACADEMY_SOCIALS } from '../data/academyData';
+
+const TikTokIcon: React.FC<{ className?: string }> = ({ className = 'w-5 h-5' }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.29 0 .58.04.85.12V9.35a6.33 6.33 0 0 0-.85-.06A6.34 6.34 0 0 0 3 15.63a6.34 6.34 0 0 0 10.78 4.54 6.27 6.27 0 0 0 1.91-4.5V8.55a8.28 8.28 0 0 0 4.9 1.59V6.69z"/>
+  </svg>
+);
 
 interface ContactPageProps {
   lang: Language;
@@ -191,6 +200,56 @@ export const ContactPage: React.FC<ContactPageProps> = ({ lang, onOpenRegister }
                 </div>
               </div>
 
+            </div>
+
+            {/* Social Media Channels Card */}
+            <div className="bg-white dark:bg-[#0E1A2C] rounded-3xl p-6 border-2 border-slate-200 dark:border-slate-700/80 shadow-sm space-y-4">
+              <div className="flex items-center gap-2">
+                <Share2 className="w-5 h-5 text-orange-500" />
+                <h4 className="text-sm font-black text-[#0B192C] dark:text-white uppercase tracking-wider">
+                  {lang === 'so' ? 'Baraha Bulshada ee Rasmiga ah' : 'Official Social Channels'}
+                </h4>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <a
+                  href={ACADEMY_SOCIALS.tiktok}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 p-3.5 rounded-2xl bg-slate-100 dark:bg-slate-800/80 hover:bg-black hover:text-white dark:hover:bg-black border border-slate-200 dark:border-slate-700 transition-all group"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-black flex items-center justify-center text-white shrink-0 group-hover:scale-110 transition-transform">
+                    <TikTokIcon className="w-5 h-5 text-pink-400" />
+                  </div>
+                  <div className="min-w-0">
+                    <span className="text-xs font-black text-[#0B192C] dark:text-white group-hover:text-white block">
+                      TikTok
+                    </span>
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400 group-hover:text-slate-200 truncate block">
+                      @baroquranacademy
+                    </span>
+                  </div>
+                </a>
+
+                <a
+                  href={ACADEMY_SOCIALS.facebook}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 p-3.5 rounded-2xl bg-slate-100 dark:bg-slate-800/80 hover:bg-[#1877F2] hover:text-white dark:hover:bg-[#1877F2] border border-slate-200 dark:border-slate-700 transition-all group"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-[#1877F2] flex items-center justify-center text-white shrink-0 group-hover:scale-110 transition-transform">
+                    <Facebook className="w-5 h-5 text-white" />
+                  </div>
+                  <div className="min-w-0">
+                    <span className="text-xs font-black text-[#0B192C] dark:text-white group-hover:text-white block">
+                      Facebook
+                    </span>
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400 group-hover:text-slate-200 truncate block">
+                      Baro Quran Academy
+                    </span>
+                  </div>
+                </a>
+              </div>
             </div>
 
             {/* Quick Free Trial Booking Box */}

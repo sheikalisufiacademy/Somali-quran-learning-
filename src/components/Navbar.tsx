@@ -280,6 +280,31 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <MessageCircle className="w-4 h-4 text-orange-500" />
                 <span>{lang === 'so' ? 'WhatsApp: +251 77 779 6444' : 'WhatsApp: +251 77 779 6444'}</span>
               </a>
+              <div className="grid grid-cols-2 gap-2 pt-1">
+                <a
+                  href="https://www.tiktok.com/@baroquranacademy?_r=1&_t=ZS-999Od1KUFWc"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="py-2 px-3 text-center text-xs font-bold text-slate-800 dark:text-white bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl flex items-center justify-center gap-1.5"
+                >
+                  <svg className="w-3.5 h-3.5 text-pink-500" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.29 0 .58.04.85.12V9.35a6.33 6.33 0 0 0-.85-.06A6.34 6.34 0 0 0 3 15.63a6.34 6.34 0 0 0 10.78 4.54 6.27 6.27 0 0 0 1.91-4.5V8.55a8.28 8.28 0 0 0 4.9 1.59V6.69z"/>
+                  </svg>
+                  <span>TikTok</span>
+                </a>
+
+                <a
+                  href="https://www.facebook.com/share/19CX8RR8CX/?mibextid=wwXIfr"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="py-2 px-3 text-center text-xs font-bold text-white bg-[#1877F2] rounded-xl flex items-center justify-center gap-1.5"
+                >
+                  <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                  </svg>
+                  <span>Facebook</span>
+                </a>
+              </div>
             </div>
           </div>
         )}

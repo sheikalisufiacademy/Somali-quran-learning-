@@ -73,6 +73,17 @@ export default function App() {
     return () => window.removeEventListener('hashchange', handleUrlSync);
   }, []);
 
+  // Initialize Lemon Squeezy JS overlay listeners
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.createLemonSqueezy) {
+      try {
+        window.createLemonSqueezy();
+      } catch (err) {
+        console.warn('Lemon Squeezy initialization:', err);
+      }
+    }
+  }, []);
+
   // Update document title and lang attribute based on current state
   useEffect(() => {
     document.documentElement.lang = lang;

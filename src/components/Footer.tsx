@@ -9,10 +9,18 @@ import {
   Heart, 
   ShieldCheck, 
   Clock,
-  Globe2
+  Globe2,
+  Facebook
 } from 'lucide-react';
 import { Language, AppPage } from '../types';
 import { LogoBadge } from './LogoBadge';
+import { ACADEMY_SOCIALS } from '../data/academyData';
+
+const TikTokIcon: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.29 0 .58.04.85.12V9.35a6.33 6.33 0 0 0-.85-.06A6.34 6.34 0 0 0 3 15.63a6.34 6.34 0 0 0 10.78 4.54 6.27 6.27 0 0 0 1.91-4.5V8.55a8.28 8.28 0 0 0 4.9 1.59V6.69z"/>
+  </svg>
+);
 
 interface FooterProps {
   lang: Language;
@@ -101,6 +109,47 @@ export const Footer: React.FC<FooterProps> = ({ lang, onOpenRegister, onNavigate
             <div className="pt-2 flex items-center gap-2 text-xs text-slate-300 font-bold">
               <ShieldCheck className="w-4 h-4 text-orange-400" />
               <span>{lang === 'so' ? '100% Macallimiin Ijaazo Leh & Ammaan ah' : '100% Verified Teachers & Safe Environment'}</span>
+            </div>
+
+            {/* Social Media Links */}
+            <div className="pt-3 space-y-2">
+              <span className="text-[11px] font-black text-white uppercase tracking-wider block">
+                {lang === 'so' ? 'Nagala Soco Baraha Bulshada' : 'Follow Our Social Media'}
+              </span>
+              <div className="flex flex-wrap items-center gap-2.5">
+                <a
+                  href={ACADEMY_SOCIALS.tiktok}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Baro Quran Academy TikTok"
+                  className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-black text-white hover:text-white border border-slate-700 hover:border-slate-500 text-xs font-bold transition-all flex items-center gap-2 shadow-sm"
+                >
+                  <TikTokIcon className="w-4 h-4 text-pink-500" />
+                  <span>TikTok</span>
+                </a>
+
+                <a
+                  href={ACADEMY_SOCIALS.facebook}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Baro Quran Academy Facebook"
+                  className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-[#1877F2] text-white hover:text-white border border-slate-700 hover:border-blue-400 text-xs font-bold transition-all flex items-center gap-2 shadow-sm"
+                >
+                  <Facebook className="w-4 h-4 text-[#1877F2] group-hover:text-white" />
+                  <span>Facebook</span>
+                </a>
+
+                <a
+                  href={ACADEMY_SOCIALS.whatsapp}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Baro Quran Academy WhatsApp"
+                  className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-emerald-700 text-white hover:text-white border border-slate-700 hover:border-emerald-500 text-xs font-bold transition-all flex items-center gap-2 shadow-sm"
+                >
+                  <MessageCircle className="w-4 h-4 text-emerald-400" />
+                  <span>WhatsApp</span>
+                </a>
+              </div>
             </div>
           </div>
 
@@ -219,6 +268,26 @@ export const Footer: React.FC<FooterProps> = ({ lang, onOpenRegister, onNavigate
               >
                 <Mail className="w-4 h-4 text-orange-400 shrink-0" />
                 <span className="break-all font-semibold">baroquranacademy1@gmail.com</span>
+              </a>
+
+              <a 
+                href={ACADEMY_SOCIALS.tiktok}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2.5 hover:text-orange-400 transition-colors"
+              >
+                <TikTokIcon className="w-4 h-4 text-pink-400 shrink-0" />
+                <span className="font-bold">TikTok: @baroquranacademy</span>
+              </a>
+
+              <a 
+                href={ACADEMY_SOCIALS.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2.5 hover:text-orange-400 transition-colors"
+              >
+                <Facebook className="w-4 h-4 text-blue-400 shrink-0" />
+                <span className="font-bold">Facebook: Baro Quran Academy</span>
               </a>
 
               <div className="flex items-center gap-2.5">

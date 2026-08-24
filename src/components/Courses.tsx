@@ -14,12 +14,15 @@ import {
   ChevronUp,
   Info,
   ExternalLink,
-  Eye
+  Eye,
+  CreditCard,
+  Zap
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Language, Course } from '../types';
 import { COURSES_DATA } from '../data/academyData';
 import { CourseDetailModal } from './CourseDetailModal';
+import { openLemonSqueezyCheckout } from '../lib/lemonsqueezy';
 
 interface CoursesProps {
   lang: Language;
@@ -214,20 +217,30 @@ export const Courses: React.FC<CoursesProps> = ({ lang, onSelectCourse }) => {
                   </div>
 
                   {/* Key Meta Details */}
-                  <div className="p-6 pt-3 pb-3 bg-slate-50 dark:bg-[#070E18] border-b border-slate-100 dark:border-slate-700/60 grid grid-cols-2 gap-3 text-xs text-slate-700 dark:text-slate-300">
-                    <div className="flex items-center gap-2">
-                      <Users className="w-4 h-4 text-orange-500 shrink-0" />
+                  <div className="p-6 pt-3 pb-3 bg-slate-50 dark:bg-[#070E18] border-b border-slate-100 dark:border-slate-700/60 grid grid-cols-3 gap-2 text-xs text-slate-700 dark:text-slate-300">
+                    <div className="flex items-center gap-1.5">
+                      <Users className="w-3.5 h-3.5 text-orange-500 shrink-0" />
                       <div>
-                        <span className="text-slate-500 dark:text-slate-400 block text-[10px] uppercase font-bold">{lang === 'so' ? 'Da’da:' : 'Age Group:'}</span>
-                        <span className="font-black text-slate-900 dark:text-slate-100">{lang === 'so' ? course.ageGroupSo : course.ageGroupEn}</span>
+                        <span className="text-slate-500 dark:text-slate-400 block text-[9px] uppercase font-bold">{lang === 'so' ? 'Da’da:' : 'Age:'}</span>
+                        <span className="font-black text-slate-900 dark:text-slate-100 text-[11px] truncate block">{lang === 'so' ? course.ageGroupSo : course.ageGroupEn}</span>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-orange-500 shrink-0" />
+                    <div className="flex items-center gap-1.5">
+                      <Clock className="w-3.5 h-3.5 text-orange-500 shrink-0" />
                       <div>
-                        <span className="text-slate-500 dark:text-slate-400 block text-[10px] uppercase font-bold">{lang === 'so' ? 'Muddada:' : 'Duration:'}</span>
-                        <span className="font-black text-slate-900 dark:text-slate-100">{lang === 'so' ? course.durationSo : course.durationEn}</span>
+                        <span className="text-slate-500 dark:text-slate-400 block text-[9px] uppercase font-bold">{lang === 'so' ? 'Muddada:' : 'Duration:'}</span>
+                        <span className="font-black text-slate-900 dark:text-slate-100 text-[11px] truncate block">{lang === 'so' ? course.durationSo : course.durationEn}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-1.5">
+                      <CreditCard className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                      <div>
+                        <span className="text-slate-500 dark:text-slate-400 block text-[9px] uppercase font-bold">{lang === 'so' ? 'Qiimaha:' : 'Price:'}</span>
+                        <span className="font-black text-emerald-600 dark:text-emerald-400 text-[11px] block">
+                          ${course.startingPriceUSD || 30}<span className="text-[9px] text-slate-500 font-normal">/mo</span>
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -247,7 +260,7 @@ export const Courses: React.FC<CoursesProps> = ({ lang, onSelectCourse }) => {
                     </ul>
 
                     {/* Quick Button to open full modal for complete syllabus */}
-                    <div className="pt-2 flex items-center gap-2">
+                    <div className="pt-1 flex items-center gap-2">
                       <button
                         onClick={() => handleOpenCourseDetails(course)}
                         className="w-full py-2 px-3 rounded-xl text-xs font-bold text-[#0B192C] dark:text-orange-400 bg-orange-50 dark:bg-orange-950/20 hover:bg-orange-100/80 dark:hover:bg-orange-900/40 border border-orange-200 dark:border-orange-900/50 transition-colors flex items-center justify-between cursor-pointer"
@@ -261,16 +274,26 @@ export const Courses: React.FC<CoursesProps> = ({ lang, onSelectCourse }) => {
                     </div>
                   </div>
 
-                  {/* Enroll Card Footer Action */}
-                  <div className="p-6 pt-0 mt-auto">
+                  {/* Enroll & Register Action Button */}
+                  <div className="p-6 pt-0 mt-auto space-y-2">
                     <button
                       id={`btn-enroll-${course.id}`}
                       onClick={() => onSelectCourse(course.id)}
-                      className="w-full py-3.5 px-4 rounded-xl text-sm font-black text-white bg-orange-500 hover:bg-orange-600 active:bg-orange-700 shadow-md shadow-orange-500/30 hover:shadow-lg transition-all flex items-center justify-center gap-2 group cursor-pointer"
+                      className="w-full py-3.5 px-4 rounded-xl text-xs sm:text-sm font-black text-white bg-orange-500 hover:bg-orange-600 active:bg-orange-700 shadow-md shadow-orange-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer"
                     >
-                      <span>{lang === 'so' ? 'Qaado Fasal Tijaabo ah (Bilaash)' : 'Enroll & Get Free Trial'}</span>
-                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      <span>
+                        {lang === 'so' 
+                          ? `Is-diiwaangeli Koorsadan ($${course.startingPriceUSD || 30}/mo)` 
+                          : `Enroll in Course ($${course.startingPriceUSD || 30}/mo)`}
+                      </span>
+                      <ArrowRight className="w-4 h-4" />
                     </button>
+
+                    <div className="text-center">
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400 font-semibold">
+                        {lang === 'so' ? '✓ Buuxi foomka • Hel fasal tijaabo ah bilaash' : '✓ Fill form first • Get 100% free trial'}
+                      </span>
+                    </div>
                   </div>
 
                 </motion.div>

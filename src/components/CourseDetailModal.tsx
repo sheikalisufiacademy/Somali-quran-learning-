@@ -14,10 +14,14 @@ import {
   Calendar, 
   CheckCircle2,
   ShieldCheck,
-  PhoneCall
+  PhoneCall,
+  CreditCard,
+  Zap,
+  Lock
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Language, Course } from '../types';
+import { openLemonSqueezyCheckout } from '../lib/lemonsqueezy';
 
 interface CourseDetailModalProps {
   course: Course | null;
@@ -243,15 +247,15 @@ export const CourseDetailModal: React.FC<CourseDetailModalProps> = ({
           {/* Footer Modal Action Buttons */}
           <div className="p-4 sm:p-6 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
             <div className="flex items-center gap-2 text-xs text-slate-600">
-              <PhoneCall className="w-4 h-4 text-emerald-600" />
+              <PhoneCall className="w-4 h-4 text-emerald-600 shrink-0" />
               <span>WhatsApp: <strong className="text-slate-900">+251 777 796 444</strong></span>
             </div>
 
-            <div className="flex items-center gap-3 w-full sm:w-auto">
+            <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto justify-end">
               <button
                 type="button"
                 onClick={onClose}
-                className="py-3 px-5 rounded-xl text-xs sm:text-sm font-extrabold text-slate-700 bg-white border border-slate-300 hover:bg-slate-100 transition-colors cursor-pointer w-1/3 sm:w-auto"
+                className="py-2.5 px-4 rounded-xl text-xs sm:text-sm font-extrabold text-slate-700 bg-white border border-slate-300 hover:bg-slate-100 transition-colors cursor-pointer"
               >
                 {lang === 'so' ? 'Xir' : 'Close'}
               </button>
@@ -262,9 +266,13 @@ export const CourseDetailModal: React.FC<CourseDetailModalProps> = ({
                   onClose();
                   onEnroll(course.id);
                 }}
-                className="py-3 px-6 rounded-xl text-xs sm:text-sm font-black text-white bg-orange-500 hover:bg-orange-600 active:bg-orange-700 shadow-md shadow-orange-500/30 transition-all flex items-center justify-center gap-2 flex-1 sm:flex-initial cursor-pointer"
+                className="py-2.5 px-6 rounded-xl text-xs sm:text-sm font-black text-white bg-orange-500 hover:bg-orange-600 active:bg-orange-700 shadow-md shadow-orange-500/30 transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
-                <span>{lang === 'so' ? 'Qaado Fasal Tijaabo ah' : 'Enroll & Start Free Trial'}</span>
+                <span>
+                  {lang === 'so' 
+                    ? `Is-diiwaangeli Koorsadan ($${course.startingPriceUSD || 30}/mo)` 
+                    : `Register for Course ($${course.startingPriceUSD || 30}/mo)`}
+                </span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>

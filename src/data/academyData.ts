@@ -1,4 +1,5 @@
 import { Course, PricingPlan, Teacher, Testimonial, FaqItem } from '../types';
+import { getLemonSqueezyCheckoutUrl } from '../lib/lemonsqueezy';
 import qaidaImg from '../assets/images/noorani_qaida_online_class_1787416190508.jpg';
 import tajweedImg from '../assets/images/tajweed_mastery_classroom_1787416204441.jpg';
 import hifzImg from '../assets/images/quran_hifz_circle_1787416218745.jpg';
@@ -65,6 +66,8 @@ export const COURSES_DATA: Course[] = [
       'Daily pronunciation & articulation training',
       'Certificate of completion for Noorani Qaida'
     ],
+    startingPriceUSD: 30,
+    checkoutUrl: getLemonSqueezyCheckoutUrl({ courseId: 'qaacida-nuuraaniya', courseTitle: 'Qaacidada Nuuraaniyada', monthlyPrice: 30 }),
     badge: 'Ugu Muhiimsan Bilowga',
     popular: true
   },
@@ -127,6 +130,8 @@ export const COURSES_DATA: Course[] = [
       'Training based on authentic Qira\'at traditions',
       'Tajweed certificate signed by certified scholars'
     ],
+    startingPriceUSD: 35,
+    checkoutUrl: getLemonSqueezyCheckoutUrl({ courseId: 'tajweed-recitation', courseTitle: 'Tajwiidka Saxda ah & Akhrinta', monthlyPrice: 35 }),
     badge: 'Ugu Caansan',
     popular: true
   },
@@ -189,6 +194,8 @@ export const COURSES_DATA: Course[] = [
       'Certified Hafiz teachers with continuous Sanad chain',
       'Hifz completion certificate & graduation recognition'
     ],
+    startingPriceUSD: 40,
+    checkoutUrl: getLemonSqueezyCheckoutUrl({ courseId: 'quran-memorization-hifz', courseTitle: 'Xifdinta Quraanka (Hifz)', monthlyPrice: 40 }),
     badge: 'Xulashada Ugu Sareysa'
   },
   {
@@ -250,6 +257,8 @@ export const COURSES_DATA: Course[] = [
       'Free digital workbooks & visual learning materials',
       'Live Q&A and open discussions with instructors'
     ],
+    startingPriceUSD: 30,
+    checkoutUrl: getLemonSqueezyCheckoutUrl({ courseId: 'islamic-studies-tarbiyah', courseTitle: 'Culuumta Islaamka & Tarbiyada', monthlyPrice: 30 }),
     badge: 'Tarbiyada Qoyska'
   },
   {
@@ -306,7 +315,9 @@ export const COURSES_DATA: Course[] = [
       'Interactive conversational practice in every class',
       'Curriculum synchronized with Quranic comprehension',
       'Comprehensive digital worksheets & audio exercises'
-    ]
+    ],
+    startingPriceUSD: 35,
+    checkoutUrl: getLemonSqueezyCheckoutUrl({ courseId: 'arabic-language', courseTitle: 'Barashada Luuqadda Carabiga', monthlyPrice: 35 })
   },
   {
     id: 'sisters-female-classes',
@@ -363,6 +374,8 @@ export const COURSES_DATA: Course[] = [
       'Flexible time slots accommodating family schedules',
       'Direct parent-teacher regular communication'
     ],
+    startingPriceUSD: 30,
+    checkoutUrl: getLemonSqueezyCheckoutUrl({ courseId: 'sisters-female-classes', courseTitle: 'Fasallada Gabdhaha & Hooyooyinka', monthlyPrice: 30 }),
     badge: 'Khaas ah Haweenka'
   }
 ];
@@ -382,6 +395,7 @@ export const PRICING_PLANS: PricingPlan[] = [
     priceEUR: 28,
     priceCAD: 40,
     priceSEK: 320,
+    billingPeriod: 'month',
     featuresSo: [
       '8 Fasal bishii (2 maalmood toddobaadkii)',
       'Fasallo 1-on-1 ah (Qof iyo Qof gaar ah)',
@@ -398,6 +412,7 @@ export const PRICING_PLANS: PricingPlan[] = [
       'Monthly parent progress report',
       '100% Free Trial Class included'
     ],
+    checkoutUrl: getLemonSqueezyCheckoutUrl({ planId: 'basic-2days', planName: '2 Days A Week ($30/mo)', monthlyPrice: 30, daysCount: 2 }),
     colorTheme: 'slate'
   },
   {
@@ -414,6 +429,7 @@ export const PRICING_PLANS: PricingPlan[] = [
     priceEUR: 32,
     priceCAD: 48,
     priceSEK: 380,
+    billingPeriod: 'month',
     featuresSo: [
       '12 Fasal bishii (3 maalmood toddobaadkii)',
       'Fasallo 1-on-1 ah oo qof walba gaar u yahay',
@@ -432,6 +448,7 @@ export const PRICING_PLANS: PricingPlan[] = [
       'Class rescheduling flexibility for valid reasons',
       'Official completion certificate upon level finish'
     ],
+    checkoutUrl: getLemonSqueezyCheckoutUrl({ planId: 'standard-3days', planName: '3 Days A Week ($35/mo)', monthlyPrice: 35, daysCount: 3 }),
     colorTheme: 'emerald'
   },
   {
@@ -448,6 +465,7 @@ export const PRICING_PLANS: PricingPlan[] = [
     priceEUR: 37,
     priceCAD: 54,
     priceSEK: 430,
+    billingPeriod: 'month',
     featuresSo: [
       '16 Fasal bishii (4 maalmood toddobaadkii)',
       'Fasallo 1-on-1 ah oo xawaare sare leh',
@@ -464,6 +482,7 @@ export const PRICING_PLANS: PricingPlan[] = [
       'Flexible class rescheduling',
       'Official completion certificate'
     ],
+    checkoutUrl: getLemonSqueezyCheckoutUrl({ planId: 'advanced-4days', planName: '4 Days A Week ($40/mo)', monthlyPrice: 40, daysCount: 4 }),
     colorTheme: 'blue'
   },
   {
@@ -481,6 +500,9 @@ export const PRICING_PLANS: PricingPlan[] = [
     priceCAD: 68,
     priceSEK: 540,
     popular: true,
+    billingPeriod: 'month',
+    badgeSo: 'Ugu Caansan ⭐',
+    badgeEn: 'Most Popular ⭐',
     featuresSo: [
       '20 Fasal bishii (5 maalmood toddobaadkii)',
       'Fasal 1-on-1 ah oo 40 daqiiqo ah maalin kasta',
@@ -499,7 +521,49 @@ export const PRICING_PLANS: PricingPlan[] = [
       'Free Islamic Studies & Seerah curriculum included',
       'Highest priority schedule booking & slot reservation'
     ],
+    checkoutUrl: getLemonSqueezyCheckoutUrl({ planId: 'intensive-5days', planName: '5 Days A Week ($50/mo)', monthlyPrice: 50, daysCount: 5 }),
     colorTheme: 'amber'
+  },
+  {
+    id: 'annual-full-year',
+    nameSo: 'Qorshaha Sanadlaha (Full Year)',
+    nameEn: 'Full Year / Annual Plan',
+    subtitleSo: 'Dhammaystir Qur’aanka sanad dhan oo hal mar la bixinayo (Qiimo dhimis weyn - Badbaadi $150+).',
+    subtitleEn: 'Complete 12-month full Quran mastery (Single payment - Save over $150+).',
+    daysPerWeek: 5,
+    durationPerClassSo: '40 Daqiiqo / Fasal',
+    durationPerClassEn: '40 Mins / Class',
+    priceUSD: 450,
+    priceGBP: 360,
+    priceEUR: 415,
+    priceCAD: 610,
+    priceSEK: 4800,
+    isAnnual: true,
+    billingPeriod: 'year',
+    badgeSo: 'Qiimaha Ugu Fiican (Save 25%) 💎',
+    badgeEn: 'Best Value (Save 25%) 💎',
+    savingTextSo: 'Lacag hal mar ah • Badbaadi $150+',
+    savingTextEn: 'Single Payment • Save $150+',
+    featuresSo: [
+      '12 Bilood oo buuxda oo waxbarasho toos ah (1-on-1)',
+      'Hal lacag bixin oo sanadle ah (Single Payment $450)',
+      'Dhammaan manhajyada: Qaacida, Tajweed, Xifdi & Tarbiya',
+      'Macallin Xaafid ah oo go\'an sanadka oo dhan',
+      'Warbixinta joogtada ah ee horumarka & Imtixaanaadka',
+      'Mudnaanta koowaad ee doorashada saacadaha iyo jadwalka',
+      'Shahaadada rasmiga ah ee Academy-ga markaad dhammayso'
+    ],
+    featuresEn: [
+      'Full 12 Months of live 1-on-1 private tutoring',
+      'Single annual payment ($450 one-time upfront)',
+      'Complete curriculum: Qaida, Tajweed, Hifz & Tarbiyah',
+      'Dedicated certified tutor committed for the full year',
+      'Quarterly comprehensive assessments & parent reports',
+      'Highest priority schedule flexibility & slot booking',
+      'Official graduation & Ijazah accreditation pathway'
+    ],
+    checkoutUrl: getLemonSqueezyCheckoutUrl({ planId: 'annual-full-year', planName: 'Full Year / Annual Plan ($450)', monthlyPrice: 450, daysCount: 5 }),
+    colorTheme: 'purple'
   }
 ];
 
@@ -731,6 +795,14 @@ export const TAJWEED_SAMPLE_VERSES = [
   }
 ];
 
+export const ACADEMY_SOCIALS = {
+  tiktok: 'https://www.tiktok.com/@baroquranacademy?_r=1&_t=ZS-999Od1KUFWc',
+  facebook: 'https://www.facebook.com/share/19CX8RR8CX/?mibextid=wwXIfr',
+  whatsapp: 'https://wa.me/251777796444',
+  phone: '+251 77 779 6444',
+  email: 'baroquranacademy1@gmail.com'
+};
+
 export const NOORANI_LETTERS = [
   { arabic: 'أ', nameSo: 'Alif', nameEn: 'Alif', sound: 'A', example: 'أَسَد (Asad)' },
   { arabic: 'ب', nameSo: 'Baa', nameEn: 'Baa', sound: 'B', example: 'بَيْت (Bayt)' },
@@ -761,3 +833,4 @@ export const NOORANI_LETTERS = [
   { arabic: 'و', nameSo: 'Waaw', nameEn: 'Waw', sound: 'W', example: 'وَرْد (Ward)' },
   { arabic: 'ي', nameSo: 'Yaa', nameEn: 'Yaa', sound: 'Y', example: 'يَد (Yad)' }
 ];
+

@@ -65,6 +65,8 @@ export interface Course {
   learningOutcomesEn?: string[];
   recommendedScheduleSo?: string;
   recommendedScheduleEn?: string;
+  startingPriceUSD?: number;
+  checkoutUrl?: string;
 }
 
 export interface PricingPlan {
@@ -85,6 +87,13 @@ export interface PricingPlan {
   featuresEn: string[];
   popular?: boolean;
   colorTheme: string;
+  checkoutUrl?: string;
+  billingPeriod?: 'month' | 'year';
+  isAnnual?: boolean;
+  badgeSo?: string;
+  badgeEn?: string;
+  savingTextSo?: string;
+  savingTextEn?: string;
 }
 
 export interface Teacher {
