@@ -23,6 +23,7 @@ import { PolicyTermsPages } from './components/PolicyTermsPages';
 import { Footer } from './components/Footer';
 import { RegistrationModal } from './components/RegistrationModal';
 import { FloatingWhatsApp } from './components/FloatingWhatsApp';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 export default function App() {
   const [lang, setLang] = useState<Language>('so');
@@ -280,6 +281,9 @@ export default function App() {
 
       {/* Floating WhatsApp Quick Launcher */}
       <FloatingWhatsApp lang={lang} />
+
+      {/* Vercel Speed Insights */}
+      <SpeedInsights />
 
     </div>
   );
