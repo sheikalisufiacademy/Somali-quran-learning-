@@ -445,11 +445,12 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
   const selectedCourse = COURSES_DATA.find(c => c.id === selectedCourseId) || COURSES_DATA[0];
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 animate-fadeIn">
-      <div 
-        className="relative bg-white dark:bg-[#0E1A2C] rounded-3xl max-w-2xl w-full shadow-2xl overflow-hidden my-6 border border-slate-100 dark:border-slate-800 flex flex-col max-h-[92vh] transition-colors duration-200"
-        onClick={(e) => e.stopPropagation()}
-      >
+    <>
+      <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 animate-fadeIn">
+        <div 
+          className="relative bg-white dark:bg-[#0E1A2C] rounded-3xl max-w-2xl w-full shadow-2xl overflow-hidden my-6 border border-slate-100 dark:border-slate-800 flex flex-col max-h-[92vh] transition-colors duration-200"
+          onClick={(e) => e.stopPropagation()}
+        >
         
         {/* Modal Header */}
         <div className="bg-[#0B192C] dark:bg-[#070E18] text-white p-5 sm:p-6 relative shrink-0 border-b border-slate-800">
@@ -1306,20 +1307,21 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
         </div>
 
       </div>
-
-      {/* Interactive Secure Card Checkout Modal */}
-      <SecureCardCheckoutModal
-        isOpen={showCardModal}
-        onClose={() => setShowCardModal(false)}
-        lang={lang}
-        courseTitle={lang === 'so' ? selectedCourse.titleSo : selectedCourse.titleEn}
-        amount={finalTotalPrice}
-        planName={lang === 'so' ? selectedPlan.nameSo : selectedPlan.nameEn}
-        studentName={students[0]?.fullName || 'Arday'}
-        studentPhone={phone ? `${selectedCountry?.dialCode || ''}${phone}` : ''}
-        studentEmail={email}
-        enrollmentId={enrollmentId || `BQA-${Date.now().toString().slice(-6)}`}
-      />
     </div>
-  );
+
+    {/* Interactive Secure Card Checkout Modal */}
+    <SecureCardCheckoutModal
+      isOpen={showCardModal}
+      onClose={() => setShowCardModal(false)}
+      lang={lang}
+      courseTitle={lang === 'so' ? selectedCourse.titleSo : selectedCourse.titleEn}
+      amount={finalTotalPrice}
+      planName={lang === 'so' ? selectedPlan.nameSo : selectedPlan.nameEn}
+      studentName={students[0]?.fullName || 'Arday'}
+      studentPhone={phone ? `${selectedCountry?.dialCode || ''}${phone}` : ''}
+      studentEmail={email}
+      enrollmentId={enrollmentId || `BQA-${Date.now().toString().slice(-6)}`}
+    />
+  </>
+);
 };
