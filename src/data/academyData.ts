@@ -1,5 +1,4 @@
 import { Course, PricingPlan, Teacher, Testimonial, FaqItem } from '../types';
-import { getLemonSqueezyCheckoutUrl } from '../lib/lemonsqueezy';
 import qaidaImg from '../assets/images/noorani_qaida_online_class_1787416190508.jpg';
 import tajweedImg from '../assets/images/tajweed_mastery_classroom_1787416204441.jpg';
 import hifzImg from '../assets/images/quran_hifz_circle_1787416218745.jpg';
@@ -67,8 +66,7 @@ export const COURSES_DATA: Course[] = [
       'Certificate of completion for Noorani Qaida'
     ],
     startingPriceUSD: 30,
-    checkoutUrl: getLemonSqueezyCheckoutUrl({ courseId: 'qaacida-nuuraaniya', courseTitle: 'Qaacidada Nuuraaniyada', monthlyPrice: 30 }),
-    badge: 'Ugu Muhiimsan Bilowga',
+    badge: 'Essential for Beginners',
     popular: true
   },
   {
@@ -131,8 +129,7 @@ export const COURSES_DATA: Course[] = [
       'Tajweed certificate signed by certified scholars'
     ],
     startingPriceUSD: 35,
-    checkoutUrl: getLemonSqueezyCheckoutUrl({ courseId: 'tajweed-recitation', courseTitle: 'Tajwiidka Saxda ah & Akhrinta', monthlyPrice: 35 }),
-    badge: 'Ugu Caansan',
+    badge: 'Most Popular',
     popular: true
   },
   {
@@ -195,8 +192,7 @@ export const COURSES_DATA: Course[] = [
       'Hifz completion certificate & graduation recognition'
     ],
     startingPriceUSD: 40,
-    checkoutUrl: getLemonSqueezyCheckoutUrl({ courseId: 'quran-memorization-hifz', courseTitle: 'Xifdinta Quraanka (Hifz)', monthlyPrice: 40 }),
-    badge: 'Xulashada Ugu Sareysa'
+    badge: 'Top Choice'
   },
   {
     id: 'islamic-studies-tarbiyah',
@@ -258,8 +254,7 @@ export const COURSES_DATA: Course[] = [
       'Live Q&A and open discussions with instructors'
     ],
     startingPriceUSD: 30,
-    checkoutUrl: getLemonSqueezyCheckoutUrl({ courseId: 'islamic-studies-tarbiyah', courseTitle: 'Culuumta Islaamka & Tarbiyada', monthlyPrice: 30 }),
-    badge: 'Tarbiyada Qoyska'
+    badge: 'Family Favorite'
   },
   {
     id: 'arabic-language',
@@ -317,7 +312,7 @@ export const COURSES_DATA: Course[] = [
       'Comprehensive digital worksheets & audio exercises'
     ],
     startingPriceUSD: 35,
-    checkoutUrl: getLemonSqueezyCheckoutUrl({ courseId: 'arabic-language', courseTitle: 'Barashada Luuqadda Carabiga', monthlyPrice: 35 })
+    badge: 'Language Mastery'
   },
   {
     id: 'sisters-female-classes',
@@ -375,8 +370,7 @@ export const COURSES_DATA: Course[] = [
       'Direct parent-teacher regular communication'
     ],
     startingPriceUSD: 30,
-    checkoutUrl: getLemonSqueezyCheckoutUrl({ courseId: 'sisters-female-classes', courseTitle: 'Fasallada Gabdhaha & Hooyooyinka', monthlyPrice: 30 }),
-    badge: 'Khaas ah Haweenka'
+    badge: 'Exclusive for Sisters'
   }
 ];
 
@@ -412,7 +406,6 @@ export const PRICING_PLANS: PricingPlan[] = [
       'Monthly parent progress report',
       '100% Free Trial Class included'
     ],
-    checkoutUrl: getLemonSqueezyCheckoutUrl({ planId: 'basic-2days', planName: '2 Days A Week ($30/mo)', monthlyPrice: 30, daysCount: 2 }),
     colorTheme: 'slate'
   },
   {
@@ -448,7 +441,6 @@ export const PRICING_PLANS: PricingPlan[] = [
       'Class rescheduling flexibility for valid reasons',
       'Official completion certificate upon level finish'
     ],
-    checkoutUrl: getLemonSqueezyCheckoutUrl({ planId: 'standard-3days', planName: '3 Days A Week ($35/mo)', monthlyPrice: 35, daysCount: 3 }),
     colorTheme: 'emerald'
   },
   {
@@ -482,7 +474,6 @@ export const PRICING_PLANS: PricingPlan[] = [
       'Flexible class rescheduling',
       'Official completion certificate'
     ],
-    checkoutUrl: getLemonSqueezyCheckoutUrl({ planId: 'advanced-4days', planName: '4 Days A Week ($40/mo)', monthlyPrice: 40, daysCount: 4 }),
     colorTheme: 'blue'
   },
   {
@@ -521,7 +512,6 @@ export const PRICING_PLANS: PricingPlan[] = [
       'Free Islamic Studies & Seerah curriculum included',
       'Highest priority schedule booking & slot reservation'
     ],
-    checkoutUrl: getLemonSqueezyCheckoutUrl({ planId: 'intensive-5days', planName: '5 Days A Week ($50/mo)', monthlyPrice: 50, daysCount: 5 }),
     colorTheme: 'amber'
   },
   {
@@ -562,7 +552,6 @@ export const PRICING_PLANS: PricingPlan[] = [
       'Highest priority schedule flexibility & slot booking',
       'Official graduation & Ijazah accreditation pathway'
     ],
-    checkoutUrl: getLemonSqueezyCheckoutUrl({ planId: 'annual-full-year', planName: 'Full Year / Annual Plan ($450)', monthlyPrice: 450, daysCount: 5 }),
     colorTheme: 'purple'
   }
 ];

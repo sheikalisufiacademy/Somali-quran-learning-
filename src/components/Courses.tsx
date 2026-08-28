@@ -1,48 +1,62 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   BookOpen, 
   Sparkles, 
   Award, 
   GraduationCap, 
   Languages, 
-  HeartHandshake,
+  HeartHandshake, 
   Check, 
   Clock, 
   Users, 
-  ArrowRight,
-  ChevronDown,
-  ChevronUp,
-  Info,
-  ExternalLink,
-  Eye,
-  CreditCard,
-  Zap
+  ArrowRight, 
+  Info, 
+  Eye, 
+  CreditCard 
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Language, Course } from '../types';
 import { COURSES_DATA } from '../data/academyData';
 import { CourseDetailModal } from './CourseDetailModal';
-import { openLemonSqueezyCheckout } from '../lib/lemonsqueezy';
 
 interface CoursesProps {
   lang: Language;
   onSelectCourse: (courseId: string) => void;
+  targetCourseId?: string;
+  onOpenSingleCourse?: (courseId: string) => void;
 }
 
-export const Courses: React.FC<CoursesProps> = ({ lang, onSelectCourse }) => {
+export const Courses: React.FC<CoursesProps> = ({ 
+  lang, 
+  onSelectCourse, 
+  targetCourseId,
+  onOpenSingleCourse 
+}) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [expandedSyllabus, setExpandedSyllabus] = useState<Record<string, boolean>>({});
   const [activeModalCourse, setActiveModalCourse] = useState<Course | null>(null);
 
-  const toggleSyllabus = (courseId: string) => {
-    setExpandedSyllabus(prev => ({
-      ...prev,
-      [courseId]: !prev[courseId]
-    }));
-  };
+  useEffect(() => {
+    if (targetCourseId) {
+      setSelectedCategory('all');
+      setTimeout(() => {
+        const el = document.getElementById(targetCourseId) || document.getElementById(`course-${targetCourseId}`);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          el.classList.add('ring-4', 'ring-orange-500', 'ring-offset-4', 'transition-all', 'duration-500');
+          setTimeout(() => {
+            el.classList.remove('ring-4', 'ring-orange-500', 'ring-offset-4');
+          }, 2500);
+        }
+      }, 150);
+    }
+  }, [targetCourseId]);
 
   const handleOpenCourseDetails = (course: Course) => {
-    setActiveModalCourse(course);
+    if (onOpenSingleCourse) {
+      onOpenSingleCourse(course.id);
+    } else {
+      setActiveModalCourse(course);
+    }
   };
 
   const getIcon = (name: string) => {
@@ -81,7 +95,7 @@ export const Courses: React.FC<CoursesProps> = ({ lang, onSelectCourse }) => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.6, ease: "easeOut" }}
-      className="py-20 bg-white dark:bg-[#070E18] relative transition-colors duration-200"
+      className="py-16 sm:py-20 bg-white dark:bg-[#070E18] relative transition-colors duration-200"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
@@ -112,10 +126,11 @@ export const Courses: React.FC<CoursesProps> = ({ lang, onSelectCourse }) => {
         </div>
 
         {/* Filter Tabs */}
-        <div className="flex flex-wrap items-center justify-center gap-2 mb-12">
+        <div className="flex flex-wrap items-center justify-center gap-2 mb-12" role="tablist">
           {categories.map((cat) => (
             <button
               key={cat.id}
+              type="button"
               onClick={() => setSelectedCategory(cat.id)}
               className={`px-5 py-2.5 rounded-xl text-sm font-extrabold transition-all cursor-pointer ${
                 selectedCategory === cat.id
@@ -132,8 +147,6 @@ export const Courses: React.FC<CoursesProps> = ({ lang, onSelectCourse }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <AnimatePresence mode="popLayout">
             {filteredCourses.map((course, idx) => {
-              const isExpanded = !!expandedSyllabus[course.id];
-
               return (
                 <motion.div
                   key={course.id}
@@ -142,7 +155,7 @@ export const Courses: React.FC<CoursesProps> = ({ lang, onSelectCourse }) => {
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.96 }}
                   transition={{ duration: 0.35, delay: idx * 0.05 }}
-                  id={`course-${course.id}`}
+                  id={course.id}
                   className={`flex flex-col bg-white dark:bg-[#0E1A2C] rounded-3xl border-2 overflow-hidden transition-all duration-300 hover:shadow-2xl group ${
                     course.popular 
                       ? 'border-orange-500 shadow-lg ring-2 ring-orange-400/30' 
@@ -187,6 +200,7 @@ export const Courses: React.FC<CoursesProps> = ({ lang, onSelectCourse }) => {
                     {/* Floating Clickable "Faahfaahin Dheeraad ah / Learn More" Button on top of Image */}
                     <div className="absolute bottom-3 right-3 z-10">
                       <button
+                        type="button"
                         id={`btn-details-${course.id}`}
                         onClick={() => handleOpenCourseDetails(course)}
                         className="px-3.5 py-1.5 rounded-full bg-white/95 dark:bg-[#0E1A2C]/90 hover:bg-white dark:hover:bg-[#1E293B] text-[#0B192C] dark:text-white text-xs font-black shadow-lg backdrop-blur-md flex items-center gap-1.5 transition-all transform hover:scale-105 active:scale-95 cursor-pointer border border-slate-200 dark:border-slate-700"
@@ -216,31 +230,37 @@ export const Courses: React.FC<CoursesProps> = ({ lang, onSelectCourse }) => {
                     </p>
                   </div>
 
-                  {/* Key Meta Details */}
-                  <div className="p-6 pt-3 pb-3 bg-slate-50 dark:bg-[#070E18] border-b border-slate-100 dark:border-slate-700/60 grid grid-cols-3 gap-2 text-xs text-slate-700 dark:text-slate-300">
-                    <div className="flex items-center gap-1.5">
-                      <Users className="w-3.5 h-3.5 text-orange-500 shrink-0" />
-                      <div>
-                        <span className="text-slate-500 dark:text-slate-400 block text-[9px] uppercase font-bold">{lang === 'so' ? 'Da’da:' : 'Age:'}</span>
-                        <span className="font-black text-slate-900 dark:text-slate-100 text-[11px] truncate block">{lang === 'so' ? course.ageGroupSo : course.ageGroupEn}</span>
+                  {/* Key Meta Details - High Contrast & Fully Visible */}
+                  <div className="px-6 py-4 bg-slate-50/90 dark:bg-[#070E18] border-b border-slate-100 dark:border-slate-700/60 flex flex-col gap-2.5">
+                    <div className="flex items-center justify-between gap-2 pb-2 border-b border-slate-200/60 dark:border-slate-800">
+                      <div className="flex items-center gap-2">
+                        <div className="p-1.5 rounded-lg bg-orange-100 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400">
+                          <Clock className="w-4 h-4 shrink-0" />
+                        </div>
+                        <div>
+                          <span className="text-slate-500 dark:text-slate-400 block text-[10px] uppercase font-bold tracking-wider">{lang === 'so' ? 'Muddada' : 'Duration'}</span>
+                          <span className="font-extrabold text-slate-900 dark:text-white text-xs sm:text-sm">{lang === 'so' ? course.durationSo : course.durationEn}</span>
+                        </div>
                       </div>
-                    </div>
 
-                    <div className="flex items-center gap-1.5">
-                      <Clock className="w-3.5 h-3.5 text-orange-500 shrink-0" />
-                      <div>
-                        <span className="text-slate-500 dark:text-slate-400 block text-[9px] uppercase font-bold">{lang === 'so' ? 'Muddada:' : 'Duration:'}</span>
-                        <span className="font-black text-slate-900 dark:text-slate-100 text-[11px] truncate block">{lang === 'so' ? course.durationSo : course.durationEn}</span>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-1.5">
-                      <CreditCard className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                      <div>
-                        <span className="text-slate-500 dark:text-slate-400 block text-[9px] uppercase font-bold">{lang === 'so' ? 'Qiimaha:' : 'Price:'}</span>
-                        <span className="font-black text-emerald-600 dark:text-emerald-400 text-[11px] block">
-                          ${course.startingPriceUSD || 30}<span className="text-[9px] text-slate-500 font-normal">/mo</span>
+                      <div className="text-right">
+                        <span className="text-slate-500 dark:text-slate-400 block text-[10px] uppercase font-bold tracking-wider">{lang === 'so' ? 'Qiimaha' : 'Starting at'}</span>
+                        <span className="font-black text-emerald-600 dark:text-emerald-400 text-sm sm:text-base">
+                          ${course.startingPriceUSD || 30}<span className="text-xs text-slate-500 dark:text-slate-400 font-medium">/mo</span>
                         </span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between gap-2 text-xs">
+                      <div className="flex items-center gap-1.5 text-slate-700 dark:text-slate-300">
+                        <Users className="w-3.5 h-3.5 text-orange-500 shrink-0" />
+                        <span className="text-[11px] text-slate-500 dark:text-slate-400 font-bold">{lang === 'so' ? 'Da’da:' : 'Age:'}</span>
+                        <span className="font-bold text-slate-900 dark:text-slate-100">{lang === 'so' ? course.ageGroupSo : course.ageGroupEn}</span>
+                      </div>
+
+                      <div className="flex items-center gap-1.5 text-slate-700 dark:text-slate-300">
+                        <BookOpen className="w-3.5 h-3.5 text-orange-500 shrink-0" />
+                        <span className="font-bold text-slate-900 dark:text-slate-100">{lang === 'so' ? course.levelSo : course.levelEn}</span>
                       </div>
                     </div>
                   </div>
@@ -262,6 +282,7 @@ export const Courses: React.FC<CoursesProps> = ({ lang, onSelectCourse }) => {
                     {/* Quick Button to open full modal for complete syllabus */}
                     <div className="pt-1 flex items-center gap-2">
                       <button
+                        type="button"
                         onClick={() => handleOpenCourseDetails(course)}
                         className="w-full py-2 px-3 rounded-xl text-xs font-bold text-[#0B192C] dark:text-orange-400 bg-orange-50 dark:bg-orange-950/20 hover:bg-orange-100/80 dark:hover:bg-orange-900/40 border border-orange-200 dark:border-orange-900/50 transition-colors flex items-center justify-between cursor-pointer"
                       >
@@ -277,6 +298,7 @@ export const Courses: React.FC<CoursesProps> = ({ lang, onSelectCourse }) => {
                   {/* Enroll & Register Action Button */}
                   <div className="p-6 pt-0 mt-auto space-y-2">
                     <button
+                      type="button"
                       id={`btn-enroll-${course.id}`}
                       onClick={() => onSelectCourse(course.id)}
                       className="w-full py-3.5 px-4 rounded-xl text-xs sm:text-sm font-black text-white bg-orange-500 hover:bg-orange-600 active:bg-orange-700 shadow-md shadow-orange-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer"

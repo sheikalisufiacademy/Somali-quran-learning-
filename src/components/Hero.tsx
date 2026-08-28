@@ -59,41 +59,31 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenRegister, onNavigate }) 
             
             {/* Main Headline - High Contrast Black / White on Navy without any orange-on-orange clash */}
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[2.85rem] font-black tracking-tight leading-[1.18] text-[#0B192C] dark:text-white">
-              {lang === 'so' ? (
-                <>
-                  Baro <span className="text-[#0B192C] dark:text-white underline decoration-orange-500 decoration-4 underline-offset-6">Qur’aanka Kariimka</span>, Barashada Tajwiidka & Higaada Online
-                </>
-              ) : (
-                <>
-                  Learn the <span className="text-[#0B192C] dark:text-white underline decoration-orange-500 decoration-4 underline-offset-6">Holy Quran</span>, Tajweed & Noorani Qaida Online
-                </>
-              )}
+              Learn the <span className="text-[#0B192C] dark:text-white underline decoration-orange-500 decoration-4 underline-offset-6">Holy Quran</span>, Tajweed & Noorani Qaida Online
             </h1>
 
             {/* Subtitle enriched with primary SEO keywords */}
             <p className="text-base sm:text-lg text-slate-700 dark:text-slate-300 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-medium">
-              {lang === 'so'
-                ? 'Akadeemiyada ugu tayada wanaagsan ee barashada higaada, tajwiidka suubban, xifdiga Qur’aanka, iyo culuumta diinta. Waxbarasho 1-on-1 ah oo ay bixinayaan macallimiin Soomaali Qur’aan online ah oo haysta Ijaazo sugan.'
-                : '1-on-1 live interactive sessions for kids and adults. Master Arabic alphabet (Noorani Qaida), applied Tajweed rules, Quran memorization (Hifz), authentic Hadith, and Seerah with certified Somali & Arabic scholars.'}
+              1-on-1 live interactive sessions for kids and adults. Master Arabic alphabet (Noorani Qaida), applied Tajweed rules, Quran memorization (Hifz), authentic Hadith, and Seerah with certified Somali & Arabic scholars.
             </p>
 
             {/* Key Value Points Checklist with high contrast icons */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 text-left max-w-xl mx-auto lg:mx-0">
               <div className="flex items-center gap-2.5 text-sm font-bold text-slate-900 dark:text-slate-200 bg-slate-50 dark:bg-[#0E1A2C] p-2.5 rounded-xl border border-slate-200 dark:border-slate-700">
                 <CheckCircle2 className="w-5 h-5 text-orange-500 shrink-0" />
-                <span>{lang === 'so' ? '1-on-1 Fasallo Gaar ah (Private Classes)' : '1-on-1 Private Live Tutoring'}</span>
+                <span>1-on-1 Private Live Tutoring</span>
               </div>
               <div className="flex items-center gap-2.5 text-sm font-bold text-slate-900 dark:text-slate-200 bg-slate-50 dark:bg-[#0E1A2C] p-2.5 rounded-xl border border-slate-200 dark:border-slate-700">
                 <CheckCircle2 className="w-5 h-5 text-orange-500 shrink-0" />
-                <span>{lang === 'so' ? 'Macallimiin Soomaali Ijaazo leh' : 'Certified Male & Female Scholars'}</span>
+                <span>Certified Male & Female Scholars</span>
               </div>
               <div className="flex items-center gap-2.5 text-sm font-bold text-slate-900 dark:text-slate-200 bg-slate-50 dark:bg-[#0E1A2C] p-2.5 rounded-xl border border-slate-200 dark:border-slate-700">
                 <CheckCircle2 className="w-5 h-5 text-orange-500 shrink-0" />
-                <span>{lang === 'so' ? 'Waqtiyo 24/7 ah (UK, USA, Yurub)' : 'Flexible 24/7 Global Scheduling'}</span>
+                <span>Flexible 24/7 Global Scheduling</span>
               </div>
               <div className="flex items-center gap-2.5 text-sm font-bold text-slate-900 dark:text-slate-200 bg-slate-50 dark:bg-[#0E1A2C] p-2.5 rounded-xl border border-slate-200 dark:border-slate-700">
                 <CheckCircle2 className="w-5 h-5 text-orange-500 shrink-0" />
-                <span>{lang === 'so' ? 'Fasalka Tijaabada oo 100% Bilaash ah' : '100% Free Trial Class'}</span>
+                <span>100% Free Trial Class</span>
               </div>
             </div>
 
@@ -104,7 +94,7 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenRegister, onNavigate }) 
                 onClick={onOpenRegister}
                 className="w-full sm:w-auto px-8 py-4 text-base font-black text-white bg-orange-500 hover:bg-orange-600 active:bg-orange-700 rounded-xl shadow-lg shadow-orange-500/30 hover:shadow-orange-500/40 transform hover:-translate-y-0.5 transition-all flex items-center justify-center gap-3 cursor-pointer"
               >
-                <span>{lang === 'so' ? 'Qaado Fasalka Tijaabada (Bilaash)' : 'Book Free Trial Class'}</span>
+                <span>Book Free Trial Class</span>
                 <ArrowRight className="w-5 h-5" />
               </button>
 
@@ -114,7 +104,7 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenRegister, onNavigate }) 
                   className="w-full sm:w-auto px-6 py-4 text-base font-bold text-[#0B192C] dark:text-white bg-white dark:bg-[#0E1A2C] hover:bg-slate-100 dark:hover:bg-slate-800 border-2 border-[#0B192C] dark:border-slate-600 rounded-xl transition-all flex items-center justify-center gap-2 shadow-xs cursor-pointer"
                 >
                   <GraduationCap className="w-5 h-5 text-orange-500" />
-                  <span>{lang === 'so' ? 'Daawo Koorsooyinka & Manhajka' : 'Explore Courses'}</span>
+                  <span>Explore Courses</span>
                 </button>
               ) : (
                 <a
@@ -122,7 +112,7 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenRegister, onNavigate }) 
                   className="w-full sm:w-auto px-6 py-4 text-base font-bold text-[#0B192C] dark:text-white bg-white dark:bg-[#0E1A2C] hover:bg-slate-100 dark:hover:bg-slate-800 border-2 border-[#0B192C] dark:border-slate-600 rounded-xl transition-all flex items-center justify-center gap-2 shadow-xs"
                 >
                   <GraduationCap className="w-5 h-5 text-orange-500" />
-                  <span>{lang === 'so' ? 'Daawo Koorsooyinka & Manhajka' : 'Explore Courses'}</span>
+                  <span>Explore Courses</span>
                 </a>
               )}
             </div>
@@ -137,7 +127,7 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenRegister, onNavigate }) 
               <div>
                 <span className="font-black text-[#0B192C] dark:text-white">4.98 / 5.0</span>
                 <span className="text-slate-600 dark:text-slate-400 ml-1.5 font-semibold">
-                  ({lang === 'so' ? 'In ka badan 500+ qoys oo ku qanacsan aduunka oo dhan' : 'Rated 4.98/5 by 500+ families worldwide'})
+                  (Rated 4.98/5 by 500+ families worldwide)
                 </span>
               </div>
             </div>
@@ -162,31 +152,29 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenRegister, onNavigate }) 
                   </div>
                   <div>
                     <h3 className="font-black text-sm text-[#0B192C] dark:text-white">
-                      {lang === 'so' ? 'Fasalka Tooska ah ee Tijaabada' : 'Live Quran Demo Class'}
+                      Live Quran Demo Class
                     </h3>
                     <p className="text-xs text-emerald-700 dark:text-emerald-400 font-bold flex items-center gap-1.5">
                       <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse" />
-                      {lang === 'so' ? 'Macallimiinta Soomaaliyeed waa diyaar' : 'Live Scholars Ready Online'}
+                      Live Scholars Ready Online
                     </p>
                   </div>
                 </div>
                 <span className="px-3 py-1 text-[11px] font-black rounded-full bg-[#0B192C] dark:bg-slate-800 text-white">
-                  {lang === 'so' ? '100% BILAASH' : '100% FREE'}
+                  100% FREE
                 </span>
               </div>
 
               {/* Sample Quran Page / Noorani Preview Inside Card */}
               <div className="my-4 p-4 rounded-2xl bg-slate-50 dark:bg-[#070E18] border border-slate-200 dark:border-slate-700 text-center space-y-2">
                 <p className="text-xs text-slate-700 dark:text-slate-400 uppercase tracking-wider font-extrabold">
-                  {lang === 'so' ? 'Aayadda Maanta (Daily Recitation)' : 'Verse of the Day'}
+                  Verse of the Day
                 </p>
                 <div className="font-quran text-2xl sm:text-3xl text-[#0B192C] dark:text-orange-400 py-1 leading-relaxed font-bold">
                   وَرَتِّلِ الْقُرْآنَ تَرْتِيلًا
                 </div>
                 <p className="text-xs text-slate-700 dark:text-slate-300 font-medium italic">
-                  {lang === 'so' 
-                    ? '"Una akhri Qur’aanka si degan oo Tajwiid leh." (Suurada Al-Muzammil)' 
-                    : '"And recite the Quran with measured, rhythmic recitation." (Surah Al-Muzzammil)'}
+                  "And recite the Quran with measured, rhythmic recitation." (Surah Al-Muzzammil)
                 </p>
               </div>
 
@@ -195,23 +183,23 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenRegister, onNavigate }) 
                 <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-[#070E18] border border-slate-200 dark:border-slate-700">
                   <span className="flex items-center gap-2 font-bold text-slate-700 dark:text-slate-400">
                     <ShieldCheck className="w-4 h-4 text-orange-500" />
-                    {lang === 'so' ? 'Xulashada Macallinka:' : 'Teacher Preference:'}
+                    Teacher Preference:
                   </span>
-                  <span className="font-black text-[#0B192C] dark:text-white">{lang === 'so' ? 'Lab ama Dheddig' : 'Male or Female'}</span>
+                  <span className="font-black text-[#0B192C] dark:text-white">Male or Female</span>
                 </div>
 
                 <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-[#070E18] border border-slate-200 dark:border-slate-700">
                   <span className="flex items-center gap-2 font-bold text-slate-700 dark:text-slate-400">
                     <Clock className="w-4 h-4 text-orange-500" />
-                    {lang === 'so' ? 'Muddada Fasalka:' : 'Class Duration:'}
+                    Class Duration:
                   </span>
-                  <span className="font-black text-[#0B192C] dark:text-white">{lang === 'so' ? '30 Daqiiqo (Qiimeyn)' : '30 Mins Live Evaluation'}</span>
+                  <span className="font-black text-[#0B192C] dark:text-white">30 Mins Live Evaluation</span>
                 </div>
 
                 <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-[#070E18] border border-slate-200 dark:border-slate-700">
                   <span className="flex items-center gap-2 font-bold text-slate-700 dark:text-slate-400">
                     <Users className="w-4 h-4 text-orange-500" />
-                    {lang === 'so' ? 'Habka Waxbarashada:' : 'Format:'}
+                    Format:
                   </span>
                   <span className="font-black text-[#0B192C] dark:text-white">1-on-1 Zoom / Google Meet</span>
                 </div>
@@ -223,19 +211,19 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenRegister, onNavigate }) 
                 onClick={onOpenRegister}
                 className="w-full py-3.5 text-center text-sm font-black text-white bg-orange-500 hover:bg-orange-600 active:bg-orange-700 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
-                <span>{lang === 'so' ? 'Qaado Fasalka Tijaabada Hadda' : 'Book Free Trial Now'}</span>
+                <span>Book Free Trial Now</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
 
               <div className="mt-3 text-center">
                 <a
-                  href="https://wa.me/251777796444?text=Asc%20Baro%20Quran%20Academy%2C%20waxaan%20doonayaa%20in%20aan%20is-qoro"
+                  href="https://wa.me/251777796444?text=Hello%20Baro%20Quran%20Academy%2C%20I%20would%20like%20to%20enroll"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1.5 text-xs font-black text-slate-800 dark:text-slate-300 hover:text-orange-600 transition-colors"
                 >
                   <MessageCircle className="w-3.5 h-3.5 text-orange-500" />
-                  <span>{lang === 'so' ? 'WhatsApp: +251 77 779 6444' : 'WhatsApp: +251 77 779 6444'}</span>
+                  <span>WhatsApp: +251 77 779 6444</span>
                 </a>
               </div>
 
@@ -256,28 +244,28 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenRegister, onNavigate }) 
           <div className="space-y-1">
             <div className="text-2xl sm:text-3xl font-black text-white">569+</div>
             <div className="text-xs sm:text-sm text-slate-300 font-bold">
-              {lang === 'so' ? 'Arday oo Qalinjabisay' : 'Graduated Students'}
+              Graduated Students
             </div>
           </div>
 
           <div className="space-y-1 border-l border-slate-700 pl-4">
             <div className="text-2xl sm:text-3xl font-black text-white">13</div>
             <div className="text-xs sm:text-sm text-slate-300 font-bold">
-              {lang === 'so' ? 'Macallimiin Ijaazo Leh' : 'Certified Scholars & Hafiz'}
+              Certified Scholars & Hafiz
             </div>
           </div>
 
           <div className="space-y-1 border-l border-slate-700 pl-4">
             <div className="text-2xl sm:text-3xl font-black text-white">40+</div>
             <div className="text-xs sm:text-sm text-slate-300 font-bold">
-              {lang === 'so' ? 'Waddan oo Ardaydu joogaan' : 'Countries Worldwide'}
+              Countries Worldwide
             </div>
           </div>
 
           <div className="space-y-1 border-l border-slate-700 pl-4">
             <div className="text-2xl sm:text-3xl font-black text-white">100%</div>
             <div className="text-xs sm:text-sm text-slate-300 font-bold">
-              {lang === 'so' ? 'Qanacsanaanta Waalidiinta' : 'Parent Satisfaction Rate'}
+              Parent Satisfaction Rate
             </div>
           </div>
         </motion.div>

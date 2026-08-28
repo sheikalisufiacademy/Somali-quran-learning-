@@ -21,7 +21,6 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Language, Course } from '../types';
-import { openLemonSqueezyCheckout } from '../lib/lemonsqueezy';
 
 interface CourseDetailModalProps {
   course: Course | null;
@@ -129,31 +128,31 @@ export const CourseDetailModal: React.FC<CourseDetailModalProps> = ({
           </div>
 
           {/* Scrollable Modal Content */}
-          <div className="p-6 sm:p-8 overflow-y-auto space-y-6 flex-1 text-slate-800 text-sm">
+          <div className="p-6 sm:p-8 overflow-y-auto space-y-6 flex-1 text-slate-800 dark:text-slate-200 text-sm bg-white dark:bg-[#0E1A2C]">
             
             {/* Quick Meta Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 p-4 rounded-2xl bg-slate-50 border border-slate-200">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700">
               <div className="flex items-center gap-2.5">
                 <Users className="w-4 h-4 text-orange-500 shrink-0" />
                 <div>
-                  <span className="block text-[10px] text-slate-500 font-bold uppercase">{lang === 'so' ? 'Da’da' : 'Age Group'}</span>
-                  <span className="font-black text-xs sm:text-sm text-slate-900">{lang === 'so' ? course.ageGroupSo : course.ageGroupEn}</span>
+                  <span className="block text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase">{lang === 'so' ? 'Da’da' : 'Age Group'}</span>
+                  <span className="font-black text-xs sm:text-sm text-slate-900 dark:text-white">{lang === 'so' ? course.ageGroupSo : course.ageGroupEn}</span>
                 </div>
               </div>
 
               <div className="flex items-center gap-2.5">
                 <Clock className="w-4 h-4 text-orange-500 shrink-0" />
                 <div>
-                  <span className="block text-[10px] text-slate-500 font-bold uppercase">{lang === 'so' ? 'Muddada' : 'Duration'}</span>
-                  <span className="font-black text-xs sm:text-sm text-slate-900">{lang === 'so' ? course.durationSo : course.durationEn}</span>
+                  <span className="block text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase">{lang === 'so' ? 'Muddada' : 'Duration'}</span>
+                  <span className="font-black text-xs sm:text-sm text-slate-900 dark:text-white">{lang === 'so' ? course.durationSo : course.durationEn}</span>
                 </div>
               </div>
 
               <div className="col-span-2 sm:col-span-1 flex items-center gap-2.5">
                 <Calendar className="w-4 h-4 text-orange-500 shrink-0" />
                 <div>
-                  <span className="block text-[10px] text-slate-500 font-bold uppercase">{lang === 'so' ? 'Jadwalka' : 'Schedule'}</span>
-                  <span className="font-black text-xs text-slate-900">
+                  <span className="block text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase">{lang === 'so' ? 'Jadwalka' : 'Schedule'}</span>
+                  <span className="font-black text-xs text-slate-900 dark:text-white">
                     {lang === 'so' 
                       ? (course.recommendedScheduleSo || '2-5 Maalmood/Todobaad')
                       : (course.recommendedScheduleEn || '2-5 Days/Week')}
@@ -164,11 +163,11 @@ export const CourseDetailModal: React.FC<CourseDetailModalProps> = ({
 
             {/* Overview / Sharaxaadda Guud */}
             <div className="space-y-2">
-              <h4 className="text-sm font-black text-[#0B192C] uppercase tracking-wider flex items-center gap-2">
+              <h4 className="text-sm font-black text-[#0B192C] dark:text-white uppercase tracking-wider flex items-center gap-2">
                 <BookOpen className="w-4 h-4 text-orange-500" />
                 <span>{lang === 'so' ? 'Sharaxaadda Guud ee Koorsada' : 'Course Comprehensive Overview'}</span>
               </h4>
-              <p className="text-slate-700 leading-relaxed font-medium">
+              <p className="text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
                 {lang === 'so' 
                   ? (course.fullOverviewSo || course.descriptionSo)
                   : (course.fullOverviewEn || course.descriptionEn)}
@@ -177,14 +176,14 @@ export const CourseDetailModal: React.FC<CourseDetailModalProps> = ({
 
             {/* Learning Outcomes / Maxaad Ka Faa’iidaysaa? */}
             {course.learningOutcomesSo && course.learningOutcomesSo.length > 0 && (
-              <div className="space-y-3 p-5 rounded-2xl bg-orange-50/60 border border-orange-200">
-                <h4 className="text-sm font-black text-[#0B192C] uppercase tracking-wider flex items-center gap-2">
-                  <Award className="w-4 h-4 text-orange-600" />
+              <div className="space-y-3 p-5 rounded-2xl bg-orange-50/60 dark:bg-orange-950/30 border border-orange-200 dark:border-orange-900/50">
+                <h4 className="text-sm font-black text-[#0B192C] dark:text-white uppercase tracking-wider flex items-center gap-2">
+                  <Award className="w-4 h-4 text-orange-600 dark:text-orange-400" />
                   <span>{lang === 'so' ? 'Maxaad Ka Baran Doontaa Koorsadan?' : 'Key Learning Outcomes'}</span>
                 </h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   {(lang === 'so' ? course.learningOutcomesSo : (course.learningOutcomesEn || course.learningOutcomesSo)).map((outcome, oIdx) => (
-                    <div key={oIdx} className="flex items-start gap-2 text-xs sm:text-sm text-slate-800 font-medium">
+                    <div key={oIdx} className="flex items-start gap-2 text-xs sm:text-sm text-slate-800 dark:text-slate-200 font-medium">
                       <CheckCircle2 className="w-4 h-4 text-orange-500 shrink-0 mt-0.5" />
                       <span>{outcome}</span>
                     </div>
@@ -195,17 +194,17 @@ export const CourseDetailModal: React.FC<CourseDetailModalProps> = ({
 
             {/* Syllabus / Qodobada Manhajka */}
             <div className="space-y-3">
-              <h4 className="text-sm font-black text-[#0B192C] uppercase tracking-wider flex items-center gap-2">
+              <h4 className="text-sm font-black text-[#0B192C] dark:text-white uppercase tracking-wider flex items-center gap-2">
                 <GraduationCap className="w-4 h-4 text-orange-500" />
                 <span>{lang === 'so' ? 'Qodobada Manhajka (Syllabus)' : 'Detailed Syllabus Topics'}</span>
               </h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {(lang === 'so' ? course.syllabusSo : course.syllabusEn).map((topic, tIdx) => (
-                  <div key={tIdx} className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-start gap-2.5">
-                    <span className="w-5 h-5 rounded-full bg-[#0B192C] text-white text-[10px] font-black flex items-center justify-center shrink-0 mt-0.5">
+                  <div key={tIdx} className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex items-start gap-2.5">
+                    <span className="w-5 h-5 rounded-full bg-[#0B192C] dark:bg-orange-500 text-white text-[10px] font-black flex items-center justify-center shrink-0 mt-0.5">
                       {tIdx + 1}
                     </span>
-                    <span className="text-xs font-semibold text-slate-800 leading-snug">{topic}</span>
+                    <span className="text-xs font-semibold text-slate-800 dark:text-slate-200 leading-snug">{topic}</span>
                   </div>
                 ))}
               </div>
@@ -213,13 +212,13 @@ export const CourseDetailModal: React.FC<CourseDetailModalProps> = ({
 
             {/* Features Checklist */}
             <div className="space-y-2">
-              <h4 className="text-sm font-black text-[#0B192C] uppercase tracking-wider flex items-center gap-2">
+              <h4 className="text-sm font-black text-[#0B192C] dark:text-white uppercase tracking-wider flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-orange-500" />
                 <span>{lang === 'so' ? 'Adeegyada Khaaska ah ee Koorsada' : 'Course Features & Perks'}</span>
               </h4>
               <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {(lang === 'so' ? course.featuresSo : course.featuresEn).map((f, fIdx) => (
-                  <li key={fIdx} className="flex items-center gap-2 text-xs text-slate-700 font-medium">
+                  <li key={fIdx} className="flex items-center gap-2 text-xs text-slate-700 dark:text-slate-300 font-medium">
                     <Check className="w-4 h-4 text-emerald-500 shrink-0" />
                     <span>{f}</span>
                   </li>
@@ -228,7 +227,7 @@ export const CourseDetailModal: React.FC<CourseDetailModalProps> = ({
             </div>
 
             {/* Free Trial & Money-Back Guarantee Note */}
-            <div className="p-4 rounded-2xl bg-slate-900 text-white flex items-center gap-3">
+            <div className="p-4 rounded-2xl bg-slate-900 dark:bg-slate-800/90 text-white flex items-center gap-3">
               <ShieldCheck className="w-8 h-8 text-orange-400 shrink-0" />
               <div className="text-xs">
                 <p className="font-black text-white">
@@ -245,17 +244,17 @@ export const CourseDetailModal: React.FC<CourseDetailModalProps> = ({
           </div>
 
           {/* Footer Modal Action Buttons */}
-          <div className="p-4 sm:p-6 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
-            <div className="flex items-center gap-2 text-xs text-slate-600">
+          <div className="p-4 sm:p-6 bg-slate-50 dark:bg-[#071322] border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
+            <div className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400">
               <PhoneCall className="w-4 h-4 text-emerald-600 shrink-0" />
-              <span>WhatsApp: <strong className="text-slate-900">+251 777 796 444</strong></span>
+              <span>WhatsApp: <strong className="text-slate-900 dark:text-white">+251 777 796 444</strong></span>
             </div>
 
             <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto justify-end">
               <button
                 type="button"
                 onClick={onClose}
-                className="py-2.5 px-4 rounded-xl text-xs sm:text-sm font-extrabold text-slate-700 bg-white border border-slate-300 hover:bg-slate-100 transition-colors cursor-pointer"
+                className="py-2.5 px-4 rounded-xl text-xs sm:text-sm font-extrabold text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
               >
                 {lang === 'so' ? 'Xir' : 'Close'}
               </button>

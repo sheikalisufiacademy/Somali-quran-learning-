@@ -85,7 +85,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ lang, onOpenRegister }
   };
 
   return (
-    <div id="contact-page" className="py-16 bg-slate-50 dark:bg-[#070E18] min-h-[80vh] transition-colors duration-200">
+    <section id="contact" className="py-16 bg-slate-50 dark:bg-[#070E18] min-h-[80vh] transition-colors duration-200 scroll-mt-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
@@ -424,6 +424,6 @@ export const ContactPage: React.FC<ContactPageProps> = ({ lang, onOpenRegister }
         </div>
 
       </div>
-    </div>
+    </section>
   );
 };

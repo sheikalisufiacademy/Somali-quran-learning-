@@ -3,17 +3,14 @@ import {
   Check, 
   Sparkles, 
   ShieldCheck, 
-  ArrowRight,
-  CreditCard,
-  Lock,
-  Zap,
-  Tag,
+  ArrowRight, 
+  Lock, 
+  Tag, 
   Star
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { Language, PricingPlan } from '../types';
 import { PRICING_PLANS } from '../data/academyData';
-import { openLemonSqueezyCheckout, getLemonSqueezyCheckoutUrl } from '../lib/lemonsqueezy';
 
 interface PricingProps {
   lang: Language;
@@ -35,16 +32,6 @@ export const Pricing: React.FC<PricingProps> = ({ lang, onSelectPlan }) => {
       case 'SEK': return { symbol: 'kr', amount: plan.priceSEK };
       default: return { symbol: '$', amount: plan.priceUSD };
     }
-  };
-
-  const handleBuyNow = (plan: PricingPlan) => {
-    const periodText = plan.isAnnual ? 'Full Year ($450)' : `$${plan.priceUSD}/mo`;
-    openLemonSqueezyCheckout({
-      planId: plan.id,
-      planName: lang === 'so' ? `${plan.nameSo} (${periodText})` : `${plan.nameEn} (${periodText})`,
-      monthlyPrice: plan.priceUSD,
-      daysCount: plan.daysPerWeek,
-    });
   };
 
   const filteredPlans = PRICING_PLANS.filter(plan => {
@@ -159,11 +146,6 @@ export const Pricing: React.FC<PricingProps> = ({ lang, onSelectPlan }) => {
             const { symbol, amount } = getPrice(plan);
             const isPopular = plan.popular;
             const isAnnual = plan.isAnnual;
-            const checkoutUrl = plan.checkoutUrl || getLemonSqueezyCheckoutUrl({ 
-              planId: plan.id, 
-              planName: plan.nameEn, 
-              monthlyPrice: plan.priceUSD 
-            });
 
             return (
               <motion.div
@@ -248,7 +230,7 @@ export const Pricing: React.FC<PricingProps> = ({ lang, onSelectPlan }) => {
                   </ul>
                 </div>
 
-                {/* Action buttons (Opens registration form first with selected plan) */}
+                {/* Action button: Hadda Isdiiwaangeli / Enroll Now */}
                 <div className="p-5 sm:p-6 pt-0 mt-auto space-y-2.5">
                   <button
                     id={`btn-select-plan-${plan.id}`}
@@ -263,16 +245,14 @@ export const Pricing: React.FC<PricingProps> = ({ lang, onSelectPlan }) => {
                     }`}
                   >
                     <span>
-                      {isAnnual
-                        ? (lang === 'so' ? 'Dooro Qorshaha Sanadlaha ($450)' : 'Select Annual Plan ($450)')
-                        : (lang === 'so' ? `Dooro Qorshahan ($${plan.priceUSD}/mo)` : `Select Plan ($${plan.priceUSD}/mo)`)}
+                      {lang === 'so' ? 'Hadda Isdiiwaangeli' : 'Enroll Now'}
                     </span>
                     <ArrowRight className="w-4 h-4" />
                   </button>
 
                   <div className="text-center">
                     <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
-                      {lang === 'so' ? '✓ Buuxi foomka • Tijaabo ama Bixin toos ah' : '✓ Fill form first • Free trial or direct pay'}
+                      {lang === 'so' ? '✓ Buuxi foomka • Tijaabo ama Bixin toos ah' : '✓ Fill form • Free trial or direct enrollment'}
                     </span>
                   </div>
                 </div>
@@ -307,8 +287,8 @@ export const Pricing: React.FC<PricingProps> = ({ lang, onSelectPlan }) => {
               </div>
               <div className="text-slate-600 dark:text-slate-400 text-[11px] font-medium mt-0.5">
                 {lang === 'so'
-                  ? 'Dhammaan 5-ta qorshe waxaa toos loogu bixin karaa Visa, Mastercard, Apple Pay & Google Pay.'
-                  : 'All 5 plans are processed securely via Visa, Mastercard, Apple Pay & Google Pay.'}
+                  ? 'Dhammaan lacagaha waxaa lagu maamulaa nidaam sugan oo la xafiday (256-bit SSL encrypted).'
+                  : 'All payments are processed securely with 256-bit SSL end-to-end encryption.'}
               </div>
             </div>
           </div>

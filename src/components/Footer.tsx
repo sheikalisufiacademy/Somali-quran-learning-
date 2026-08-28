@@ -8,9 +8,9 @@ import {
   Sparkles, 
   Heart, 
   ShieldCheck, 
-  Clock,
-  Globe2,
-  Facebook
+  Clock, 
+  Globe2, 
+  Facebook 
 } from 'lucide-react';
 import { Language, AppPage } from '../types';
 import { LogoBadge } from './LogoBadge';
@@ -25,22 +25,24 @@ const TikTokIcon: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' })
 interface FooterProps {
   lang: Language;
   onOpenRegister: (courseId?: string) => void;
-  onNavigate?: (page: AppPage) => void;
+  onNavigate?: (page: AppPage, targetId?: string) => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({ lang, onOpenRegister, onNavigate }) => {
-  const handleNav = (page: AppPage) => {
+  const handleNav = (page: AppPage, targetId?: string) => {
     if (onNavigate) {
-      onNavigate(page);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      onNavigate(page, targetId);
+      if (!targetId) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
     }
   };
 
   return (
     <footer id="contact" className="bg-[#0B192C] dark:bg-[#070E18] text-slate-300 relative overflow-hidden pt-16 pb-12 border-t-2 border-orange-500/20 dark:border-orange-500/10">
       
-      {/* Decorative pattern */}
-      <div className="absolute inset-0 opacity-5 pattern-dots-navy pointer-events-none" />
+      {/* Decorative subtle pattern */}
+      <div className="absolute inset-0 opacity-5 pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
@@ -48,23 +50,20 @@ export const Footer: React.FC<FooterProps> = ({ lang, onOpenRegister, onNavigate
         <div className="mb-14 pb-12 border-b border-slate-800 dark:border-slate-800/80 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           <div className="lg:col-span-8 space-y-2">
             <h3 className="text-2xl sm:text-3xl font-black text-white">
-              {lang === 'so'
-                ? 'Bilow Safarka Barashada Qur’aanka ee Ilmahaaga Maanta'
-                : 'Start Your Child’s Quranic Journey Today'}
+              Start Your Child’s Quranic Journey Today
             </h3>
             <p className="text-sm text-slate-300 dark:text-slate-400 max-w-2xl font-medium">
-              {lang === 'so'
-                ? 'Ku biir boqolaal qoys oo ku nool aduunka oo dhan oo u doortay Baro Quran Academy carruurtooda.'
-                : 'Join hundreds of satisfied families worldwide who entrust their children\'s Quran education to Baro Quran Academy.'}
+              Join hundreds of satisfied families worldwide who entrust their children's Quran education to Baro Quran Academy.
             </p>
           </div>
 
           <div className="lg:col-span-4 flex flex-col sm:flex-row lg:justify-end gap-3">
             <button
+              type="button"
               onClick={() => onOpenRegister()}
               className="px-6 py-3.5 text-center text-sm font-black text-white bg-orange-500 hover:bg-orange-600 active:bg-orange-700 rounded-xl shadow-lg shadow-orange-500/30 transition-all cursor-pointer"
             >
-              {lang === 'so' ? 'Qaado Fasal Tijaabo ah (Bilaash)' : 'Book Free Trial Class'}
+              Book Free Trial Class
             </button>
             <a
               href="https://wa.me/251777796444"
@@ -86,35 +85,28 @@ export const Footer: React.FC<FooterProps> = ({ lang, onOpenRegister, onNavigate
             <div className="flex items-center gap-3">
               <LogoBadge size="md" />
               <div className="flex flex-col">
-                <div className="flex items-center gap-1.5">
-                  <span className="font-extrabold text-xl tracking-tight text-white">
-                    BARO QURAN
-                  </span>
-                  <span className="px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider bg-emerald-600 text-white rounded-md">
-                    ACADEMY
-                  </span>
-                </div>
-                <span className="text-xs text-emerald-400 font-arabic">
-                  {lang === 'so' ? 'Akadeemiyada Barashada Qur’aanka' : 'Online Quran & Islamic Academy'}
+                <span className="font-black text-xl tracking-tight text-white">
+                  Baro Quran Academy
+                </span>
+                <span className="text-xs text-orange-400 font-arabic">
+                  Online Quran & Islamic Academy
                 </span>
               </div>
             </div>
 
             <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-medium">
-              {lang === 'so'
-                ? 'Akadeemiyada Caalamiga ah ee barashada Qur’aanka Kariimka, higaada, tajwiidka suubban, xifdiga, iyo culuumta Islaamka oo 1-on-1 ah loogu talagalay ardayda iyo qoysaska aduunka oo dhan.'
-                : 'Premier online academy providing 1-on-1 personalized Quran memorization, Noorani Qaida, applied Tajweed, and Islamic studies to students worldwide.'}
+              Premier online academy providing 1-on-1 personalized Quran memorization, Noorani Qaida, applied Tajweed, and Islamic studies to students worldwide.
             </p>
 
             <div className="pt-2 flex items-center gap-2 text-xs text-slate-300 font-bold">
               <ShieldCheck className="w-4 h-4 text-orange-400" />
-              <span>{lang === 'so' ? '100% Macallimiin Ijaazo Leh & Ammaan ah' : '100% Verified Teachers & Safe Environment'}</span>
+              <span>100% Verified Teachers & Safe Environment</span>
             </div>
 
             {/* Social Media Links */}
             <div className="pt-3 space-y-2">
               <span className="text-[11px] font-black text-white uppercase tracking-wider block">
-                {lang === 'so' ? 'Nagala Soco Baraha Bulshada' : 'Follow Our Social Media'}
+                Follow Our Social Media
               </span>
               <div className="flex flex-wrap items-center gap-2.5">
                 <a
@@ -122,7 +114,7 @@ export const Footer: React.FC<FooterProps> = ({ lang, onOpenRegister, onNavigate
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Baro Quran Academy TikTok"
-                  className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-black text-white hover:text-white border border-slate-700 hover:border-slate-500 text-xs font-bold transition-all flex items-center gap-2 shadow-sm"
+                  className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-black text-white hover:text-white border border-slate-700 hover:border-slate-500 text-xs font-bold transition-all flex items-center gap-2 shadow-xs"
                 >
                   <TikTokIcon className="w-4 h-4 text-pink-500" />
                   <span>TikTok</span>
@@ -133,9 +125,9 @@ export const Footer: React.FC<FooterProps> = ({ lang, onOpenRegister, onNavigate
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Baro Quran Academy Facebook"
-                  className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-[#1877F2] text-white hover:text-white border border-slate-700 hover:border-blue-400 text-xs font-bold transition-all flex items-center gap-2 shadow-sm"
+                  className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-[#1877F2] text-white hover:text-white border border-slate-700 hover:border-blue-400 text-xs font-bold transition-all flex items-center gap-2 shadow-xs"
                 >
-                  <Facebook className="w-4 h-4 text-[#1877F2] group-hover:text-white" />
+                  <Facebook className="w-4 h-4 text-[#1877F2]" />
                   <span>Facebook</span>
                 </a>
 
@@ -144,7 +136,7 @@ export const Footer: React.FC<FooterProps> = ({ lang, onOpenRegister, onNavigate
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Baro Quran Academy WhatsApp"
-                  className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-emerald-700 text-white hover:text-white border border-slate-700 hover:border-emerald-500 text-xs font-bold transition-all flex items-center gap-2 shadow-sm"
+                  className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-emerald-700 text-white hover:text-white border border-slate-700 hover:border-emerald-500 text-xs font-bold transition-all flex items-center gap-2 shadow-xs"
                 >
                   <MessageCircle className="w-4 h-4 text-emerald-400" />
                   <span>WhatsApp</span>
@@ -156,54 +148,54 @@ export const Footer: React.FC<FooterProps> = ({ lang, onOpenRegister, onNavigate
           {/* Col 2: Quick Links (2 cols) */}
           <div className="lg:col-span-2 space-y-3">
             <h4 className="text-xs font-black text-white uppercase tracking-wider">
-              {lang === 'so' ? 'Bogagga Muhiimka ah' : 'Quick Navigation'}
+              Quick Navigation
             </h4>
             <nav aria-label="Footer Quick Links">
               <ul className="space-y-2 text-xs text-slate-300 font-medium">
                 <li>
-                  <a href="#home" onClick={(e) => { e.preventDefault(); handleNav('home'); }} className="hover:text-orange-400 transition-colors block cursor-pointer">
-                    {lang === 'so' ? 'Bogga Hore (Home)' : 'Home'}
-                  </a>
+                  <button type="button" onClick={() => handleNav('home')} className="hover:text-orange-400 transition-colors block text-left cursor-pointer">
+                    Home
+                  </button>
                 </li>
                 <li>
-                  <a href="#courses" onClick={(e) => { e.preventDefault(); handleNav('courses'); }} className="hover:text-orange-400 transition-colors block cursor-pointer">
-                    {lang === 'so' ? 'Koorsooyinka' : 'Courses & Syllabus'}
-                  </a>
+                  <button type="button" onClick={() => handleNav('courses')} className="hover:text-orange-400 transition-colors block text-left cursor-pointer">
+                    Courses & Syllabus
+                  </button>
                 </li>
                 <li>
-                  <a href="#why-us" onClick={(e) => { e.preventDefault(); handleNav('why-us'); }} className="hover:text-orange-400 transition-colors block cursor-pointer">
-                    {lang === 'so' ? 'Maxaad Noo Dooranaysaa?' : 'Why Choose Us'}
-                  </a>
+                  <button type="button" onClick={() => handleNav('why-us')} className="hover:text-orange-400 transition-colors block text-left cursor-pointer">
+                    Why Choose Us
+                  </button>
                 </li>
                 <li>
-                  <a href="#pricing" onClick={(e) => { e.preventDefault(); handleNav('pricing'); }} className="hover:text-orange-400 transition-colors block cursor-pointer">
-                    {lang === 'so' ? 'Qiimaha & Xirmooyinka' : 'Pricing Plans'}
-                  </a>
+                  <button type="button" onClick={() => handleNav('pricing')} className="hover:text-orange-400 transition-colors block text-left cursor-pointer">
+                    Pricing Plans
+                  </button>
                 </li>
                 <li>
-                  <a href="#reviews" onClick={(e) => { e.preventDefault(); handleNav('reviews'); }} className="hover:text-orange-400 transition-colors block cursor-pointer">
-                    {lang === 'so' ? 'Aragtida Waalidiinta' : 'Parent Reviews'}
-                  </a>
+                  <button type="button" onClick={() => handleNav('reviews')} className="hover:text-orange-400 transition-colors block text-left cursor-pointer">
+                    Reviews & Blog
+                  </button>
                 </li>
                 <li>
-                  <a href="#faq" onClick={(e) => { e.preventDefault(); handleNav('faq'); }} className="hover:text-orange-400 transition-colors block cursor-pointer">
-                    {lang === 'so' ? 'Su’aalaha (FAQ)' : 'FAQs'}
-                  </a>
+                  <button type="button" onClick={() => handleNav('faq')} className="hover:text-orange-400 transition-colors block text-left cursor-pointer">
+                    FAQs
+                  </button>
                 </li>
                 <li>
-                  <a href="#privacy" onClick={(e) => { e.preventDefault(); handleNav('privacy'); }} className="hover:text-orange-400 transition-colors block cursor-pointer">
-                    {lang === 'so' ? 'Qarsoodiga (Privacy Policy)' : 'Privacy Policy'}
-                  </a>
+                  <button type="button" onClick={() => handleNav('privacy')} className="hover:text-orange-400 transition-colors block text-left cursor-pointer">
+                    Privacy Policy
+                  </button>
                 </li>
                 <li>
-                  <a href="#terms" onClick={(e) => { e.preventDefault(); handleNav('terms'); }} className="hover:text-orange-400 transition-colors block cursor-pointer">
-                    {lang === 'so' ? 'Shuruudaha (Terms of Service)' : 'Terms of Service'}
-                  </a>
+                  <button type="button" onClick={() => handleNav('terms')} className="hover:text-orange-400 transition-colors block text-left cursor-pointer">
+                    Terms of Service
+                  </button>
                 </li>
                 <li>
-                  <a href="#contact" onClick={(e) => { e.preventDefault(); handleNav('contact'); }} className="hover:text-orange-400 transition-colors block cursor-pointer">
-                    {lang === 'so' ? 'Nala Xiriir' : 'Contact Us'}
-                  </a>
+                  <button type="button" onClick={() => handleNav('contact')} className="hover:text-orange-400 transition-colors block text-left cursor-pointer">
+                    Contact Us
+                  </button>
                 </li>
               </ul>
             </nav>
@@ -212,34 +204,34 @@ export const Footer: React.FC<FooterProps> = ({ lang, onOpenRegister, onNavigate
           {/* Col 3: Courses List (3 cols) */}
           <div className="lg:col-span-3 space-y-3">
             <h4 className="text-xs font-black text-white uppercase tracking-wider">
-              {lang === 'so' ? 'Koorsooyinka Aan Bixinno' : 'Our Programs'}
+              Our Programs
             </h4>
             <nav aria-label="Footer Programs Navigation">
               <ul className="space-y-2 text-xs text-slate-300 font-medium">
                 <li>
-                  <a href="#courses" onClick={(e) => { e.preventDefault(); handleNav('courses'); onOpenRegister('qaacida-nuuraaniya'); }} className="hover:text-orange-400 transition-colors block cursor-pointer">
-                    {lang === 'so' ? '• Qaacidada Nuuraaniyada' : '• Noorani Qaida for Beginners'}
-                  </a>
+                  <button type="button" onClick={() => handleNav('courses', 'qaacida-nuuraaniya')} className="hover:text-orange-400 transition-colors block text-left cursor-pointer">
+                    • Noorani Qaida for Beginners
+                  </button>
                 </li>
                 <li>
-                  <a href="#courses" onClick={(e) => { e.preventDefault(); handleNav('courses'); onOpenRegister('tajweed-recitation'); }} className="hover:text-orange-400 transition-colors block cursor-pointer">
-                    {lang === 'so' ? '• Tajwiidka Saxda ah & Akhriska' : '• Tajweed Mastery & Recitation'}
-                  </a>
+                  <button type="button" onClick={() => handleNav('courses', 'tajweed-recitation')} className="hover:text-orange-400 transition-colors block text-left cursor-pointer">
+                    • Tajweed Mastery & Recitation
+                  </button>
                 </li>
                 <li>
-                  <a href="#courses" onClick={(e) => { e.preventDefault(); handleNav('courses'); onOpenRegister('quran-memorization-hifz'); }} className="hover:text-orange-400 transition-colors block cursor-pointer">
-                    {lang === 'so' ? '• Xifdinta Qur’aanka Kariimka' : '• Full Quran Memorization (Hifz)'}
-                  </a>
+                  <button type="button" onClick={() => handleNav('courses', 'quran-memorization-hifz')} className="hover:text-orange-400 transition-colors block text-left cursor-pointer">
+                    • Full Quran Memorization (Hifz)
+                  </button>
                 </li>
                 <li>
-                  <a href="#courses" onClick={(e) => { e.preventDefault(); handleNav('courses'); onOpenRegister('islamic-studies-tarbiyah'); }} className="hover:text-orange-400 transition-colors block cursor-pointer">
-                    {lang === 'so' ? '• Culuumta Diinta & Tarbiyada' : '• Islamic Studies & Tarbiyah'}
-                  </a>
+                  <button type="button" onClick={() => handleNav('courses', 'islamic-studies-tarbiyah')} className="hover:text-orange-400 transition-colors block text-left cursor-pointer">
+                    • Islamic Studies & Tarbiyah
+                  </button>
                 </li>
                 <li>
-                  <a href="#courses" onClick={(e) => { e.preventDefault(); handleNav('courses'); onOpenRegister('arabic-language'); }} className="hover:text-orange-400 transition-colors block cursor-pointer">
-                    {lang === 'so' ? '• Luuqadda Carabiga' : '• Arabic Language for Kids/Adults'}
-                  </a>
+                  <button type="button" onClick={() => handleNav('courses', 'arabic-language')} className="hover:text-orange-400 transition-colors block text-left cursor-pointer">
+                    • Arabic Language for Kids & Adults
+                  </button>
                 </li>
               </ul>
             </nav>
@@ -248,7 +240,7 @@ export const Footer: React.FC<FooterProps> = ({ lang, onOpenRegister, onNavigate
           {/* Col 4: Official Contact & Schedule (3 cols) */}
           <div className="lg:col-span-3 space-y-3">
             <h4 className="text-xs font-black text-white uppercase tracking-wider">
-              {lang === 'so' ? 'Xafiiska & Xiriirka' : 'Contact & Schedule'}
+              Contact & Schedule
             </h4>
             
             <div className="space-y-2.5 text-xs text-slate-300 font-medium">
@@ -292,12 +284,12 @@ export const Footer: React.FC<FooterProps> = ({ lang, onOpenRegister, onNavigate
 
               <div className="flex items-center gap-2.5">
                 <Clock className="w-4 h-4 text-orange-400 shrink-0" />
-                <span>{lang === 'so' ? 'Fasallada: 24/7 (Dhammaan Saacadaha)' : 'Classes: 24/7 Global Hours'}</span>
+                <span>Classes: 24/7 Global Hours</span>
               </div>
 
               <div className="flex items-center gap-2.5">
                 <Globe2 className="w-4 h-4 text-orange-400 shrink-0" />
-                <span>{lang === 'so' ? 'Aduunka Dhan (Worldwide)' : 'Students in 25+ Countries'}</span>
+                <span>Students in 25+ Countries</span>
               </div>
             </div>
           </div>
@@ -306,19 +298,19 @@ export const Footer: React.FC<FooterProps> = ({ lang, onOpenRegister, onNavigate
 
         {/* Bottom Bar */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400 font-medium">
-          <p>© {new Date().getFullYear()} Baro Quran Academy. Dhammaan xuquuqda way dhowran tahay.</p>
+          <p>© {new Date().getFullYear()} Baro Quran Academy. All rights reserved.</p>
           <div className="flex flex-wrap items-center justify-center gap-5">
-            <button onClick={() => handleNav('privacy')} className="hover:text-orange-400 transition-colors cursor-pointer">
-              {lang === 'so' ? 'Qarsoodiga (Privacy Policy)' : 'Privacy Policy'}
+            <button type="button" onClick={() => handleNav('privacy')} className="hover:text-orange-400 transition-colors cursor-pointer">
+              Privacy Policy
             </button>
-            <button onClick={() => handleNav('terms')} className="hover:text-orange-400 transition-colors cursor-pointer">
-              {lang === 'so' ? 'Shuruudaha (Terms of Service)' : 'Terms of Service'}
+            <button type="button" onClick={() => handleNav('terms')} className="hover:text-orange-400 transition-colors cursor-pointer">
+              Terms of Service
             </button>
-            <button onClick={() => handleNav('faq')} className="hover:text-slate-200 transition-colors cursor-pointer">
-              {lang === 'so' ? 'Su’aalaha' : 'FAQs'}
+            <button type="button" onClick={() => handleNav('faq')} className="hover:text-slate-200 transition-colors cursor-pointer">
+              FAQs
             </button>
-            <button onClick={() => handleNav('contact')} className="hover:text-slate-200 transition-colors cursor-pointer">
-              {lang === 'so' ? 'Xiriirka' : 'Contact Support'}
+            <button type="button" onClick={() => handleNav('contact')} className="hover:text-slate-200 transition-colors cursor-pointer">
+              Contact Support
             </button>
           </div>
         </div>

@@ -38,7 +38,7 @@ import { COURSES_DATA, PRICING_PLANS } from '../data/academyData';
 import { CountrySelector } from './CountrySelector';
 import { COUNTRIES, CountryInfo } from '../data/countries';
 import { saveRegistrationToFirestore } from '../firebase';
-import { openLemonSqueezyCheckout, getLemonSqueezyCheckoutUrl } from '../lib/lemonsqueezy';
+import { SecureCardCheckoutModal } from './SecureCardCheckoutModal';
 
 interface StudentInfo {
   id: string;
@@ -91,6 +91,7 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [enrollmentId, setEnrollmentId] = useState<string>('');
+  const [showCardModal, setShowCardModal] = useState(false);
 
   // When plan changes, automatically synchronize preferredDays length to strictly match required days count
   const allWeeklyDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
@@ -334,7 +335,7 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
       preferredDays,
       preferredTimeSlot,
       language: lang,
-      paymentOption: redirectToPayment ? 'instant_lemonsqueezy' : 'free_trial'
+      paymentOption: redirectToPayment ? 'online_payment' : 'free_trial'
     };
 
     // 1. Save to Cloud Firestore
@@ -401,17 +402,9 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
       console.error('EmailJS send error:', err?.text || err?.message || err);
     }
 
-    // 3. If the user opted to pay now, trigger Lemon Squeezy with their filled data
+    // 3. If the user opted to pay now, trigger Secure Checkout Modal
     if (redirectToPayment) {
-      openLemonSqueezyCheckout({
-        planId: selPlan.id,
-        planName: planName,
-        courseId: selCourse.id,
-        courseTitle: courseTitle,
-        monthlyPrice: finalTotalPrice,
-        email: studentEmail,
-        name: primaryStudentName
-      });
+      setShowCardModal(true);
     }
 
     setIsSubmitting(false);
@@ -535,50 +528,51 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
                   </p>
                 </div>
 
-                {/* Instant Online Payment via Lemon Squeezy option */}
+                {/* Instant Online Payment via Secure Checkout option */}
                 <div className="p-4 rounded-2xl bg-orange-50 dark:bg-orange-950/30 border border-orange-200 dark:border-orange-900/50 text-left space-y-2">
                   <div className="flex items-center gap-2">
-                    <Zap className="w-4 h-4 text-orange-500 fill-current" />
+                    <Lock className="w-4 h-4 text-orange-600" />
                     <span className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">
-                      {lang === 'so' ? 'Ma doonaysaa inaad toos u bixiso hadda?' : 'Ready to start immediately?'}
+                      {lang === 'so' ? 'Bixi Hadda Qidmadda (Bixinta Kaarka ee Sugan)' : 'Pay Tuition Online (Instant Secure Card Payment)'}
                     </span>
                   </div>
                   <p className="text-xs text-slate-600 dark:text-slate-300 font-medium">
                     {lang === 'so'
-                      ? 'Waxaad si toos ah oo ammaan ah ugu bixin kartaa qidmadda (Mastercard / Visa / Apple Pay / Google Pay).'
-                      : 'You can securely pay for your plan now (Mastercard / Visa / Apple Pay / Google Pay).'}
+                      ? 'Waxaad toos ugu bixin kartaa kaarkaaga bangiga (Visa, Mastercard, Apple Pay) adigoo isticmaalaya nidaam sugan oo toos ah.'
+                      : 'You can securely pay for your Quran course tuition with Visa, Mastercard, or Apple Pay with instant activation.'}
                   </p>
                   <button
                     type="button"
-                    onClick={() => {
-                      openLemonSqueezyCheckout({
-                        planId: selectedPlan.id,
-                        planName: lang === 'so' ? selectedPlan.nameSo : selectedPlan.nameEn,
-                        courseId: selectedCourse.id,
-                        courseTitle: lang === 'so' ? selectedCourse.titleSo : selectedCourse.titleEn,
-                        monthlyPrice: finalTotalPrice,
-                        email: email,
-                        name: students[0]?.fullName || ''
-                      });
-                    }}
-                    className="w-full mt-2 py-3 px-4 rounded-xl bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md shadow-orange-500/25 transition-all cursor-pointer"
+                    onClick={() => setShowCardModal(true)}
+                    className="w-full mt-2 py-3.5 px-4 rounded-xl bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md shadow-orange-500/25 transition-all cursor-pointer"
                   >
                     <CreditCard className="w-4 h-4" />
                     <span>
                       {lang === 'so' 
-                        ? `Bixi Qidmadda Hadda ($${finalTotalPrice}/mo)` 
-                        : `Pay Tuition Now ($${finalTotalPrice}/mo)`}
+                        ? `Bixi Hadda ($${finalTotalPrice})` 
+                        : `Pay Now ($${finalTotalPrice})`}
                     </span>
-                    <Zap className="w-3.5 h-3.5 fill-current" />
                   </button>
                 </div>
               </div>
 
               <div className="pt-2 flex items-center justify-center gap-3">
+                <a
+                  href={`https://wa.me/251777796444?text=${encodeURIComponent(
+                    `Assalaamu Calaykum Somali Quran Academy, waxaan iska diiwaangeliyay koorsada: ${lang === 'so' ? selectedCourse.titleSo : selectedCourse.titleEn}, Xirmada: ${lang === 'so' ? selectedPlan.nameSo : selectedPlan.nameEn}, Ardayga: ${students[0]?.fullName || ''}, Number-ka Diiwaanka: ${enrollmentId}`
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs sm:text-sm rounded-2xl shadow-md transition-all flex items-center gap-2"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  <span>{lang === 'so' ? 'Nagala Soo Xiriir WhatsApp' : 'Contact on WhatsApp'}</span>
+                </a>
+
                 <button
                   type="button"
                   onClick={handleClose}
-                  className="px-8 py-3 bg-[#0B192C] dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 text-white font-black text-sm rounded-2xl shadow-md transition-all cursor-pointer"
+                  className="px-6 py-3 bg-[#0B192C] dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 text-white font-black text-xs sm:text-sm rounded-2xl shadow-md transition-all cursor-pointer"
                 >
                   {lang === 'so' ? 'Xir Daaqadda' : 'Close'}
                 </button>
@@ -1276,24 +1270,24 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
                       type="button"
                       onClick={handlePayAndSubmit}
                       disabled={isSubmitting}
-                      className="px-5 py-3.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-black rounded-xl shadow-md shadow-emerald-600/25 text-xs sm:text-sm flex items-center gap-2 transition-all disabled:opacity-50 cursor-pointer"
+                      className="px-5 py-3.5 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-black rounded-xl shadow-md shadow-orange-500/25 text-xs sm:text-sm flex items-center gap-2 transition-all disabled:opacity-50 cursor-pointer"
                     >
                       <CreditCard className="w-4 h-4" />
                       <span>
                         {isSubmitting
-                          ? (lang === 'so' ? 'Waa la diiwaangelinayaa...' : 'Processing...')
+                          ? (lang === 'so' ? 'Waa la diyaarinayaa...' : 'Preparing Checkout...')
                           : selectedPlan.isAnnual
-                            ? (lang === 'so' ? `Bixi Sanadkii Hadda ($${finalTotalPrice})` : `Pay Annual Now ($${finalTotalPrice})`)
-                            : (lang === 'so' ? `Bixi Qidmadda Hadda ($${finalTotalPrice}/mo)` : `Pay Tuition Now ($${finalTotalPrice}/mo)`)}
+                            ? (lang === 'so' ? `Bixi Hadda ($${finalTotalPrice})` : `Pay Now ($${finalTotalPrice})`)
+                            : (lang === 'so' ? `Bixi Hadda ($${finalTotalPrice}/mo)` : `Pay Now ($${finalTotalPrice}/mo)`)}
                       </span>
-                      <Zap className="w-3.5 h-3.5 fill-current" />
+                      <Lock className="w-3.5 h-3.5" />
                     </button>
 
                     <button
                       type="button"
                       onClick={handleSubmit}
                       disabled={isSubmitting}
-                      className="px-6 py-3.5 bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white font-black rounded-xl shadow-lg shadow-orange-500/30 text-xs sm:text-sm flex items-center gap-2 transition-all disabled:opacity-50 cursor-pointer"
+                      className="px-6 py-3.5 bg-[#0B192C] dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 text-white font-black rounded-xl shadow-lg text-xs sm:text-sm flex items-center gap-2 transition-all disabled:opacity-50 cursor-pointer"
                     >
                       <span>
                         {isSubmitting 
@@ -1312,6 +1306,20 @@ export const RegistrationModal: React.FC<RegistrationModalProps> = ({
         </div>
 
       </div>
+
+      {/* Interactive Secure Card Checkout Modal */}
+      <SecureCardCheckoutModal
+        isOpen={showCardModal}
+        onClose={() => setShowCardModal(false)}
+        lang={lang}
+        courseTitle={lang === 'so' ? selectedCourse.titleSo : selectedCourse.titleEn}
+        amount={finalTotalPrice}
+        planName={lang === 'so' ? selectedPlan.nameSo : selectedPlan.nameEn}
+        studentName={students[0]?.fullName || 'Arday'}
+        studentPhone={phone ? `${selectedCountry?.dialCode || ''}${phone}` : ''}
+        studentEmail={email}
+        enrollmentId={enrollmentId || `BQA-${Date.now().toString().slice(-6)}`}
+      />
     </div>
   );
 };
